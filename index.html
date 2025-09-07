@@ -130,18 +130,9 @@
     font-size: 16px;
   }
   
-  .info-panel {
-    position: absolute;
-    top: 100px;
-    right: 20px;
-    z-index: 1000;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 3px 14px rgba(0,0,0,0.2);
-    max-width: 320px;
-    max-height: 70%;
-    overflow-y: auto;
+  /* Hide the attribution control */
+  .leaflet-control-attribution {
+    display: none !important;
   }
   
   /* Mobile-specific styles */
@@ -189,11 +180,17 @@ const isMobile = window.matchMedia("(max-width: 768px)").matches;
 const defaultCenter = [39.8283, -98.5795]; // Geographic center of US
 const defaultZoom = isMobile ? 3 : 4; // Zoom level 3 for mobile, 4 for desktop
 
-const map = L.map('map', { minZoom: 3, maxZoom: 18, zoomControl: false }).setView(defaultCenter, defaultZoom);
+// Initialize map with attribution control disabled
+const map = L.map('map', { 
+  minZoom: 3, 
+  maxZoom: 18, 
+  zoomControl: false,
+  attributionControl: false  // This disables the default attribution control
+}).setView(defaultCenter, defaultZoom);
 
-// Base map: Carto Voyager No Labels
+// Base map: Carto Voyager No Labels (with empty attribution)
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; <a href="https://www.carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  attribution: '',  // Empty attribution
   subdomains: 'abcd',
   maxZoom: 19
 }).addTo(map);
