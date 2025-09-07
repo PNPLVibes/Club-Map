@@ -25,6 +25,9 @@
   "Connecticut": [
     { "name": "Club CT1", "url": "https://example.com/club-ct1" }
   ],
+  "D.C.": [
+    { "name": "Club DC1", "url": "https://example.com/club-dc1" }
+  ],
   "Delaware": [
     { "name": "Club DE1", "url": "https://example.com/club-de1" }
   ],
