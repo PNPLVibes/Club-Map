@@ -263,12 +263,31 @@ const labelAdjustments = {
   "West Virginia": [0, -0.3],
 };
 
-Promise.all([
-  fetch("clubs.json").then(r => r.ok ? r.json() : Promise.reject("Failed to load clubs.json")),
-  fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json").then(r => r.json())
-])
-.then(([clubs, statesData]) => {
-  clubsByState = clubs;
+// Sample clubs data for demonstration
+const sampleClubsData = {
+  "California": [
+    { name: "San Francisco Club", url: "https://example.com/sf" },
+    { name: "LA Lifestyle", url: "https://example.com/la" }
+  ],
+  "New York": [
+    { name: "NYC Social Club", url: "https://example.com/nyc" }
+  ],
+  "Texas": [
+    { name: "Austin Connections", url: "https://example.com/austin" },
+    { name: "Houston Hub", url: "https://example.com/houston" }
+  ],
+  "Florida": [
+    { name: "Miami Nights", url: "https://example.com/miami" }
+  ]
+};
+
+// Use sample data for demonstration
+clubsByState = sampleClubsData;
+
+// Load US states GeoJSON
+fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json")
+.then(response => response.json())
+.then(statesData => {
   geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
   addStateLabels();
   updateLabelSizes();
@@ -336,28 +355,51 @@ function addStateLabels() {
   });
 }
 
-// Smooth scaling font size
+// Fixed mobile state label display
 function updateLabelSizes() {
   const zoom = map.getZoom();
+  const isMobileNow = window.matchMedia("(max-width: 768px)").matches;
+  
   Object.entries(stateLabels).forEach(([stateName, label]) => {
     const el = label.getElement();
-    if (zoom <= 4) {
+    
+    // Show labels at all zoom levels except the very lowest
+    if (zoom <= (isMobileNow ? 2 : 3)) {
       el.style.display = 'none';
     } else {
       el.style.display = 'block';
-      let baseSize;
-      if (zoom <= 5) baseSize = 12;
-      else if (zoom <= 6) baseSize = 16;
-      else if (zoom <= 7) baseSize = 20;
-      else if (zoom <= 8) baseSize = 24;
-      else if (zoom <= 10) baseSize = 28;
-      else baseSize = 34;
+      
+      // Calculate base font size based on state area
       const area = stateAreas[stateName] || 25000;
-      const areaFactor = Math.log(area) / 18;
+      
+      // Base size for different zoom levels - adjusted for mobile
+      let baseSize;
+      if (zoom <= (isMobileNow ? 3 : 4)) baseSize = 10; // First zoom level after default
+      else if (zoom <= (isMobileNow ? 4 : 5)) baseSize = 12;
+      else if (zoom <= (isMobileNow ? 5 : 6)) baseSize = 14;
+      else if (zoom <= (isMobileNow ? 6 : 7)) baseSize = 16;
+      else if (zoom <= (isMobileNow ? 7 : 8)) baseSize = 18;
+      else baseSize = 20;
+      
+      // Area-based scaling factor
+      const areaFactor = Math.log(area) / 20;
+      
+      // Calculate final font size
       let fontSize = baseSize + areaFactor;
-      fontSize = Math.max(10, Math.min(40, fontSize));
-      if (area < 10000) fontSize -= 3;
-      if (area < 5000) fontSize -= 2;
+      
+      // Apply minimum and maximum limits
+      fontSize = Math.max(8, Math.min(24, fontSize));
+      
+      // Special adjustments for small states
+      if (area < 10000) {
+        fontSize = Math.max(8, fontSize - 2);
+      }
+      
+      // Special adjustments for very small states
+      if (area < 5000) {
+        fontSize = Math.max(8, fontSize - 1);
+      }
+      
       el.style.fontSize = `${fontSize}px`;
     }
   });
@@ -385,7 +427,12 @@ document.getElementById('geoBtn').addEventListener('click', () => {
   } else alert("Geolocation is not supported by your browser.");
 });
 
+// Update labels on zoom and move
 map.on('zoomend', updateLabelSizes);
+map.on('moveend', updateLabelSizes);
+
+// Initial update
+updateLabelSizes();
 </script>
 
 </body>
