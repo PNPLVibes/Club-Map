@@ -42,10 +42,9 @@
       background: transparent;
       border: none;
       box-shadow: none;
-      color: #222; /* text color */
       font-weight: bold;
       font-size: 14px;
-      text-shadow: 1px 1px 2px white; /* keeps labels readable on map */
+      text-shadow: 1px 1px 2px white; /* keeps labels readable */
     }
   </style>
 </head>
@@ -71,11 +70,11 @@
     minZoom: 3, 
     maxZoom: 7, 
     zoomControl: false,
-    attributionControl: false // hide attribution
+    attributionControl: false
   }).setView(defaultCenter, defaultZoom);
 
-  // Modern light base map (Carto Light)
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  // Carto Voyager base map
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
       subdomains: 'abcd',
       maxZoom: 19
   }).addTo(map);
@@ -94,24 +93,45 @@
     }
   });
   map.addControl(new ResetControl());
-
-  // Zoom control
   L.control.zoom({ position: 'topleft' }).addTo(map);
 
   let clubsByState = {};
   let geojsonLayer;
   let clubMarkers = [];
 
-  // Fetch clubs.json and US states GeoJSON
+  // Predefined label coordinates for all states
+  const stateLabelCenters = {
+    "Alabama":[32.8,-86.9],"Alaska":[61,-152],"Arizona":[34.3,-111.7],
+    "Arkansas":[34.8,-92.3],"California":[37,-119.5],"Colorado":[39,-105.5],
+    "Connecticut":[41.6,-72.7],"Delaware":[39.1,-75.5],"Florida":[28.5,-82],
+    "Georgia":[32.7,-83.4],"Hawaii":[20.7,-156.3],"Idaho":[45.1,-114.3],
+    "Illinois":[40,-89.3],"Indiana":[40,-86.1],"Iowa":[42,-93.2],
+    "Kansas":[38.5,-98],"Kentucky":[37.6,-85.5],"Louisiana":[31.2,-92.5],
+    "Maine":[45.3,-69.0],"Maryland":[39.0,-76.8],"Massachusetts":[42.4,-71.6],
+    "Michigan":[44,-85.5],"Minnesota":[46.3,-94.0],"Mississippi":[32.8,-89.8],
+    "Missouri":[38.5,-92.5],"Montana":[47.0,-109.5],"Nebraska":[41.5,-99.8],
+    "Nevada":[39.5,-116.9],"New Hampshire":[43.5,-71.5],"New Jersey":[40.1,-74.7],
+    "New Mexico":[34.0,-106.0],"New York":[43.0,-75.0],"North Carolina":[35.5,-79.0],
+    "North Dakota":[47.5,-100.5],"Ohio":[40.2,-82.9],"Oklahoma":[35.5,-97.5],
+    "Oregon":[44.0,-120.5],"Pennsylvania":[40.9,-77.7],"Rhode Island":[41.6,-71.5],
+    "South Carolina":[33.8,-81.1],"South Dakota":[44.5,-100.5],"Tennessee":[35.8,-86.2],
+    "Texas":[31.0,-100.0],"Utah":[39.3,-111.7],"Vermont":[44.0,-72.7],
+    "Virginia":[37.5,-78.5],"Washington":[47.4,-120.6],"West Virginia":[38.7,-80.6],
+    "Wisconsin":[44.5,-89.5],"Wyoming":[43.0,-107.5],"District of Columbia":[38.9,-77.0]
+  };
+
+  // State label colors cycling through palette
+  const labelColors = ["#008080","#ff66cc","#9933ff","#66ccff","#99ff66","#ffff66"]; // teal, pink, purple, light blue, lime, yellow
+
   Promise.all([
     fetch("clubs.json").then(r => r.json()),
     fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json").then(r => r.json())
   ]).then(([clubs, statesData]) => {
     clubsByState = clubs;
+
     geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
   }).catch(err => console.error(err));
 
-  // Style and highlight functions
   function style(feature) {
     return {
       fillColor: "#66c2a5",
@@ -135,9 +155,19 @@
 
   function onEachFeature(feature, layer) {
     const stateName = feature.properties.name;
-    
-    // Add persistent state label without white background
-    layer.bindTooltip(stateName, { permanent: true, direction: "center", className: "state-label" });
+
+    // Use pre-defined label coordinates
+    const latlng = stateLabelCenters[stateName] || layer.getBounds().getCenter();
+
+    // Cycle color based on state index
+    const stateIndex = Object.keys(stateLabelCenters).indexOf(stateName);
+    const color = labelColors[stateIndex % labelColors.length];
+
+    layer.bindTooltip(stateName, {
+      permanent: true,
+      direction: "center",
+      className: "state-label"
+    }).setLatLng(latlng).getElement()?.style?.setProperty("color", color);
 
     const clubs = clubsByState[stateName] || [];
     let popupContent = `<b>${stateName}</b><br/>`;
@@ -151,7 +181,7 @@
     });
   }
 
-  // Add nearby club markers
+  // --- Club markers and search functionality ---
   function addClubMarkers(clubs, center, radius) {
     clubMarkers.forEach(m => map.removeLayer(m));
     clubMarkers = [];
@@ -171,7 +201,6 @@
     else alert("No clubs found within that radius.");
   }
 
-  // Haversine distance in miles
   function getDistance(lat1, lon1, lat2, lon2) {
     const R = 3958.8;
     const dLat = (lat2 - lat1) * Math.PI/180;
@@ -181,7 +210,6 @@
     return R * c;
   }
 
-  // Search by ZIP
   document.getElementById('searchBtn').addEventListener('click', async () => {
     const zip = document.getElementById('zipInput').value.trim();
     const radius = parseFloat(document.getElementById('radiusInput').value);
@@ -198,7 +226,6 @@
     }
   });
 
-  // Geolocation button
   document.getElementById('geoBtn').addEventListener('click', () => {
     if (!navigator.geolocation) return alert("Geolocation not supported");
     navigator.geolocation.getCurrentPosition(pos => {
