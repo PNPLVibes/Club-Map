@@ -1,551 +1,252 @@
 <!DOCTYPE html> 
 <html lang="en"> 
 <head> 
-    <meta charset="UTF-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>US Lifestyle Clubs Map</title> 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" /> 
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>US Lifestyle Clubs Map</title> 
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" /> 
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+    .state-label {
+      color: black;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px white;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .state-label.highlight {
+      color: red;
+    }
+    .leaflet-popup-content {
+      font-size: 14px;
+    }
+    .state-popup-title {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    .club-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .club-item {
+      margin: 4px 0;
+    }
+    .club-link {
+      color: #3498db;
+      text-decoration: none;
+    }
+    .club-link:hover {
+      text-decoration: underline;
+    }
+    .no-clubs {
+      font-style: italic;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([37.8, -96], 4);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    let geojsonLayer;
+    let clubsByState = {};
+    const stateLabels = {};
+
+    // Example fallback data
+    const sampleClubsData = {
+      "California": [
+        { name: "Club X", url: "https://clubx.com" },
+        { name: "Club Y" }
+      ],
+      "Texas": [
+        { name: "Lone Star Lifestyle", url: "https://lonestar.com" }
+      ],
+      "D.C.": [
+        { name: "Capital Club", url: "https://capitalclub.com" }
+      ]
+    };
+
+    const stateAreas = {
+      "California": 423967, "Texas": 695662, "D.C.": 177
+    };
+
+    const stateCentroids = {
+      "California": [37.5, -119.5],
+      "Texas": [31, -99],
+      "D.C.": [38.9, -77.04]
+    };
+
+    const labelAdjustments = {
+      "California": [0, 0],
+      "Texas": [0, 0],
+      "D.C.": [0, 0]
+    };
+
+    fetch("clubs.json")
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to load clubs.json');
+        return res.json();
+      })
+      .then(data => {
+        clubsByState = data;
+        return fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json");
+      })
+      .catch(err => {
+        console.error("Error loading clubs.json, using sample data", err);
+        clubsByState = sampleClubsData;
+        return fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json");
+      })
+      .then(res => res.json())
+      .then(statesData => {
+        geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
+        addStateLabels();
+        updateLabelSizes(); // first update
+      })
+      .catch(err => console.error("Error loading data:", err));
+
+    function style(feature) {
+      const stateName = feature.properties.name === 'District of Columbia' ? 'D.C.' : feature.properties.name;
+      const hasClubs = clubsByState[stateName] && clubsByState[stateName].length > 0;
+      return {
+        fillColor: hasClubs ? "#3498db" : "#bdc3c7",
+        weight: 2,
+        opacity: 1,
+        color: "white",
+        dashArray: "3",
+        fillOpacity: 0.7
+      };
+    }
+
+    function highlightFeature(e) {
+      const layer = e.target;
+      layer.setStyle({
+        weight: 3,
+        color: "#666",
+        dashArray: "",
+        fillOpacity: 0.9
+      });
+      layer.bringToFront();
+
+      const stateName = layer.feature.properties.name === 'District of Columbia' ? 'D.C.' : layer.feature.properties.name;
+      if (stateLabels[stateName]) stateLabels[stateName].getElement().classList.add('highlight');
+    }
+
+    function resetHighlight(e) {
+      geojsonLayer.resetStyle(e.target);
+      const stateName = e.target.feature.properties.name === 'District of Columbia' ? 'D.C.' : e.target.feature.properties.name;
+      if (stateLabels[stateName]) stateLabels[stateName].getElement().classList.remove('highlight');
+    }
+
+    function onEachFeature(feature, layer) {
+      const stateName = feature.properties.name === 'District of Columbia' ? 'D.C.' : feature.properties.name;
+      const clubs = clubsByState[stateName] || [];
+
+      let popupContent = `<div class="state-popup-title">${stateName}</div>`;
+      if (clubs.length === 0) {
+        popupContent += `<div class="no-clubs">No clubs listed yet</div>`;
+      } else {
+        popupContent += `<ul class="club-list">`;
+        clubs.forEach(club => {
+          popupContent += `<li class="club-item">`;
+          popupContent += club.url ? 
+            `<a class="club-link" href="${club.url}" target="_blank">${club.name}</a>` : 
+            `<span>${club.name}</span>`;
+          popupContent += `</li>`;
+        });
+        popupContent += `</ul>`;
+      }
+
+      layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: () => layer.bindPopup(popupContent, { maxWidth: 350 }).openPopup()
+      });
+    }
+
+    function addStateLabels() {
+      geojsonLayer.eachLayer(layer => {
+        const orig = layer.feature.properties.name;
+        const stateName = orig === 'District of Columbia' ? 'D.C.' : orig;
+
+        let coords;
+        if (stateName === 'D.C.') {
+          coords = layer.getBounds().getCenter();
+        } else {
+          coords = stateCentroids[stateName];
         }
-        body {
-            display: flex;
-            flex-direction: column;
-        }
-        #searchForm {
-            flex: 0 0 auto;
-            padding: 15px;
-            background: #2c3e50;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            align-items: center;
-        }
-        .input-group {
-            display: flex;
-            gap: 10px;
-        }
-        #searchForm input {
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-            min-width: 180px;
-        }
-        #radiusInput {
-            width: 100px;
-        }
-        #searchForm button {
-            padding: 12px 20px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-size: 16px;
-            font-weight: 500;
-        }
-        #searchForm button:hover {
-            background: #2980b9;
-        }
-        #searchForm button#geoBtn {
-            background: #27ae60;
-        }
-        #searchForm button#geoBtn:hover {
-            background: #219653;
-        }
-        #map {
-            flex: 1 1 auto;
-            width: 100%;
-        }
-        .leaflet-control-reset {
-            background: white;
-            padding: 10px 15px;
-            cursor: pointer;
-            border-radius: 4px;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-            font-size: 16px;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 10px;
-            border: 2px solid rgba(0,0,0,0.2);
-        }
-        .leaflet-control-reset:hover {
-            background: #f8f8f8;
-        }
-        .state-label {
-            font-weight: bold;
-            color: #2c3e50;
-            text-shadow: 1px 1px 3px white, -1px -1px 3px white, 1px -1px 3px white, -1px 1px 3px white;
-            pointer-events: none;
-            text-align: center;
-            white-space: nowrap;
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: font-size 0.4s ease, color 0.3s ease;
-        }
-        .state-label.highlight {
-            color: #e74c3c;
-            font-weight: 900;
-        }
-        .leaflet-popup-content-wrapper {
-            border-radius: 8px;
-            padding: 2px;
-            background: #f8f9fa;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-        }
-        .leaflet-popup-content {
-            margin: 18px;
-            font-size: 18px;
-            line-height: 1.5;
-            min-width: 250px;
-        }
-        .state-popup-title {
-            font-size: 22px;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #3498db;
-            text-align: center;
-        }
-        .club-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-        .club-item {
-            padding: 12px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        .club-item:last-child {
-            border-bottom: none;
-        }
-        .club-link {
-            color: #2980b9;
-            text-decoration: none;
-            font-weight: 500;
-            display: block;
-            padding: 8px 12px;
-            border-radius: 4px;
-            transition: background 0.2s;
-        }
-        .club-link:hover {
-            background: #e8f4fd;
-            color: #e74c3c;
-        }
-        .no-clubs {
-            font-style: italic;
-            color: #7f8c8d;
-            text-align: center;
-            padding: 15px 0;
-            font-size: 16px;
-        }
-        .leaflet-control-attribution {
-            display: none !important;
-        }
-        @media (max-width: 768px) {
-            #searchForm {
-                flex-direction: column;
-                align-items: stretch;
-                padding: 8px;
-                gap: 8px;
-            }
-            .input-group {
-                width: 100%;
-                flex-direction: row;
-                gap: 8px;
-            }
-            #searchForm input {
-                min-width: auto;
-                padding: 10px;
-                font-size: 14px;
-                flex: 1;
-            }
-            #zipInput {
-                flex: 2;
-            }
-            #radiusInput {
-                width: 80px;
-                flex: none;
-            }
-            .button-group {
-                display: flex;
-                width: 100%;
-                gap: 8px;
-            }
-            #searchForm button {
-                padding: 10px 12px;
-                font-size: 14px;
-                flex: 1;
-            }
-            .state-label {
-                font-size: 10px;
-            }
-            .leaflet-popup-content {
-                font-size: 16px;
-                min-width: 200px;
-            }
-            .state-popup-title {
-                font-size: 20px;
-            }
-        }
-    </style> 
-</head> 
-<body> 
-    <div id="searchForm">
-        <div class="input-group">
-            <input type="text" id="zipInput" placeholder="Enter ZIP code">
-            <input type="number" id="radiusInput" placeholder="Miles" min="1" title="Search radius in miles">
-        </div>
-        <div class="button-group">
-            <button id="searchBtn">Search Nearby</button>
-            <button id="geoBtn">Use My Location</button>
-        </div>
-    </div>
-    <div id="map"></div>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script>
-        const isMobile = window.matchMedia("(max-width: 768px)").matches;
-        const defaultCenter = [39.8283, -98.5795];
-        const defaultZoom = isMobile ? 3 : 4;
-        
-        const map = L.map('map', {
-            minZoom: 3,
-            maxZoom: 18,
-            zoomControl: false,
-            attributionControl: false
-        }).setView(defaultCenter, defaultZoom);
-        
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
-            subdomains: 'abcd',
-            maxZoom: 19
+
+        const baseAdj = labelAdjustments[stateName] || [0, 0];
+        const adj = (stateName === 'D.C.') ? [0, 0] : baseAdj;
+
+        const label = L.marker([coords[0] + adj[0], coords[1] + adj[1]], {
+          icon: L.divIcon({
+            className: 'state-label',
+            html: stateName,
+            iconSize: [0, 0],
+            iconAnchor: [0, 0]
+          }),
+          interactive: false
         }).addTo(map);
-        
-        const ResetControl = L.Control.extend({
-            options: {
-                position: 'topleft'
-            },
-            onAdd: function(map) {
-                const container = L.DomUtil.create('div', 'leaflet-control-reset');
-                container.innerHTML = 'Reset View';
-                L.DomEvent.on(container, 'click', e => {
-                    L.DomEvent.stopPropagation(e);
-                    map.setView(defaultCenter, defaultZoom);
-                    updateLabelSizes(); // ensure labels hidden again on reset
-                });
-                return container;
-            }
-        });
-        map.addControl(new ResetControl());
-        L.control.zoom({ position: 'topleft' }).addTo(map);
-        
-        let clubsByState = {};
-        let geojsonLayer;
-        let stateLabels = {};
-        
-        // State centroids for label placement
-        const stateCentroids = {
-            "Alabama": [32.9, -86.8],
-            "Alaska": [61.5, -152.5],
-            "Arizona": [34.3, -111.7],
-            "Arkansas": [34.9, -92.4],
-            "California": [37.2, -119.5],
-            "Colorado": [39.0, -105.6],
-            "Connecticut": [41.6, -72.7],
-            "Delaware": [38.9, -75.5],
-            "Florida": [28.6, -81.5],
-            "Georgia": [32.7, -83.5],
-            "Hawaii": [20.3, -156.4],
-            "Idaho": [44.4, -114.6],
-            "Illinois": [40.0, -89.2],
-            "Indiana": [39.9, -86.3],
-            "Iowa": [42.0, -93.5],
-            "Kansas": [38.5, -98.4],
-            "Kentucky": [37.5, -85.3],
-            "Louisiana": [31.1, -91.9],
-            "Maine": [45.4, -69.2],
-            "Maryland": [39.0, -76.8],
-            "Massachusetts": [42.3, -71.8],
-            "Michigan": [44.3, -85.6],
-            "Minnesota": [46.3, -94.3],
-            "Mississippi": [32.7, -89.7],
-            "Missouri": [38.4, -92.4],
-            "Montana": [47.0, -110.0],
-            "Nebraska": [41.5, -99.7],
-            "Nevada": [39.3, -116.6],
-            "New Hampshire": [43.7, -71.6],
-            "New Jersey": [40.2, -74.5],
-            "New Mexico": [34.5, -106.1],
-            "New York": [43.0, -75.5],
-            "North Carolina": [35.5, -79.4],
-            "North Dakota": [47.5, -100.5],
-            "Ohio": [40.3, -82.8],
-            "Oklahoma": [35.5, -97.5],
-            "Oregon": [44.0, -120.5],
-            "Pennsylvania": [40.9, -77.6],
-            "Rhode Island": [41.7, -71.5],
-            "South Carolina": [33.9, -80.9],
-            "South Dakota": [44.4, -100.3],
-            "Tennessee": [35.8, -86.4],
-            "Texas": [31.5, -99.3],
-            "Utah": [39.3, -111.7],
-            "Vermont": [44.0, -72.7],
-            "Virginia": [37.5, -78.9],
-            "Washington": [47.4, -120.5],
-            "West Virginia": [38.6, -80.7],
-            "Wisconsin": [44.6, -89.8],
-            "Wyoming": [43.0, -107.5],
-            "D.C.": [38.9, -77.0]
-        };
-        
-        // State area data for scaling font sizes
-        const stateAreas = {
-            "Alaska": 665384, "Texas": 268596, "California": 163695, "Montana": 147040,
-            "New Mexico": 121590, "Arizona": 113990, "Nevada": 110572, "Colorado": 104094,
-            "Oregon": 98379, "Wyoming": 97813, "Michigan": 96714, "Minnesota": 86936,
-            "Utah": 84897, "Idaho": 83569, "Kansas": 82278, "Nebraska": 77348,
-            "South Dakota": 77116, "Washington": 71298, "North Dakota": 70698, "Oklahoma": 69899,
-            "Missouri": 69707, "Florida": 65758, "Wisconsin": 65496, "Georgia": 59425,
-            "Illinois": 57914, "Iowa": 56273, "New York": 54555, "North Carolina": 53819,
-            "Arkansas": 53179, "Alabama": 52420, "Louisiana": 52378, "Mississippi": 48432,
-            "Pennsylvania": 46054, "Ohio": 44826, "Virginia": 42775, "Tennessee": 42144,
-            "Kentucky": 40408, "Indiana": 36420, "Maine": 35380, "South Carolina": 32020,
-            "West Virginia": 24230, "Maryland": 12406, "Vermont": 9616, "New Hampshire": 9349,
-            "Massachusetts": 10554, "New Jersey": 8723, "Hawaii": 10932, "Connecticut": 5543,
-            "Delaware": 2489, "Rhode Island": 1545, "D.C.": 68
-        };
-        
-        // Adjusted label positions
-        const labelAdjustments = {
-            "Alabama": [-0.3, -0.3], "Alaska": [-0.5, 0], "Arizona": [-0.3, -0.3],
-            "Arkansas": [-0.3, -0.3], "California": [-0.4, -0.4], "Colorado": [-0.3, -0.3],
-            "Connecticut": [-0.4, -0.4], "Delaware": [-0.4, -0.4], "Florida": [-0.5, -0.5],
-            "Georgia": [-0.3, -0.3], "Hawaii": [-0.3, -0.3], "Idaho": [-0.3, -0.3],
-            "Illinois": [-0.3, -0.3], "Indiana": [-0.3, -0.3], "Iowa": [-0.3, -0.3],
-            "Kansas": [-0.3, -0.3], "Kentucky": [-0.3, -0.3], "Louisiana": [-0.3, -0.3],
-            "Maine": [-0.3, -0.3], "Maryland": [-0.4, -0.4], "Massachusetts": [-0.4, -0.4],
-            "Michigan": [-0.4, -0.4], "Minnesota": [-0.3, -0.3], "Mississippi": [-0.3, -0.3],
-            "Missouri": [-0.3, -0.3], "Montana": [-0.3, -0.3], "Nebraska": [-0.3, -0.3],
-            "Nevada": [-0.3, -0.3], "New Hampshire": [-0.4, -0.4], "New Jersey": [-0.4, -0.4],
-            "New Mexico": [-0.3, -0.3], "New York": [-0.4, -0.4], "North Carolina": [-0.3, -0.3],
-            "North Dakota": [-0.3, -0.3], "Ohio": [-0.3, -0.3], "Oklahoma": [-0.3, -0.3],
-            "Oregon": [-0.3, -0.3], "Pennsylvania": [-0.3, -0.3], "Rhode Island": [-0.5, -0.5],
-            "South Carolina": [-0.3, -0.3], "South Dakota": [-0.3, -0.3], "Tennessee": [-0.3, -0.3],
-            "Texas": [-0.4, -0.4], "Utah": [-0.3, -0.3], "Vermont": [-0.4, -0.4],
-            "Virginia": [-0.3, -0.3], "Washington": [-0.3, -0.3], "West Virginia": [-0.3, -0.3],
-            "Wisconsin": [-0.3, -0.3], "Wyoming": [-0.3, -0.3], "D.C.": [-0.5, -0.5]
-        };
-        
-        // Sample clubs data for fallback
-        const sampleClubsData = {
-            "California": [
-                { name: "San Francisco Club", url: "https://example.com/sf" },
-                { name: "LA Lifestyle", url: "https://example.com/la" }
-            ],
-            "New York": [
-                { name: "NYC Social Club", url: "https://example.com/nyc" }
-            ],
-            "Texas": [
-                { name: "Austin Connections", url: "https://example.com/austin" },
-                { name: "Houston Hub", url: "https://example.com/houston" }
-            ],
-            "Florida": [
-                { name: "Miami Nights", url: "https://example.com/miami" }
-            ]
-        };
-        
-        // Load clubs data
-        fetch('clubs.json')
-            .then(res => {
-                if (!res.ok) throw new Error('Failed to load clubs.json');
-                return res.json();
-            })
-            .then(data => {
-                clubsByState = data;
-                return fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json");
-            })
-            .catch(err => {
-                console.error("Error loading clubs.json, using sample data", err);
-                clubsByState = sampleClubsData;
-                return fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json");
-            })
-            .then(res => res.json())
-            .then(statesData => {
-                geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
-                addStateLabels();
-                updateLabelSizes(); // ensure correct visibility on first load
-            })
-            .catch(err => console.error("Error loading data:", err));
-        
-        // Use "D.C." consistently so style color matches clubsByState keys
-        function style(feature) {
-            const stateName = feature.properties.name === 'District of Columbia' ? 'D.C.' : feature.properties.name;
-            const hasClubs = clubsByState[stateName] && clubsByState[stateName].length > 0;
-            return {
-                fillColor: hasClubs ? "#3498db" : "#bdc3c7",
-                weight: 2,
-                opacity: 1,
-                color: "white",
-                dashArray: "3",
-                fillOpacity: 0.7
-            };
-        }
-        
-        function highlightFeature(e) {
-            const layer = e.target;
-            layer.setStyle({
-                weight: 3,
-                color: "#666",
-                dashArray: "",
-                fillOpacity: 0.9
-            });
-            layer.bringToFront();
-            
-            const stateName = layer.feature.properties.name === 'District of Columbia' ? 'D.C.' : layer.feature.properties.name;
-            if (stateLabels[stateName]) stateLabels[stateName].getElement().classList.add('highlight');
-        }
-        
-        function resetHighlight(e) {
-            geojsonLayer.resetStyle(e.target);
-            
-            const stateName = e.target.feature.properties.name === 'District of Columbia' ? 'D.C.' : e.target.feature.properties.name;
-            if (stateLabels[stateName]) stateLabels[stateName].getElement().classList.remove('highlight');
-        }
-        
-        function onEachFeature(feature, layer) {
-            const stateName = feature.properties.name === 'District of Columbia' ? 'D.C.' : feature.properties.name;
-            const clubs = clubsByState[stateName] || [];
-            
-            let popupContent = `<div class="state-popup-title">${stateName}</div>`;
-            
-            if (clubs.length === 0) {
-                popupContent += `<div class="no-clubs">No clubs listed yet</div>`;
-            } else {
-                popupContent += `<ul class="club-list">`;
-                clubs.forEach(club => {
-                    popupContent += `<li class="club-item">`;
-                    popupContent += club.url ? 
-                        `<a class="club-link" href="${club.url}" target="_blank">${club.name}</a>` : 
-                        `<span>${club.name}</span>`;
-                    popupContent += `</li>`;
-                });
-                popupContent += `</ul>`;
-            }
-            
-            layer.on({
-                mouseover: highlightFeature,
-                mouseout: resetHighlight,
-                click: () => layer.bindPopup(popupContent, { maxWidth: 350 }).openPopup()
-            });
-        }
-        
-        // Place labels for every state from the actual polygons.
-        // For D.C., use polygon center and ignore any manual offset to keep it exact.
-        function addStateLabels() {
-            geojsonLayer.eachLayer(layer => {
-                const orig = layer.feature.properties.name;
-                const stateName = orig === 'District of Columbia' ? 'D.C.' : orig;
 
-                let coords;
-                if (stateName === 'D.C.') {
-                    const c = layer.getBounds().getCenter();
-                    coords = [c.lat, c.lng];
-                } else {
-                    coords = stateCentroids[stateName];
-                }
+        stateLabels[stateName] = label;
+      });
+    }
 
-                const baseAdj = labelAdjustments[stateName] || [0, 0];
-                const adj = (stateName === 'D.C.') ? [0, 0] : baseAdj;
+    function updateLabelSizes() {
+      const zoom = map.getZoom();
+      const isMobileNow = window.matchMedia("(max-width: 768px)").matches;
 
-                const label = L.marker([coords[0] + adj[0], coords[1] + adj[1]], {
-                    icon: L.divIcon({
-                        className: 'state-label',
-                        html: stateName,
-                        iconSize: [0, 0],
-                        iconAnchor: [0, 0]
-                    }),
-                    interactive: false
-                }).addTo(map);
+      Object.entries(stateLabels).forEach(([stateName, label]) => {
+        const el = label.getElement();
 
-                stateLabels[stateName] = label;
-            });
+        // Hide when zoomed out
+        if (zoom <= (isMobileNow ? 3 : 4)) {
+          el.style.display = 'none';
+          return;
         }
-        
-        function updateLabelSizes() {
-            const zoom = map.getZoom();
-            const isMobileNow = window.matchMedia("(max-width: 768px)").matches;
-            
-            Object.entries(stateLabels).forEach(([stateName, label]) => {
-                const el = label.getElement();
-                
-                if (zoom <= (isMobileNow ? 3 : 4)) {
-                    el.style.display = 'none';
-                } else {
-                    el.style.display = 'block';
-                    
-                    // Calculate base font size based on state area
-                    const area = stateAreas[stateName] || 25000;
-                    
-                    // Base size for different zoom levels
-                    let baseSize;
-                    if (zoom === (isMobileNow ? 4 : 5)) baseSize = 10;
-                    else if (zoom === (isMobileNow ? 5 : 6)) baseSize = 14;
-                    else if (zoom === (isMobileNow ? 6 : 7)) baseSize = 18;
-                    else if (zoom === (isMobileNow ? 7 : 8)) baseSize = 22;
-                    else if (zoom > (isMobileNow ? 7 : 8)) baseSize = 26;
-                    else baseSize = 10;
-                    
-                    // Area-based scaling factor
-                    const areaFactor = Math.log(area) / 20;
-                    
-                    // Calculate final font size
-                    let fontSize = baseSize + areaFactor;
-                    
-                    // Apply minimum and maximum limits
-                    fontSize = Math.max(8, Math.min(30, fontSize));
-                    
-                    // Special adjustments for small states
-                    if (area < 10000) {
-                        fontSize = Math.max(8, fontSize - 2);
-                    }
-                    if (area < 5000) {
-                        fontSize = Math.max(8, fontSize - 1);
-                    }
-                    
-                    el.style.fontSize = `${fontSize}px`;
-                }
-            });
-        }
-        
-        document.getElementById('searchBtn').addEventListener('click', () => {
-            const zipCode = document.getElementById('zipInput').value;
-            if (!zipCode) return alert('Please enter a ZIP code to search.');
-            alert(`Search functionality for ZIP code ${zipCode} would be implemented here.`);
-        });
-        
-        document.getElementById('geoBtn').addEventListener('click', () => {
-            if (!navigator.geolocation) return alert("Geolocation is not supported by your browser.");
-            
-            navigator.geolocation.getCurrentPosition(
-                pos => {
-                    const lat = pos.coords.latitude, lng = pos.coords.longitude;
-                    L.marker([lat, lng]).addTo(map).bindPopup("You are here!").openPopup();
-                    map.setView([lat, lng], 10);
-                },
-                err => alert("Error getting location: " + err.message)
-            );
-        });
-        
-        map.on('zoomend', updateLabelSizes);
-    </script> 
+
+        // Show when zoomed in
+        el.style.display = 'block';
+
+        // Font scaling by area
+        const area = stateAreas[stateName] || 25000;
+        let baseSize;
+        if (zoom === (isMobileNow ? 4 : 5)) baseSize = 10;
+        else if (zoom === (isMobileNow ? 5 : 6)) baseSize = 14;
+        else if (zoom === (isMobileNow ? 6 : 7)) baseSize = 18;
+        else if (zoom === (isMobileNow ? 7 : 8)) baseSize = 22;
+        else if (zoom > (isMobileNow ? 7 : 8)) baseSize = 26;
+        else baseSize = 10;
+
+        const areaFactor = Math.log(area) / 20;
+        let fontSize = baseSize + areaFactor;
+
+        fontSize = Math.max(8, Math.min(30, fontSize));
+        if (area < 10000) fontSize = Math.max(8, fontSize - 2);
+        if (area < 5000) fontSize = Math.max(8, fontSize - 1);
+
+        el.style.fontSize = `${fontSize}px`;
+      });
+    }
+
+    map.on('zoomend', updateLabelSizes);
+  </script> 
 </body> 
 </html>
