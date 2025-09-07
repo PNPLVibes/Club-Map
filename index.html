@@ -37,12 +37,15 @@
       padding: 5px;
       margin-right: 5px;
     }
-    /* Persistent state labels */
-    .state-label {
+    /* Persistent state labels without white background */
+    .state-label.leaflet-tooltip {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      color: #222; /* text color */
       font-weight: bold;
-      color: #222;
       font-size: 14px;
-      text-shadow: 1px 1px 2px white;
+      text-shadow: 1px 1px 2px white; /* keeps labels readable on map */
     }
   </style>
 </head>
@@ -133,7 +136,7 @@
   function onEachFeature(feature, layer) {
     const stateName = feature.properties.name;
     
-    // Add persistent state label
+    // Add persistent state label without white background
     layer.bindTooltip(stateName, { permanent: true, direction: "center", className: "state-label" });
 
     const clubs = clubsByState[stateName] || [];
