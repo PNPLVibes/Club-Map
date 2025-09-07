@@ -1,126 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>US Lifestyle Clubs Map</title>
-
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-    }
-    #map {
-      width: 100%;
-      height: 100vh;
-    }
-    .leaflet-control-reset {
-      background: white;
-      padding: 6px 10px;
-      cursor: pointer;
-      border-radius: 4px;
-      box-shadow: 0 0 4px rgba(0,0,0,0.3);
-      font-size: 16px;
-      text-align: center;
-      margin-bottom: 6px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>US Lifestyle Clubs Map</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<style>
+  body { margin: 0; padding: 0; }
+  #map { width: 100vw; height: 100vh; }
+  .leaflet-top.leaflet-left { top: 10px; left: 10px; } /* Move controls slightly down */
+  .leaflet-control-reset {
+    background: white;
+    padding: 5px 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    box-shadow: 0 0 4px rgba(0,0,0,0.3);
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+</style>
 </head>
 <body>
-  <div id="map"></div>
+<div id="map"></div>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- US States GeoJSON -->
+<script src="https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json"></script>
 
-  <script>
-    const defaultCenter = [37.8, -96];
-    const defaultZoom = 5;
+<script>
+const defaultCenter = [37.8, -96];
+const defaultZoom = 5;
 
-    const map = L.map('map', { minZoom: 3, maxZoom: 7, zoomControl: false }).setView(defaultCenter, defaultZoom);
+// Initialize map
+const map = L.map('map', { zoomControl: false, minZoom: 3, maxZoom: 7 })
+               .setView(defaultCenter, defaultZoom);
 
-    // Reset View Button
-    const ResetControl = L.Control.extend({
-      options: { position: 'topleft' },
-      onAdd: function(map) {
-        const container = L.DomUtil.create('div', 'leaflet-control-reset');
-        container.innerHTML = 'Reset View';
-        L.DomEvent.on(container, 'click', function(e) {
-          L.DomEvent.stopPropagation(e);
-          map.setView(defaultCenter, defaultZoom);
+// Add OpenStreetMap tiles
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+// Add zoom control
+L.control.zoom({ position: 'topleft' }).addTo(map);
+
+// Add Reset View button above zoom controls
+const resetBtn = L.DomUtil.create('div', 'leaflet-control-reset');
+resetBtn.innerHTML = 'Reset View';
+resetBtn.onclick = () => map.setView(defaultCenter, defaultZoom);
+document.querySelector('.leaflet-top.leaflet-left').prepend(resetBtn);
+
+let clubs = {};
+
+// Load clubs.json
+fetch("clubs.json")
+  .then(r => r.json())
+  .then(data => {
+    clubs = data;
+    initMap();
+  })
+  .catch(err => console.error("Error loading clubs.json:", err));
+
+// Style for states
+function style(feature) {
+  return {
+    fillColor: "#66c2a5",
+    weight: 2,
+    opacity: 1,
+    color: "white",
+    dashArray: "3",
+    fillOpacity: 0.7
+  };
+}
+
+// Highlight on hover
+function highlightFeature(e) {
+  const layer = e.target;
+  layer.setStyle({ weight: 3, color: "#666", dashArray: "", fillOpacity: 0.9 });
+  layer.bringToFront();
+}
+
+// Reset highlight
+function resetHighlight(e) {
+  geojson.resetStyle(e.target);
+}
+
+// On each state feature
+function onEachFeature(feature, layer) {
+  const stateName = feature.properties.name;
+
+  layer.on({
+    mouseover: highlightFeature,
+    mouseout: resetHighlight,
+    click: (e) => {
+      const stateClubs = clubs[stateName];
+      let content = '';
+
+      if (stateClubs && stateClubs.length > 0) {
+        content = '<ul>';
+        stateClubs.forEach(club => {
+          content += `<li><a href="${club.url}" target="_blank">${club.name}</a></li>`;
         });
-        return container;
-      }
-    });
-    map.addControl(new ResetControl());
-
-    // Zoom control
-    L.control.zoom({ position: 'topleft' }).addTo(map);
-
-    // Tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    let clubsByState = {};
-    let geojsonLayer;
-
-    // Fetch clubs.json and US states GeoJSON
-    Promise.all([
-      fetch("clubs.json").then(r => r.json()),
-      fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json").then(r => r.json())
-    ]).then(([clubs, statesData]) => {
-      clubsByState = clubs;
-      geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
-    }).catch(err => console.error(err));
-
-    // Style function
-    function style(feature) {
-      return {
-        fillColor: "#66c2a5",
-        weight: 2,
-        opacity: 1,
-        color: "white",
-        dashArray: "3",
-        fillOpacity: 0.7
-      };
-    }
-
-    // Highlight on hover
-    function highlightFeature(e) {
-      const layer = e.target;
-      layer.setStyle({ weight: 3, color: "#666", dashArray: "", fillOpacity: 0.9 });
-      layer.bringToFront();
-    }
-
-    function resetHighlight(e) {
-      geojsonLayer.resetStyle(e.target);
-    }
-
-    // Add popups and hover events
-    function onEachFeature(feature, layer) {
-      const stateName = feature.properties.name;
-      const clubs = clubsByState[stateName] || [];
-      let popupContent = `<b>${stateName}</b><br/>`;
-
-      if (clubs.length === 0) {
-        popupContent += "No clubs listed yet";
+        content += '</ul>';
       } else {
-        clubs.forEach(club => {
-          if (club.url) popupContent += `<a href="${club.url}" target="_blank">${club.name}</a><br/>`;
-          else popupContent += `${club.name}<br/>`;
-        });
+        content = 'No clubs listed in this state.';
       }
 
-      layer.on({
-        mouseover: highlightFeature,
-        mouseout: resetHighlight,
-        click: () => layer.bindPopup(popupContent).openPopup()
-      });
+      layer.bindPopup(`<strong>${stateName}</strong><br>${content}`).openPopup();
     }
-  </script>
+  });
+}
+
+let geojson;
+function initMap() {
+  geojson = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
+}
+</script>
 </body>
 </html>
