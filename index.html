@@ -61,15 +61,17 @@
   }
   .state-label {
     font-weight: bold;
-    font-size: 14px;
     color: #2c3e50;
     text-shadow: 1px 1px 3px white, -1px -1px 3px white, 1px -1px 3px white, -1px 1px 3px white;
     pointer-events: none;
     text-align: center;
+    transition: font-size 0.2s ease;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
   }
   .state-label.highlight {
     color: #e74c3c;
-    font-size: 16px;
   }
   
   .leaflet-popup-content-wrapper {
@@ -234,6 +236,21 @@ const stateCentroids = {
   "Wisconsin":[43.784440,-88.787868],"Wyoming":[43.075968,-107.290284],"DC":[38.907192,-77.036873]
 };
 
+// State area data (approximate square miles) for scaling font sizes
+const stateAreas = {
+  "Alaska":665384, "Texas":268596, "California":163695, "Montana":147040, "New Mexico":121590,
+  "Arizona":113990, "Nevada":110572, "Colorado":104094, "Oregon":98379, "Wyoming":97813,
+  "Michigan":96714, "Minnesota":86936, "Utah":84897, "Idaho":83569, "Kansas":82278,
+  "Nebraska":77348, "South Dakota":77116, "Washington":71298, "North Dakota":70698,
+  "Oklahoma":69899, "Missouri":69707, "Florida":65758, "Wisconsin":65496, "Georgia":59425,
+  "Illinois":57914, "Iowa":56273, "New York":54555, "North Carolina":53819, "Arkansas":53179,
+  "Alabama":52420, "Louisiana":52378, "Mississippi":48432, "Pennsylvania":46054, "Ohio":44826,
+  "Virginia":42775, "Tennessee":42144, "Kentucky":40408, "Indiana":36420, "Maine":35380,
+  "South Carolina":32020, "West Virginia":24230, "Maryland":12406, "Vermont":9616, "New Hampshire":9349,
+  "Massachusetts":10554, "New Jersey":8723, "Hawaii":10932, "Connecticut":5543, "Delaware":2489,
+  "Rhode Island":1545, "DC":68
+};
+
 // Fetch clubs.json and US states GeoJSON
 Promise.all([
   fetch("clubs.json").then(r => r.ok ? r.json() : Promise.reject("Failed to load clubs.json")),
@@ -243,6 +260,7 @@ Promise.all([
   clubsByState = clubs;
   geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
   addStateLabels();
+  updateLabelSizes(); // Initial update
 })
 .catch(err => console.error("Error loading data:", err));
 
@@ -257,13 +275,17 @@ function highlightFeature(e) {
   layer.setStyle({ weight: 3, color: "#666", dashArray: "", fillOpacity: 0.9 });
   layer.bringToFront();
   const stateName = layer.feature.properties.name === 'District of Columbia' ? 'DC' : layer.feature.properties.name;
-  if (stateLabels[stateName]) stateLabels[stateName].getElement().classList.add('highlight');
+  if (stateLabels[stateName]) {
+    stateLabels[stateName].getElement().classList.add('highlight');
+  }
 }
 
 function resetHighlight(e) {
   geojsonLayer.resetStyle(e.target);
-  const stateName = e.target.feature.properties.name === 'District of Columbia' ? 'DC' : e.target.feature.properties.name;
-  if (stateLabels[stateName]) stateLabels[stateName].getElement().classList.remove('highlight');
+  const stateName = e.target.feature.properties.name === 'District of Columbia' ? 'DC' : layer.feature.properties.name;
+  if (stateLabels[stateName]) {
+    stateLabels[stateName].getElement().classList.remove('highlight');
+  }
 }
 
 function onEachFeature(feature, layer) {
@@ -293,10 +315,40 @@ function onEachFeature(feature, layer) {
 function addStateLabels() {
   Object.entries(stateCentroids).forEach(([stateName, coords]) => {
     const label = L.marker(coords, {
-      icon: L.divIcon({ className: 'state-label', html: stateName, iconSize: [0, 0], iconAnchor: [0, 0] }),
+      icon: L.divIcon({
+        className: 'state-label',
+        html: stateName,
+        iconSize: [0, 0],
+        iconAnchor: [0, 0]
+      }),
       interactive: false
     }).addTo(map);
     stateLabels[stateName] = label;
+  });
+}
+
+// Function to update label sizes based on zoom level
+function updateLabelSizes() {
+  const zoom = map.getZoom();
+  const scale = Math.max(0, (zoom - 4) / 6); // Scale factor based on zoom (0 to 1)
+  
+  Object.entries(stateLabels).forEach(([stateName, label]) => {
+    const el = label.getElement();
+    if (zoom <= 4) {
+      // Hide labels at low zoom levels
+      el.style.display = 'none';
+    } else {
+      // Show and scale labels based on zoom and state size
+      el.style.display = 'block';
+      
+      // Calculate base font size based on state area (larger states get larger text)
+      const area = stateAreas[stateName] || 25000;
+      const baseSize = Math.min(24, Math.max(10, 10 + Math.log(area) / 2));
+      
+      // Apply zoom scaling
+      const fontSize = Math.max(8, baseSize * scale);
+      el.style.fontSize = `${fontSize}px`;
+    }
   });
 }
 
@@ -320,6 +372,9 @@ document.getElementById('geoBtn').addEventListener('click', () => {
     );
   } else alert('Geolocation is not supported by your browser.');
 });
+
+// Update label sizes when the map view changes
+map.on('zoom move', updateLabelSizes);
 
 // Handle window resize to adjust zoom if needed
 window.addEventListener('resize', function() {
