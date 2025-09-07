@@ -61,15 +61,15 @@
   }
   .state-label {
     font-weight: bold;
-    font-size: 14px;
     color: #2c3e50;
     text-shadow: 1px 1px 3px white, -1px -1px 3px white, 1px -1px 3px white, -1px 1px 3px white;
     pointer-events: none;
     text-align: center;
+    transition: font-size 0.3s ease;
+    white-space: nowrap;
   }
   .state-label.highlight {
     color: #e74c3c;
-    font-size: 16px;
   }
   
   .leaflet-popup-content-wrapper {
@@ -234,15 +234,42 @@ const stateCentroids = {
   "Wisconsin":[43.784440,-88.787868],"Wyoming":[43.075968,-107.290284],"DC":[38.907192,-77.036873]
 };
 
+// Sample club data
+const sampleClubs = {
+  "California": [
+    { name: "Pacific Coast Club", url: "https://example.com/pcc" },
+    { name: "Golden State Social", url: "https://example.com/gss" },
+    { name: "Bay Area Connections", url: "https://example.com/bac" }
+  ],
+  "New York": [
+    { name: "Empire State Club", url: "https://example.com/esc" },
+    { name: "Manhattan Social", url: "https://example.com/ms" }
+  ],
+  "Florida": [
+    { name: "Sunshine Social", url: "https://example.com/ss" },
+    { name: "Miami Beach Club", url: "https://example.com/mbc" }
+  ],
+  "Texas": [
+    { name: "Lone Star Club", url: "https://example.com/lsc" }
+  ],
+  "Illinois": [
+    { name: "Windy City Social", url: "https://example.com/wcs" }
+  ]
+};
+
 // Fetch clubs.json and US states GeoJSON
 Promise.all([
-  fetch("clubs.json").then(r => r.ok ? r.json() : Promise.reject("Failed to load clubs.json")),
+  // In a real implementation, you would fetch from clubs.json
+  // fetch("clubs.json").then(r => r.ok ? r.json() : Promise.reject("Failed to load clubs.json")),
+  new Promise(resolve => resolve(sampleClubs)),
   fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json").then(r => r.json())
 ])
 .then(([clubs, statesData]) => {
   clubsByState = clubs;
   geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
   addStateLabels();
+  // Update label sizes initially
+  updateLabelSizes();
 })
 .catch(err => console.error("Error loading data:", err));
 
@@ -290,15 +317,47 @@ function onEachFeature(feature, layer) {
   });
 }
 
+// Function to calculate font size based on zoom level
+function calculateFontSize(zoom) {
+  // Base size at zoom level 4, scales with zoom
+  const baseSize = 14;
+  const scaleFactor = 1.5; // How much font size increases per zoom level
+  return Math.max(10, baseSize * Math.pow(scaleFactor, zoom - 4));
+}
+
+// Function to update label sizes based on current zoom level
+function updateLabelSizes() {
+  const zoom = map.getZoom();
+  const fontSize = calculateFontSize(zoom);
+  
+  Object.values(stateLabels).forEach(label => {
+    const element = label.getElement();
+    if (element) {
+      element.style.fontSize = `${fontSize}px`;
+    }
+  });
+}
+
 function addStateLabels() {
   Object.entries(stateCentroids).forEach(([stateName, coords]) => {
+    const initialFontSize = calculateFontSize(map.getZoom());
+    
     const label = L.marker(coords, {
-      icon: L.divIcon({ className: 'state-label', html: stateName, iconSize: [0, 0], iconAnchor: [0, 0] }),
+      icon: L.divIcon({
+        className: 'state-label',
+        html: `<div style="font-size: ${initialFontSize}px;">${stateName}</div>`,
+        iconSize: [0, 0],
+        iconAnchor: [0, 0]
+      }),
       interactive: false
     }).addTo(map);
+    
     stateLabels[stateName] = label;
   });
 }
+
+// Update label sizes when zoom changes
+map.on('zoomend', updateLabelSizes);
 
 // Search functionality
 document.getElementById('searchBtn').addEventListener('click', () => {
@@ -319,12 +378,6 @@ document.getElementById('geoBtn').addEventListener('click', () => {
       () => alert('Unable to retrieve your location. Please ensure location services are enabled.')
     );
   } else alert('Geolocation is not supported by your browser.');
-});
-
-// Handle window resize to adjust zoom if needed
-window.addEventListener('resize', function() {
-  // This is just to handle the reset button functionality
-  // We're not changing zoom on resize, only on initial load
 });
 </script>
 </body>
