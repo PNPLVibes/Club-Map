@@ -1,134 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>US Lifestyle Clubs Map</title>
-
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      font-family: sans-serif;
-    }
-
-    #map {
-      height: 100%;
-      width: 100%;
-    }
-
-    /* Search form */
-    #searchForm {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1500;
-      background: rgba(255, 255, 255, 0.9);
-      padding: 5px 10px;
-      border-radius: 8px;
-      display: flex;
-      gap: 5px;
-    }
-
-    #searchInput, #radiusInput {
-      padding: 5px;
-      border-radius: 5px;
-      border: 1px solid #888;
-    }
-
-    #searchBtn {
-      padding: 5px 10px;
-      border: none;
-      background: teal;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    #searchBtn:hover {
-      background: darkcyan;
-    }
-
-    /* Reset View button */
-    .reset-view-btn {
-      background: #fff;
-      padding: 5px 10px;
-      border: 1px solid #888;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    /* Ensure map controls stay visible */
-    .leaflet-control {
-      z-index: 1000 !important;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>US Lifestyle Clubs Map</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
+  #map {
+    height: 100%;
+    width: 100%;
+  }
+  /* Search bar */
+  #searchForm {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1001;
+    background: rgba(255,255,255,0.9);
+    padding: 5px 10px;
+    border-radius: 8px;
+    display: flex;
+    gap: 5px;
+  }
+  #searchInput {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #888;
+  }
+  #searchBtn {
+    padding: 5px 10px;
+    border: none;
+    background: teal;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  #searchBtn:hover {
+    background: darkcyan;
+  }
+  /* Reset View button */
+  .reset-view-btn {
+    background: #fff;
+    padding: 5px 10px;
+    border: 1px solid #888;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+</style>
 </head>
 <body>
 
-  <div id="searchForm">
-    <input type="text" id="zipInput" placeholder="Enter ZIP code" />
-    <input type="number" id="radiusInput" placeholder="Radius (miles)" />
-    <button id="searchBtn">Search</button>
-  </div>
+<div id="searchForm">
+  <input type="text" id="searchInput" placeholder="Enter ZIP code">
+  <button id="searchBtn">Search</button>
+</div>
 
-  <div id="map"></div>
+<div id="map"></div>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  // Initialize map
+  const map = L.map('map', { zoomControl: true }).setView([37.8, -96], 4);
 
-  <script>
-    // Init map
-    const map = L.map('map').setView([37.8, -96], 4);
+  // Base layer
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
 
-    // Base layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap'
-    }).addTo(map);
+  // Reset View Button
+  const resetControl = L.control({ position: 'topright' });
+  resetControl.onAdd = function() {
+    const btn = L.DomUtil.create('button', 'reset-view-btn');
+    btn.innerHTML = 'Reset View';
+    btn.onclick = () => map.setView([37.8, -96], 4);
+    return btn;
+  };
+  resetControl.addTo(map);
 
-    // Reset View Button (top-right)
-    const resetViewControl = L.control({ position: "topright" });
-    resetViewControl.onAdd = function(map) {
-      const btn = L.DomUtil.create("button", "reset-view-btn");
-      btn.innerHTML = "Reset View";
-      btn.onclick = () => {
-        map.setView([37.8, -96], 4);
-      };
-      return btn;
-    };
-    resetViewControl.addTo(map);
+  // Example marker
+  L.marker([37.8, -96]).addTo(map).bindPopup("Center of USA");
 
-    // Dummy marker
-    L.marker([37.8, -96]).addTo(map).bindPopup("Center of USA");
-
-    // Search ZIP (via AllOrigins proxy for GitHub Pages)
-    document.getElementById('searchBtn').addEventListener('click', async () => {
-      const zip = document.getElementById('zipInput').value.trim();
-      const radius = parseFloat(document.getElementById('radiusInput').value);
-      if (!zip) return alert("Please enter a ZIP code");
-
-      try {
-        const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent("https://api.zippopotam.us/us/" + zip)}`);
-        if (!res.ok) throw new Error("Invalid ZIP code");
-        const data = await res.json();
-
-        const { latitude, longitude } = data.places[0];
-        const lat = parseFloat(latitude);
-        const lng = parseFloat(longitude);
-
-        map.setView([lat, lng], 10);
-
-        L.marker([lat, lng]).addTo(map).bindPopup(`ZIP: ${zip}<br>Radius: ${radius} mi`).openPopup();
-      } catch (err) {
-        alert("Error: " + err.message);
-      }
-    });
-  </script>
+  // Search button (dummy example, just moves map)
+  document.getElementById('searchBtn').addEventListener('click', () => {
+    const zip = document.getElementById('searchInput').value.trim();
+    if(!zip) return alert("Enter a ZIP code");
+    // Dummy random lat/lng for testing
+    const lat = 37.8 + Math.random() * 5;
+    const lng = -96 + Math.random() * 5;
+    map.setView([lat, lng], 8);
+    L.marker([lat, lng]).addTo(map).bindPopup(`ZIP: ${zip}`).openPopup();
+  });
+</script>
 </body>
 </html>
