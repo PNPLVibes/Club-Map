@@ -51,36 +51,27 @@
     font-size: 16px;
     font-weight: bold;
     text-align: center;
+    margin-bottom: 10px;
     border: 2px solid rgba(0,0,0,0.2);
-    margin-bottom: 5px;
   }
   .leaflet-control-reset:hover { background: #f8f8f8; }
   .state-label {
     font-weight: bold;
     color: #2c3e50;
+    text-shadow: 1px 1px 3px white, -1px -1px 3px white, 1px -1px 3px white, -1px 1px 3px white;
     pointer-events: none;
     text-align: center;
     white-space: nowrap;
     z-index: 1000;
-    text-shadow: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: font-size 0.4s ease, color 0.3s ease;
   }
   .state-label.highlight { color: #e74c3c; font-weight: 900; }
-  .leaflet-popup-content-wrapper {
-    border-radius: 8px;
-    padding: 5px;
-    background: #f8f9fa;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  }
+  .leaflet-popup-content-wrapper { border-radius: 8px; padding: 2px; background: #f8f9fa; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); }
   .leaflet-popup-content { margin: 18px; font-size: 18px; line-height: 1.5; min-width: 250px; }
-  .state-popup-title {
-    font-size: 22px;
-    font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #3498db;
-    text-align: center;
-  }
+  .state-popup-title { font-size: 22px; font-weight: bold; color: #2c3e50; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #3498db; text-align: center; }
   .club-list { list-style-type: none; padding: 0; margin: 0; }
   .club-item { padding: 12px 0; border-bottom: 1px solid #e0e0e0; }
   .club-item:last-child { border-bottom: none; }
@@ -88,7 +79,6 @@
   .club-link:hover { background: #e8f4fd; color: #e74c3c; }
   .no-clubs { font-style: italic; color: #7f8c8d; text-align: center; padding: 15px 0; font-size: 16px; }
   .leaflet-control-attribution { display: none !important; }
-
   @media (max-width: 768px) {
     #searchForm { flex-direction: column; align-items: stretch; }
     #searchForm input { min-width: auto; }
@@ -118,19 +108,14 @@ const defaultZoom = isMobile ? 3 : 4;
 const map = L.map('map', { minZoom: 3, maxZoom: 18, zoomControl: false, attributionControl: false })
   .setView(defaultCenter, defaultZoom);
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
-  subdomains: 'abcd', maxZoom: 19
-}).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', { subdomains: 'abcd', maxZoom: 19 }).addTo(map);
 
 const ResetControl = L.Control.extend({
   options: { position: 'topleft' },
   onAdd: function(map) {
     const container = L.DomUtil.create('div', 'leaflet-control-reset');
     container.innerHTML = 'Reset View';
-    L.DomEvent.on(container, 'click', e => {
-      L.DomEvent.stopPropagation(e);
-      map.setView(defaultCenter, defaultZoom);
-    });
+    L.DomEvent.on(container, 'click', e => { L.DomEvent.stopPropagation(e); map.setView(defaultCenter, defaultZoom); });
     return container;
   }
 });
@@ -141,15 +126,12 @@ let clubsByState = {};
 let geojsonLayer;
 let stateLabels = {};
 
-// Add your stateCentroids, stateAreas, labelAdjustments exactly as in your previous code
+// Add your stateCentroids, stateAreas, labelAdjustments exactly as in your original code
 
 // Load clubs.json from same folder
 fetch('clubs.json')
   .then(res => res.json())
-  .then(data => {
-    clubsByState = data;
-    return fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json");
-  })
+  .then(data => { clubsByState = data; return fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json"); })
   .then(res => res.json())
   .then(statesData => {
     geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
@@ -185,9 +167,7 @@ function onEachFeature(feature, layer) {
   if (clubs.length === 0) popupContent += `<div class="no-clubs">No clubs listed yet</div>`;
   else {
     popupContent += `<ul class="club-list">`;
-    clubs.forEach(club => {
-      popupContent += `<li class="club-item">${club.url ? `<a class="club-link" href="${club.url}" target="_blank">${club.name}</a>` : `<span>${club.name}</span>`}</li>`;
-    });
+    clubs.forEach(club => popupContent += `<li class="club-item">${club.url ? `<a class="club-link" href="${club.url}" target="_blank">${club.name}</a>` : `<span>${club.name}</span>`}</li>`);
     popupContent += `</ul>`;
   }
   layer.on({ mouseover: highlightFeature, mouseout: resetHighlight, click: () => layer.bindPopup(popupContent, { maxWidth: 350 }).openPopup() });
@@ -224,20 +204,17 @@ function updateLabelSizes() {
 
 document.getElementById('searchBtn').addEventListener('click', () => {
   const zipCode = document.getElementById('zipInput').value;
-  if (!zipCode) return alert('Please enter a ZIP code to search.');
-  alert(`Search functionality for ZIP code ${zipCode} would be implemented here.`);
+  if (zipCode) alert(`Search functionality for ZIP code ${zipCode} would be implemented here.`);
+  else alert('Please enter a ZIP code to search.');
 });
 
 document.getElementById('geoBtn').addEventListener('click', () => {
   if (!navigator.geolocation) return alert("Geolocation is not supported by your browser.");
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      const lat = pos.coords.latitude, lng = pos.coords.longitude;
-      L.marker([lat, lng]).addTo(map).bindPopup("You are here!").openPopup();
-      map.setView([lat, lng], 10);
-    },
-    err => alert("Error getting location: " + err.message)
-  );
+  navigator.geolocation.getCurrentPosition(pos => {
+    const lat = pos.coords.latitude, lng = pos.coords.longitude;
+    L.marker([lat,lng]).addTo(map).bindPopup("You are here!").openPopup();
+    map.setView([lat,lng],10);
+  }, err => alert("Error getting location: "+err.message));
 });
 
 map.on('zoomend', updateLabelSizes);
