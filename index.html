@@ -39,11 +39,11 @@
     font-weight: bold;
     font-size: 14px;
     color: #333;
-    background: none;      /* Removed background */
-    padding: 0;            /* Removed padding */
-    border-radius: 0;      /* Removed border radius */
+    background: none;
+    padding: 0;
+    border-radius: 0;
     text-align: center;
-    box-shadow: none;      /* Removed shadow */
+    box-shadow: none;
   }
 </style>
 </head>
@@ -59,12 +59,12 @@
 <div id="map"></div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 
 <script>
 const defaultCenter = [37.8, -96];
 const defaultZoom = 4;
 
-// Disable default zoom control to prevent duplicates
 const map = L.map('map', { minZoom: 3, maxZoom: 18, zoomControl: false }).setView(defaultCenter, defaultZoom);
 
 // Base map: Carto Voyager No Labels
@@ -88,13 +88,10 @@ const ResetControl = L.Control.extend({
   }
 });
 map.addControl(new ResetControl());
-
-// Single zoom control (top-left)
 L.control.zoom({ position: 'topleft' }).addTo(map);
 
 let clubsByState = {};
 let geojsonLayer;
-let clubMarkers = [];
 
 // Load clubs.json and US states GeoJSON
 Promise.all([
@@ -129,18 +126,18 @@ function onEachFeature(feature, layer) {
   layer.on({ mouseover: highlightFeature, mouseout: resetHighlight, click: () => layer.bindPopup(popupContent).openPopup() });
 }
 
-// Add state labels at centroids, properly centered
+// Add state labels using Turf.js centroids
 function addStateLabels(layerGroup) {
   layerGroup.eachLayer(layer => {
-    const bounds = layer.getBounds();
-    const center = bounds.getCenter();
+    let coords = layer.feature.geometry;
+    let centroid = turf.centroid(layer.feature).geometry.coordinates;
     const stateName = layer.feature.properties.name === 'District of Columbia' ? 'DC' : layer.feature.properties.name;
-    L.marker(center, {
+    L.marker([centroid[1], centroid[0]], {
       icon: L.divIcon({
         className: 'state-label',
         html: stateName,
-        iconSize: [0, 0],   // size irrelevant for text-only marker
-        iconAnchor: [0, 0]
+        iconSize: [0,0],
+        iconAnchor: [0,0]
       })
     }).addTo(map);
   });
