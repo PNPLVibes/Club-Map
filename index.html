@@ -41,7 +41,7 @@
       font-size: 14px;
       font-weight: bold;
       color: black;
-      text-shadow: 1px 1px 2px white; /* optional subtle outline for visibility */
+      text-shadow: 1px 1px 2px white;
       pointer-events: none;
     }
   </style>
@@ -59,15 +59,19 @@
 
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- Turf.js for centroid calculation -->
+<script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
 
 <script>
   const defaultCenter = [37.8, -96];
   const defaultZoom = 5;
   const map = L.map('map', { minZoom: 3, maxZoom: 7, zoomControl: false }).setView(defaultCenter, defaultZoom);
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; OpenStreetMap contributors'
+  // prettier base map: Carto Voyager
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
   }).addTo(map);
 
   const ResetControl = L.Control.extend({
@@ -96,7 +100,6 @@
     "#70C1B3", "#FF1654", "#247BA0", "#B5E48C", "#F4F1DE"
   ];
 
-  // deterministic color based on state name
   function getStateColor(stateName) {
     let hash = 0;
     for (let i = 0; i < stateName.length; i++) hash = stateName.charCodeAt(i) + ((hash << 5) - hash);
@@ -152,9 +155,9 @@
       click: () => layer.bindPopup(popupContent).openPopup()
     });
 
-    // Add state name label in center
-    const center = layer.getBounds().getCenter();
-    const label = L.marker(center, {
+    // Use turf.js to get precise centroid for label
+    const centroid = turf.centroid(feature).geometry.coordinates;
+    const label = L.marker([centroid[1], centroid[0]], {
       icon: L.divIcon({
         className: 'state-label',
         html: stateName,
