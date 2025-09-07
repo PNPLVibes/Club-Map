@@ -37,6 +37,13 @@
       padding: 5px;
       margin-right: 5px;
     }
+    .state-label {
+      font-size: 16px; /* bigger font */
+      font-weight: bold;
+      color: #333;
+      text-shadow: 1px 1px 2px #fff;
+      pointer-events: none; /* so labels don't block map interactions */
+    }
   </style>
 </head>
 <body>
@@ -90,9 +97,8 @@
   ];
 
   function getStateColor(stateName, usedColors = {}) {
-    // assign a color trying to avoid neighboring repetition
     let color = colors[Math.floor(Math.random() * colors.length)];
-    if (usedColors[stateName]) color = usedColors[stateName]; // reuse if already assigned
+    if (usedColors[stateName]) color = usedColors[stateName];
     usedColors[stateName] = color;
     return color;
   }
@@ -102,7 +108,6 @@
     fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json").then(r => r.json())
   ]).then(([clubs, statesData]) => {
     clubsByState = clubs;
-
     const usedColors = {};
     geojsonLayer = L.geoJson(statesData, {
       style: feature => ({
@@ -139,6 +144,13 @@
         else popupContent += `${club.name}<br/>`;
       });
     }
+
+    // Add permanent state label
+    layer.bindTooltip(stateName, {
+      permanent: true,
+      direction: "center",
+      className: "state-label"
+    }).openTooltip();
 
     layer.on({
       mouseover: highlightFeature,
