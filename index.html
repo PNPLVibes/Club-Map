@@ -23,9 +23,9 @@
       cursor: pointer;
       border-radius: 4px;
       box-shadow: 0 0 4px rgba(0,0,0,0.3);
-      font-size: 16px;
+      font-size: 16px; /* slightly larger font */
       text-align: center;
-      margin-bottom: 8px; /* space above zoom buttons */
+      margin-bottom: 4px; /* spacing above zoom buttons */
     }
   </style>
 </head>
@@ -39,12 +39,15 @@
   <script src="https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json"></script>
 
   <script>
-    const defaultCenter = [37.8, -96]; // contiguous US
-    const defaultZoom = 6; // zoomed in one click
+    const defaultCenter = [37.8, -96]; // Contiguous US center
+    const defaultZoom = 5;
 
-    // Initialize map without default zoom controls
-    var map = L.map('map', { minZoom: 3, maxZoom: 7, zoomControl: false })
-      .setView(defaultCenter, defaultZoom);
+    // Create map without default zoom control
+    var map = L.map('map', {
+      minZoom: 3,
+      maxZoom: 7,
+      zoomControl: false
+    }).setView(defaultCenter, defaultZoom);
 
     // Add tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -56,28 +59,30 @@
     const zoomControl = L.control.zoom({ position: 'topleft' });
     zoomControl.addTo(map);
 
-    // Add Reset View button above zoom controls
+    // Add Reset View button above zoom control
     const zoomContainer = document.querySelector('.leaflet-control-zoom.leaflet-bar');
     const resetBtn = L.DomUtil.create('div', 'leaflet-control-reset');
     resetBtn.innerHTML = 'Reset View';
-    zoomContainer.parentNode.insertBefore(resetBtn, zoomContainer);
 
-    // Enable click propagation for the reset button
+    // Disable map click for the reset button
     L.DomEvent.disableClickPropagation(resetBtn);
     L.DomEvent.on(resetBtn, 'click', () => {
       map.setView(defaultCenter, defaultZoom);
     });
 
+    // Insert button above zoom controls
+    zoomContainer.parentNode.insertBefore(resetBtn, zoomContainer);
+
     let clubsByState = {};
 
-    // Load clubs.json from GitHub via rawcdn.githack.com
-    fetch("https://rawcdn.githack.com/PNPLVibes/Club-Map/main/clubs.json")
+    // Load clubs JSON
+    fetch("clubs.json")
       .then(r => r.json())
       .then(data => {
         clubsByState = data;
         initMap();
       })
-      .catch(err => console.error("Error loading clubs.json:", err));
+      .catch(err => console.error("Error loading clubs.json", err));
 
     function style(feature) {
       return {
@@ -101,8 +106,8 @@
     }
 
     function onEachFeature(feature, layer) {
-      const stateName = feature.properties.name;
-      const clubs = clubsByState[stateName] || ["No clubs listed yet"];
+      var stateName = feature.properties.name;
+      var clubs = clubsByState[stateName] || ["No clubs listed yet"];
       layer.on({
         mouseover: highlightFeature,
         mouseout: resetHighlight,
