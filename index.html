@@ -30,7 +30,7 @@
     }
     #searchForm {
       padding: 10px;
-      background: #f8f8f8;
+      background: rgba(255, 255, 255, 0.5); /* translucent */
       box-shadow: 0 0 4px rgba(0,0,0,0.3);
     }
     #searchForm input {
@@ -52,7 +52,6 @@
 
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<!-- Zip code to Lat/Lng (via Zippopotam.us API) -->
 <script>
   const defaultCenter = [37.8, -96];
   const defaultZoom = 5;
@@ -86,19 +85,27 @@
   let geojsonLayer;
   let clubMarkers = [];
 
+  // Generate random pastel color
+  function randomColor() {
+    const r = Math.floor(150 + Math.random() * 105);
+    const g = Math.floor(150 + Math.random() * 105);
+    const b = Math.floor(150 + Math.random() * 105);
+    return `rgb(${r},${g},${b})`;
+  }
+
   // Fetch clubs.json and US states GeoJSON
   Promise.all([
     fetch("clubs.json").then(r => r.json()),
     fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json").then(r => r.json())
   ]).then(([clubs, statesData]) => {
     clubsByState = clubs;
-    geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
+    geojsonLayer = L.geoJson(statesData, { style: style, onEachFeature }).addTo(map);
   }).catch(err => console.error(err));
 
-  // Style and highlight functions
+  // Style function with unique color per state
   function style(feature) {
     return {
-      fillColor: "#66c2a5",
+      fillColor: randomColor(),
       weight: 2,
       opacity: 1,
       color: "white",
@@ -140,12 +147,11 @@
 
   // Add nearby club markers
   function addClubMarkers(clubs, center, radius) {
-    // Clear old markers
     clubMarkers.forEach(m => map.removeLayer(m));
     clubMarkers = [];
 
     clubs.forEach(club => {
-      if (!club.lat || !club.lng) return; // skip clubs without coordinates
+      if (!club.lat || !club.lng) return;
       const distance = getDistance(center.lat, center.lng, club.lat, club.lng);
       if (distance <= radius) {
         const marker = L.marker([club.lat, club.lng])
@@ -159,9 +165,8 @@
     else alert("No clubs found within that radius.");
   }
 
-  // Haversine distance in miles
   function getDistance(lat1, lon1, lat2, lon2) {
-    const R = 3958.8; // Earth radius in miles
+    const R = 3958.8;
     const dLat = (lat2 - lat1) * Math.PI/180;
     const dLon = (lon2 - lon1) * Math.PI/180;
     const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
@@ -169,7 +174,6 @@
     return R * c;
   }
 
-  // Search by ZIP
   document.getElementById('searchBtn').addEventListener('click', async () => {
     const zip = document.getElementById('zipInput').value.trim();
     const radius = parseFloat(document.getElementById('radiusInput').value);
@@ -186,7 +190,6 @@
     }
   });
 
-  // Geolocation button
   document.getElementById('geoBtn').addEventListener('click', () => {
     if (!navigator.geolocation) return alert("Geolocation not supported");
     navigator.geolocation.getCurrentPosition(pos => {
@@ -195,7 +198,6 @@
     }, err => alert("Geolocation error: " + err.message));
   });
 
-  // Flatten clubsByState into one array with lat/lng
   function flattenClubs() {
     const allClubs = [];
     Object.values(clubsByState).forEach(stateClubs => {
