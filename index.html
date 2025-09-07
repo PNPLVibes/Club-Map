@@ -1,101 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>US Lifestyle Clubs Map</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-<style>
-  html, body {
-    height: 100%;
-    margin: 0;
-  }
-  #map {
-    height: 100%;
-    width: 100%;
-  }
-  /* Search bar */
-  #searchForm {
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1001;
-    background: rgba(255,255,255,0.9);
-    padding: 5px 10px;
-    border-radius: 8px;
-    display: flex;
-    gap: 5px;
-  }
-  #searchInput {
-    padding: 5px;
-    border-radius: 5px;
-    border: 1px solid #888;
-  }
-  #searchBtn {
-    padding: 5px 10px;
-    border: none;
-    background: teal;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  #searchBtn:hover {
-    background: darkcyan;
-  }
-  /* Reset View button */
-  .reset-view-btn {
-    background: #fff;
-    padding: 5px 10px;
-    border: 1px solid #888;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>US Lifestyle Clubs Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    html, body { height: 100%; margin: 0; }
+    #map { width: 100%; height: 100%; }
+    .state-label {
+      font-weight: bold;
+      color: #000;
+      text-shadow: 0 0 2px #fff;
+      pointer-events: none;
+    }
+    .leaflet-top.leaflet-left .reset-view {
+      background: white;
+      padding: 5px 10px;
+      margin-bottom: 5px;
+      cursor: pointer;
+      border: 1px solid #888;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .search-container {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      background: white;
+      padding: 8px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    }
+  </style>
 </head>
 <body>
 
-<div id="searchForm">
-  <input type="text" id="searchInput" placeholder="Enter ZIP code">
-  <button id="searchBtn">Search</button>
+<div id="map"></div>
+<div class="search-container">
+  <input type="text" id="searchLat" placeholder="Latitude" size="8">
+  <input type="text" id="searchLng" placeholder="Longitude" size="8">
+  <input type="number" id="searchRadius" placeholder="Miles" size="5">
+  <button onclick="searchByDistance()">Search</button>
 </div>
 
-<div id="map"></div>
-
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-geojson-ajax/dist/leaflet-geojson-ajax.min.js"></script>
+
 <script>
-  // Initialize map
-  const map = L.map('map', { zoomControl: true }).setView([37.8, -96], 4);
+// Base map
+const map = L.map('map').setView([39.8283, -98.5795], 4);
 
-  // Base layer
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap'
-  }).addTo(map);
+// Add minimal base tile (just background)
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '',
+}).addTo(map);
 
-  // Reset View Button
-  const resetControl = L.control({ position: 'topright' });
-  resetControl.onAdd = function() {
-    const btn = L.DomUtil.create('button', 'reset-view-btn');
-    btn.innerHTML = 'Reset View';
-    btn.onclick = () => map.setView([37.8, -96], 4);
-    return btn;
-  };
-  resetControl.addTo(map);
+// Reset view button
+const resetBtn = L.control({position: 'topleft'});
+resetBtn.onAdd = function(map) {
+  const div = L.DomUtil.create('div', 'reset-view');
+  div.innerHTML = 'Reset View';
+  div.onclick = () => map.setView([39.8283, -98.5795], 4);
+  return div;
+};
+resetBtn.addTo(map);
 
-  // Example marker
-  L.marker([37.8, -96]).addTo(map).bindPopup("Center of USA");
+// Load clubs.json
+const clubs = {
+  "Alabama": [{ "name": "Club A1", "url": "https://example.com/club-a1" }, { "name": "Club A2", "url": "https://example.com/club-a2" }],
+  "Alaska": [{ "name": "Club AK1", "url": "https://example.com/club-ak1" }],
+  "Arizona": [{ "name": "Club AZ1", "url": "https://example.com/club-az1" }, { "name": "Club AZ2", "url": "https://example.com/club-az2" }],
+  /* Add remaining states... */
+};
 
-  // Search button (dummy example, just moves map)
-  document.getElementById('searchBtn').addEventListener('click', () => {
-    const zip = document.getElementById('searchInput').value.trim();
-    if(!zip) return alert("Enter a ZIP code");
-    // Dummy random lat/lng for testing
-    const lat = 37.8 + Math.random() * 5;
-    const lng = -96 + Math.random() * 5;
-    map.setView([lat, lng], 8);
-    L.marker([lat, lng]).addTo(map).bindPopup(`ZIP: ${zip}`).openPopup();
+// Helper to get popup content
+function getPopupContent(state) {
+  if (!clubs[state] || clubs[state].length === 0) return "No clubs yet.";
+  return clubs[state].map(c => c.url ? `<a href="${c.url}" target="_blank">${c.name}</a>` : c.name).join('<br>');
+}
+
+// Load US states GeoJSON (TopoJSON converted to GeoJSON)
+fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json')
+  .then(res => res.json())
+  .then(data => {
+    L.geoJSON(data, {
+      style: { color: '#888', weight: 1, fillColor: '#cce5ff', fillOpacity: 0.7 },
+      onEachFeature: function(feature, layer) {
+        // Replace District of Columbia name
+        let stateName = feature.properties.name === 'District of Columbia' ? 'DC' : feature.properties.name;
+
+        // Add popup
+        layer.bindPopup(`<strong>${stateName}</strong><br>${getPopupContent(stateName)}`);
+
+        // Add state label
+        const center = layer.getBounds().getCenter();
+        L.marker(center, {
+          icon: L.divIcon({
+            className: 'state-label',
+            html: stateName,
+            iconSize: [100, 20]
+          })
+        }).addTo(map);
+      }
+    }).addTo(map);
   });
+
+// Search by distance
+function searchByDistance() {
+  const lat = parseFloat(document.getElementById('searchLat').value);
+  const lng = parseFloat(document.getElementById('searchLng').value);
+  const miles = parseFloat(document.getElementById('searchRadius').value);
+
+  if (isNaN(lat) || isNaN(lng) || isNaN(miles)) {
+    alert('Please enter valid latitude, longitude, and miles.');
+    return;
+  }
+
+  const milesToKm = miles * 1.60934;
+  map.eachLayer(layer => {
+    if (layer.feature) {
+      const center = layer.getBounds().getCenter();
+      const distance = map.distance([lat, lng], center) / 1000; // meters to km
+      if (distance > milesToKm) layer.setStyle({ fillOpacity: 0.1 });
+      else layer.setStyle({ fillOpacity: 0.7 });
+    }
+  });
+}
 </script>
+
 </body>
 </html>
