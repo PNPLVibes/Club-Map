@@ -78,8 +78,8 @@
 
 <script>
   const defaultCenter = [37.8, -96];
-  const defaultZoom = 5;
-  const map = L.map('map', { minZoom: 3, maxZoom: 7, zoomControl: false }).setView(defaultCenter, defaultZoom);
+  const defaultZoom = 4; // Correct default zoom for full US view
+  const map = L.map('map', { minZoom: 3, maxZoom: 18 }).setView(defaultCenter, defaultZoom);
 
   // Base map: Carto Voyager No Labels
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
