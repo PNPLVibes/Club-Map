@@ -6,73 +6,149 @@
 <title>US Lifestyle Clubs Map</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <style>
-  html, body { height: 100%; margin: 0; padding: 0; font-family: sans-serif; }
+  html, body { height: 100%; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
   body { display: flex; flex-direction: column; }
   #searchForm {
     flex: 0 0 auto;
-    padding: 10px;
-    background: #f8f8f8;
-    box-shadow: 0 0 4px rgba(0,0,0,0.3);
+    padding: 15px;
+    background: #2c3e50;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 12px;
     align-items: center;
   }
-  #searchForm input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+  #searchForm input { 
+    padding: 12px; 
+    border: 1px solid #ddd; 
+    border-radius: 6px; 
+    font-size: 16px;
+    min-width: 180px;
+  }
   #searchForm button { 
-    padding: 8px 12px; 
-    background: #4c7ef3; 
+    padding: 12px 20px; 
+    background: #3498db; 
     color: white; 
     border: none; 
-    border-radius: 4px; 
+    border-radius: 6px; 
     cursor: pointer;
     transition: background 0.2s;
+    font-size: 16px;
+    font-weight: 500;
   }
-  #searchForm button:hover { background: #3b5fc7; }
+  #searchForm button:hover { background: #2980b9; }
+  #searchForm button#geoBtn {
+    background: #27ae60;
+  }
+  #searchForm button#geoBtn:hover {
+    background: #219653;
+  }
   #map { flex: 1 1 auto; width: 100%; }
   .leaflet-control-reset {
     background: white;
-    padding: 6px 10px;
+    padding: 10px 15px;
     cursor: pointer;
     border-radius: 4px;
-    box-shadow: 0 0 4px rgba(0,0,0,0.3);
+    box-shadow: 0 1px 5px rgba(0,0,0,0.4);
     font-size: 16px;
+    font-weight: bold;
     text-align: center;
-    margin-bottom: 6px;
+    margin-bottom: 10px;
+    border: 2px solid rgba(0,0,0,0.2);
+  }
+  .leaflet-control-reset:hover {
+    background: #f8f8f8;
   }
   .state-label {
     font-weight: bold;
     font-size: 14px;
-    color: #333;
-    text-shadow: 1px 1px 2px white, -1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white;
+    color: #2c3e50;
+    text-shadow: 1px 1px 3px white, -1px -1px 3px white, 1px -1px 3px white, -1px 1px 3px white;
     pointer-events: none;
     text-align: center;
   }
   .state-label.highlight {
-    color: #d43f3a;
+    color: #e74c3c;
     font-size: 16px;
   }
-  .club-label {
-    background: rgba(255,255,255,0.8);
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-weight: bold;
-    color: #333;
-    font-size: 13px;
-    box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  
+  /* Enhanced Popup Styling */
+  .leaflet-popup-content-wrapper {
+    border-radius: 8px;
+    padding: 2px;
+    background: #f8f9fa;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   }
+  .leaflet-popup-content {
+    margin: 18px;
+    font-size: 18px;
+    line-height: 1.5;
+    min-width: 250px;
+  }
+  .state-popup-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+    text-align: center;
+  }
+  .club-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  .club-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .club-item:last-child {
+    border-bottom: none;
+  }
+  .club-link {
+    color: #2980b9;
+    text-decoration: none;
+    font-weight: 500;
+    display: block;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+  .club-link:hover {
+    background: #e8f4fd;
+    color: #e74c3c;
+  }
+  .no-clubs {
+    font-style: italic;
+    color: #7f8c8d;
+    text-align: center;
+    padding: 15px 0;
+    font-size: 16px;
+  }
+  
   .info-panel {
     position: absolute;
-    top: 70px;
-    right: 10px;
+    top: 100px;
+    right: 20px;
     z-index: 1000;
     background: white;
-    padding: 10px;
-    border-radius: 4px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.3);
-    max-width: 300px;
-    max-height: 80%;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.2);
+    max-width: 320px;
+    max-height: 70%;
     overflow-y: auto;
+  }
+  
+  @media (max-width: 768px) {
+    #searchForm {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    #searchForm input {
+      min-width: auto;
+    }
   }
 </style>
 </head>
@@ -177,9 +253,34 @@ const stateCentroids = {
   "DC": [38.907192, -77.036873]
 };
 
+// Sample club data (in real implementation, this would come from clubs.json)
+const sampleClubs = {
+  "California": [
+    { name: "Pacific Coast Club", url: "https://example.com/pcc" },
+    { name: "Golden State Social", url: "https://example.com/gss" },
+    { name: "Bay Area Connections", url: "https://example.com/bac" }
+  ],
+  "New York": [
+    { name: "Empire State Club", url: "https://example.com/esc" },
+    { name: "Manhattan Social", url: "https://example.com/ms" }
+  ],
+  "Florida": [
+    { name: "Sunshine Social", url: "https://example.com/ss" },
+    { name: "Miami Beach Club", url: "https://example.com/mbc" }
+  ],
+  "Texas": [
+    { name: "Lone Star Club", url: "https://example.com/lsc" }
+  ],
+  "Illinois": [
+    { name: "Windy City Social", url: "https://example.com/wcs" }
+  ]
+};
+
 // Load clubs.json and US states GeoJSON
 Promise.all([
-  fetch("clubs.json").then(r => r.json()),
+  // In a real implementation, you would fetch from clubs.json
+  // fetch("clubs.json").then(r => r.json()),
+  new Promise(resolve => resolve(sampleClubs)),
   fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json").then(r => r.json())
 ]).then(([clubs, statesData]) => {
   clubsByState = clubs;
@@ -189,7 +290,17 @@ Promise.all([
 
 // Style and highlight functions
 function style(feature) {
-  return { fillColor: "#66c2a5", weight: 2, opacity: 1, color: "white", dashArray: "3", fillOpacity: 0.7 };
+  const stateName = feature.properties.name === 'District of Columbia' ? 'DC' : feature.properties.name;
+  const hasClubs = clubsByState[stateName] && clubsByState[stateName].length > 0;
+  
+  return { 
+    fillColor: hasClubs ? "#3498db" : "#bdc3c7", 
+    weight: 2, 
+    opacity: 1, 
+    color: "white", 
+    dashArray: "3", 
+    fillOpacity: 0.7 
+  };
 }
 
 function highlightFeature(e) {
@@ -217,22 +328,31 @@ function resetHighlight(e) {
 function onEachFeature(feature, layer) {
   const stateName = feature.properties.name === 'District of Columbia' ? 'DC' : feature.properties.name;
   const clubs = clubsByState[stateName] || [];
-  let popupContent = `<b>${stateName}</b><br/>`;
+  
+  let popupContent = `<div class="state-popup-title">${stateName}</div>`;
+  
   if (clubs.length === 0) {
-    popupContent += "No clubs listed yet";
+    popupContent += `<div class="no-clubs">No clubs listed yet</div>`;
   } else {
+    popupContent += `<ul class="club-list">`;
     clubs.forEach(club => {
-      popupContent += club.url ? `<a href="${club.url}" target="_blank">${club.name}</a><br/>` : `${club.name}<br/>`;
+      popupContent += `<li class="club-item">`;
+      popupContent += club.url 
+        ? `<a class="club-link" href="${club.url}" target="_blank">${club.name}</a>` 
+        : `<span>${club.name}</span>`;
+      popupContent += `</li>`;
     });
+    popupContent += `</ul>`;
   }
   
   layer.on({
     mouseover: highlightFeature,
     mouseout: resetHighlight,
     click: () => {
-      layer.bindPopup(popupContent).openPopup();
-      // Center the state on click
-      map.fitBounds(layer.getBounds(), { padding: [50, 50] });
+      layer.bindPopup(popupContent, {
+        maxWidth: 350,
+        className: 'enhanced-popup'
+      }).openPopup();
     }
   });
 }
@@ -260,6 +380,8 @@ document.getElementById('searchBtn').addEventListener('click', () => {
   if (zipCode) {
     alert(`Search functionality for ZIP code ${zipCode} would be implemented here.`);
     // In a real implementation, you would geocode the ZIP and search clubs
+  } else {
+    alert('Please enter a ZIP code to search.');
   }
 });
 
