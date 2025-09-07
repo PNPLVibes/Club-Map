@@ -141,19 +141,21 @@
   /* Mobile-specific styles */
   @media (max-width: 768px) {
     #searchForm {
-      flex-direction: column;
-      align-items: stretch;
-      padding: 8px;
-      gap: 8px;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 6px;
+      gap: 6px;
     }
     #searchForm input {
-      min-width: auto;
+      min-width: 120px;
       font-size: 13px;
-      padding: 8px;
+      padding: 6px 8px;
     }
     #searchForm button {
       font-size: 13px;
-      padding: 8px 12px;
+      padding: 6px 10px;
+      flex: 0 0 auto;
     }
     
     .state-label {
@@ -183,7 +185,7 @@
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-// JS stays the same
+// Your JS logic remains unchanged
 </script>
 
 </body>
