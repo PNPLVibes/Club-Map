@@ -1,141 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>US Lifestyle Clubs Map</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-<style>
-  html, body { height: 100%; margin: 0; }
-  #map { width: 100%; height: 100%; }
-  .state-label {
-    font-weight: bold;
-    color: #000;
-    text-shadow: 0 0 2px #fff;
-    pointer-events: none;
-    font-size: 12px;
-  }
-  .leaflet-top.leaflet-left .reset-view {
-    background: white;
-    padding: 5px 10px;
-    margin-bottom: 5px;
-    cursor: pointer;
-    border: 1px solid #888;
-    border-radius: 4px;
-    font-weight: bold;
-    text-align: center;
-  }
-  .search-container {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 1000;
-    background: white;
-    padding: 8px;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.3);
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>US Lifestyle Clubs Map</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    #map {
+      width: 100%;
+      height: 100vh;
+    }
+    /* Reset View button styling */
+    .leaflet-control-reset {
+      background: white;
+      padding: 6px 10px;
+      cursor: pointer;
+      border-radius: 4px;
+      box-shadow: 0 0 4px rgba(0,0,0,0.3);
+      font-size: 16px;
+      text-align: center;
+      margin-bottom: 6px; /* spacing between Reset and zoom buttons */
+    }
+    /* Lower all controls slightly from top */
+    .leaflet-left .leaflet-control {
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
+  <div id="map"></div>
 
-<div id="map"></div>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-<div class="search-container">
-  <input type="text" id="searchLat" placeholder="Latitude" size="8">
-  <input type="text" id="searchLng" placeholder="Longitude" size="8">
-  <input type="number" id="searchRadius" placeholder="Miles" size="5">
-  <button onclick="searchByDistance()">Search</button>
-</div>
+  <!-- US States GeoJSON -->
+  <script src="https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json"></script>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const defaultCenter = [37.8, -96]; // Contiguous US center
+    const defaultZoom = 5;
 
-<script>
-// Initialize map
-const map = L.map('map', { zoomControl: true }).setView([39.8283, -98.5795], 4);
+    // Initialize map without default zoom control
+    const map = L.map('map', {
+      minZoom: 3,
+      maxZoom: 7,
+      zoomControl: false
+    }).setView(defaultCenter, defaultZoom);
 
-// Minimal background
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '' }).addTo(map);
-
-// Reset view button (top-left)
-const resetBtn = L.control({position: 'topleft'});
-resetBtn.onAdd = function(map) {
-  const div = L.DomUtil.create('div', 'reset-view');
-  div.innerHTML = 'Reset View';
-  div.onclick = () => map.setView([39.8283, -98.5795], 4);
-  return div;
-};
-resetBtn.addTo(map);
-
-// Load clubs.json
-let clubs = {};
-fetch('clubs.json')
-  .then(res => res.json())
-  .then(data => { clubs = data; })
-  .catch(err => console.error('Error loading clubs.json', err));
-
-// Helper to create popup HTML
-function getPopupContent(state) {
-  if (!clubs[state] || clubs[state].length === 0) return "No clubs yet.";
-  return clubs[state].map(c => c.url ? `<a href="${c.url}" target="_blank">${c.name}</a>` : c.name).join('<br>');
-}
-
-// Function to style states
-function stateStyle() {
-  return { color: '#555', weight: 1, fillColor: '#cce5ff', fillOpacity: 0.7 };
-}
-
-// Load US states GeoJSON
-fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json')
-  .then(res => res.json())
-  .then(data => {
-
-    L.geoJSON(data, {
-      style: stateStyle,
-      onEachFeature: function(feature, layer) {
-        let stateName = feature.properties.name === 'District of Columbia' ? 'DC' : feature.properties.name;
-
-        // Popup with clubs
-        layer.bindPopup(`<strong>${stateName}</strong><br>${getPopupContent(stateName)}`);
-
-        // Add state label at centroid
-        const center = layer.getBounds().getCenter();
-        L.marker(center, {
-          icon: L.divIcon({
-            className: 'state-label',
-            html: stateName,
-            iconSize: [100, 20]
-          })
-        }).addTo(map);
-      }
+    // Add tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // Fit map to bounds on load
-    map.fitBounds(L.geoJSON(data).getBounds());
-  })
-  .catch(err => console.error('Error loading GeoJSON', err));
+    // Add zoom control manually
+    const zoomControl = L.control.zoom({ position: 'topleft' });
+    zoomControl.addTo(map);
 
-// Search by distance
-function searchByDistance() {
-  const lat = parseFloat(document.getElementById('searchLat').value);
-  const lng = parseFloat(document.getElementById('searchLng').value);
-  const miles = parseFloat(document.getElementById('searchRadius').value);
+    // Add Reset View button above zoom control
+    const zoomContainer = document.querySelector('.leaflet-control-zoom.leaflet-bar');
+    const resetBtn = L.DomUtil.create('div', 'leaflet-control-reset');
+    resetBtn.innerHTML = 'Reset View';
 
-  if (isNaN(lat) || isNaN(lng) || isNaN(miles)) {
-    alert('Please enter valid latitude, longitude, and miles.');
-    return;
-  }
+    // Disable click propagation so Leaflet doesn't block it
+    L.DomEvent.disableClickPropagation(resetBtn);
+    L.DomEvent.on(resetBtn, 'click', function() {
+      map.setView(defaultCenter, defaultZoom);
+    });
 
-  const milesToMeters = miles * 1609.34;
-  map.eachLayer(layer => {
-    if (layer.feature) {
-      const center = layer.getBounds().getCenter();
-      const distance = map.distance([lat, lng], center);
-      layer.setStyle({ fillOpacity: distance <= milesToMeters ? 0.7 : 0.1 });
+    // Insert Reset button above zoom buttons
+    zoomContainer.parentNode.insertBefore(resetBtn, zoomContainer);
+
+    let clubsByState = {};
+
+    // Load clubs JSON
+    fetch("clubs.json")
+      .then(response => response.json())
+      .then(data => {
+        clubsByState = data;
+        initMap();
+      })
+      .catch(err => console.error("Error loading clubs.json:", err));
+
+    function style(feature) {
+      return {
+        fillColor: "#66c2a5",
+        weight: 2,
+        opacity: 1,
+        color: "white",
+        dashArray: "3",
+        fillOpacity: 0.7
+      };
     }
-  });
-}
-</script>
 
+    function highlightFeature(e) {
+      const layer = e.target;
+      layer.setStyle({ weight: 3, color: "#666", dashArray: "", fillOpacity: 0.9 });
+      layer.bringToFront();
+    }
+
+    function resetHighlight(e) {
+      geojson.resetStyle(e.target);
+    }
+
+    function onEachFeature(feature, layer) {
+      const stateName = feature.properties.name;
+      const clubs = clubsByState[stateName] || ["No clubs listed yet"];
+      layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: () => layer.bindPopup("<b>" + stateName + "</b><br/>" + clubs.join("<br/>")).openPopup()
+      });
+    }
+
+    function initMap() {
+      geojson = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
+    }
+  </script>
 </body>
 </html>
