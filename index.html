@@ -93,12 +93,8 @@
   let geojsonLayer;
   let clubMarkers = [];
 
-  const colors = [
-    "#FF6B6B", "#4ECDC4", "#FFD93D", "#6A4C93", "#FF9F1C",
-    "#1982C4", "#8AC926", "#FF61A6", "#00B5AD", "#FF9CEE",
-    "#FFE066", "#6A0572", "#FFB5A7", "#0D3B66", "#F25F5C",
-    "#70C1B3", "#FF1654", "#247BA0", "#B5E48C", "#F4F1DE"
-  ];
+  // color palette
+  const colors = ["#008080", "#FF69B4", "#800080", "#ADD8E6", "#00FF00", "#FFFF00"]; // teal, pink, purple, light blue, lime, yellow
 
   function getStateColor(stateName) {
     let hash = 0;
@@ -155,9 +151,9 @@
       click: () => layer.bindPopup(popupContent).openPopup()
     });
 
-    // Use turf.js to get precise centroid for label
-    const centroid = turf.centroid(feature).geometry.coordinates;
-    const label = L.marker([centroid[1], centroid[0]], {
+    // Use pointOnFeature for guaranteed inside label
+    const point = turf.pointOnFeature(feature).geometry.coordinates;
+    const label = L.marker([point[1], point[0]], {
       icon: L.divIcon({
         className: 'state-label',
         html: stateName,
