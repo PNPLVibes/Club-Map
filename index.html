@@ -66,10 +66,11 @@
     pointer-events: none;
     text-align: center;
     transition: all 0.3s ease;
-    position: absolute;
-    transform: translate(-50%, -50%);
     white-space: nowrap;
     z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .state-label.highlight {
     color: #e74c3c;
@@ -215,7 +216,7 @@ let clubsByState = {};
 let geojsonLayer;
 let stateLabels = {};
 
-// Updated centroids with better positioning
+// Updated centroids with better positioning for labels
 const stateCentroids = {
   "Alabama": [32.9, -86.8], "Alaska": [61.5, -152.5], "Arizona": [34.3, -111.7],
   "Arkansas": [34.9, -92.4], "California": [37.2, -119.5], "Colorado": [39.0, -105.6],
@@ -249,6 +250,23 @@ const stateAreas = {
   "South Carolina":32020, "West Virginia":24230, "Maryland":12406, "Vermont":9616, "New Hampshire":9349,
   "Massachusetts":10554, "New Jersey":8723, "Hawaii":10932, "Connecticut":5543, "Delaware":2489,
   "Rhode Island":1545, "DC":68
+};
+
+// Custom centroid adjustments for better label placement
+const labelAdjustments = {
+  "Michigan": [0.5, 0], // Shift Michigan label slightly
+  "Florida": [0, -0.7], // Shift Florida label slightly
+  "New York": [0, -0.5], // Shift New York label slightly
+  "Massachusetts": [0, -0.5], // Shift Massachusetts label slightly
+  "Maryland": [0, -0.5], // Shift Maryland label slightly
+  "DC": [0, -0.8], // Shift DC label slightly
+  "Rhode Island": [0, -0.8], // Shift Rhode Island label slightly
+  "New Jersey": [0, -0.5], // Shift New Jersey label slightly
+  "Connecticut": [0, -0.5], // Shift Connecticut label slightly
+  "Delaware": [0, -0.5], // Shift Delaware label slightly
+  "New Hampshire": [0, -0.5], // Shift New Hampshire label slightly
+  "Vermont": [0, -0.5], // Shift Vermont label slightly
+  "West Virginia": [0, -0.3], // Shift West Virginia label slightly
 };
 
 // Fetch clubs.json and US states GeoJSON
@@ -316,7 +334,11 @@ function onEachFeature(feature, layer) {
 
 function addStateLabels() {
   Object.entries(stateCentroids).forEach(([stateName, coords]) => {
-    const label = L.marker(coords, {
+    // Apply adjustments if needed
+    const adjustment = labelAdjustments[stateName] || [0, 0];
+    const adjustedCoords = [coords[0] + adjustment[0], coords[1] + adjustment[1]];
+    
+    const label = L.marker(adjustedCoords, {
       icon: L.divIcon({
         className: 'state-label',
         html: stateName,
@@ -346,22 +368,32 @@ function updateLabelSizes() {
       // Calculate base font size based on state area (larger states get larger text)
       const area = stateAreas[stateName] || 25000;
       
-      // Adjust font size based on zoom level - more dramatic scaling
-      let fontSize;
-      if (zoom <= 5) {
-        fontSize = 8 + (Math.log(area) / 15);
-      } else if (zoom <= 6) {
-        fontSize = 10 + (Math.log(area) / 12);
-      } else if (zoom <= 7) {
-        fontSize = 12 + (Math.log(area) / 10);
-      } else if (zoom <= 8) {
-        fontSize = 14 + (Math.log(area) / 8);
-      } else {
-        fontSize = 16 + (Math.log(area) / 6);
-      }
+      // Base size for different zoom levels
+      let baseSize;
+      if (zoom <= 5) baseSize = 8;
+      else if (zoom <= 6) baseSize = 10;
+      else if (zoom <= 7) baseSize = 12;
+      else if (zoom <= 8) baseSize = 14;
+      else baseSize = 16;
+      
+      // Area-based scaling factor (logarithmic to handle large area differences)
+      const areaFactor = Math.log(area) / 20;
+      
+      // Calculate final font size
+      let fontSize = baseSize + areaFactor;
       
       // Apply minimum and maximum limits
       fontSize = Math.max(8, Math.min(24, fontSize));
+      
+      // Special adjustments for small states
+      if (area < 10000) {
+        fontSize = Math.max(8, fontSize - 2);
+      }
+      
+      // Special adjustments for very small states
+      if (area < 5000) {
+        fontSize = Math.max(8, fontSize - 1);
+      }
       
       el.style.fontSize = `${fontSize}px`;
     }
