@@ -37,6 +37,29 @@
       padding: 5px;
       margin-right: 5px;
     }
+
+    /* Club label styling */
+    .club-label {
+      background: rgba(255,255,255,0.8);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: bold;
+      color: #333;
+      font-size: 13px;
+      box-shadow: 0 0 2px rgba(0,0,0,0.4);
+    }
+
+    /* State label styling */
+    .state-label {
+      font-weight: bold;
+      font-size: 14px;
+      color: #333;
+      background: rgba(255,255,255,0.7);
+      padding: 2px 4px;
+      border-radius: 3px;
+      text-align: center;
+      box-shadow: 0 0 2px rgba(0,0,0,0.3);
+    }
   </style>
 </head>
 <body>
@@ -58,8 +81,8 @@
   const defaultZoom = 5;
   const map = L.map('map', { minZoom: 3, maxZoom: 7, zoomControl: false }).setView(defaultCenter, defaultZoom);
 
-  // Carto Voyager tile layer
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+  // Base map: Carto Voyager No Labels
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://www.carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     subdomains: 'abcd',
     maxZoom: 19
@@ -94,6 +117,8 @@
   ]).then(([clubs, statesData]) => {
     clubsByState = clubs;
     geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
+    addStateLabels(geojsonLayer); // add state names
+    addPermanentClubLabels();      // add club names
   }).catch(err => console.error(err));
 
   // Style and highlight functions
@@ -139,6 +164,15 @@
     });
   }
 
+  // Flatten clubsByState into array
+  function flattenClubs() {
+    const allClubs = [];
+    Object.values(clubsByState).forEach(stateClubs => {
+      stateClubs.forEach(club => allClubs.push(club));
+    });
+    return allClubs;
+  }
+
   // Add nearby club markers
   function addClubMarkers(clubs, center, radius) {
     clubMarkers.forEach(m => map.removeLayer(m));
@@ -149,14 +183,40 @@
       const distance = getDistance(center.lat, center.lng, club.lat, club.lng);
       if (distance <= radius) {
         const marker = L.marker([club.lat, club.lng])
-          .bindPopup(`<b>${club.name}</b><br/>${club.url ? `<a href="${club.url}" target="_blank">${club.url}</a>` : ''}`);
-        marker.addTo(map);
+          .bindPopup(`<b>${club.name}</b><br/>${club.url ? `<a href="${club.url}" target="_blank">${club.url}</a>` : ''}`)
+          .addTo(map);
         clubMarkers.push(marker);
       }
     });
 
     if (clubMarkers.length > 0) map.fitBounds(L.featureGroup(clubMarkers).getBounds());
     else alert("No clubs found within that radius.");
+  }
+
+  // Add permanent labels for all clubs
+  function addPermanentClubLabels() {
+    flattenClubs().forEach(club => {
+      if (!club.lat || !club.lng) return;
+      L.marker([club.lat, club.lng], { icon: L.divIcon({
+        className: 'club-label',
+        html: club.name,
+        iconSize: [100, 20],
+        iconAnchor: [50, -5]
+      })}).addTo(map);
+    });
+  }
+
+  // Add state labels at centroids
+  function addStateLabels(geojsonLayer) {
+    geojsonLayer.eachLayer(layer => {
+      const center = layer.getBounds().getCenter();
+      L.marker(center, { icon: L.divIcon({
+        className: 'state-label',
+        html: layer.feature.properties.name,
+        iconSize: [100, 20],
+        iconAnchor: [50, 0]
+      })}).addTo(map);
+    });
   }
 
   // Haversine distance
@@ -195,14 +255,6 @@
     }, err => alert("Geolocation error: " + err.message));
   });
 
-  // Flatten clubs
-  function flattenClubs() {
-    const allClubs = [];
-    Object.values(clubsByState).forEach(stateClubs => {
-      stateClubs.forEach(club => allClubs.push(club));
-    });
-    return allClubs;
-  }
 </script>
 
 </body>
