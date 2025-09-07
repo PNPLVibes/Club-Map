@@ -30,12 +30,19 @@
     }
     #searchForm {
       padding: 10px;
-      background: rgba(255, 255, 255, 0.5); /* translucent */
+      background: rgba(255, 255, 255, 0.9);
       box-shadow: 0 0 4px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 1000;
     }
     #searchForm input {
       padding: 5px;
       margin-right: 5px;
+    }
+    #searchForm button {
+      padding: 5px 10px;
+      margin-right: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -52,6 +59,7 @@
 
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <script>
   const defaultCenter = [37.8, -96];
   const defaultZoom = 5;
@@ -85,27 +93,31 @@
   let geojsonLayer;
   let clubMarkers = [];
 
-  // Generate random pastel color
-  function randomColor() {
-    const r = Math.floor(150 + Math.random() * 105);
-    const g = Math.floor(150 + Math.random() * 105);
-    const b = Math.floor(150 + Math.random() * 105);
-    return `rgb(${r},${g},${b})`;
+  // Color palette
+  const colors = [
+    "#e6194b", "#3cb44b", "#ffe119", "#4363d8", "#f58231",
+    "#911eb4", "#46f0f0", "#f032e6", "#bcf60c", "#fabebe",
+    "#008080", "#e6beff", "#9a6324", "#fffac8", "#800000",
+    "#aaffc3", "#808000", "#ffd8b1", "#000075", "#808080"
+  ];
+
+  let stateColors = {};
+  function assignColors(statesData) {
+    let usedColors = [];
+    statesData.features.forEach(feature => {
+      let color;
+      do {
+        color = colors[Math.floor(Math.random() * colors.length)];
+      } while (usedColors.includes(color));
+      stateColors[feature.properties.name] = color;
+      usedColors.push(color);
+      if (usedColors.length > colors.length - 1) usedColors = [];
+    });
   }
 
-  // Fetch clubs.json and US states GeoJSON
-  Promise.all([
-    fetch("clubs.json").then(r => r.json()),
-    fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json").then(r => r.json())
-  ]).then(([clubs, statesData]) => {
-    clubsByState = clubs;
-    geojsonLayer = L.geoJson(statesData, { style: style, onEachFeature }).addTo(map);
-  }).catch(err => console.error(err));
-
-  // Style function with unique color per state
   function style(feature) {
     return {
-      fillColor: randomColor(),
+      fillColor: stateColors[feature.properties.name] || "#66c2a5",
       weight: 2,
       opacity: 1,
       color: "white",
@@ -165,6 +177,7 @@
     else alert("No clubs found within that radius.");
   }
 
+  // Haversine distance
   function getDistance(lat1, lon1, lat2, lon2) {
     const R = 3958.8;
     const dLat = (lat2 - lat1) * Math.PI/180;
@@ -174,6 +187,7 @@
     return R * c;
   }
 
+  // Search by ZIP
   document.getElementById('searchBtn').addEventListener('click', async () => {
     const zip = document.getElementById('zipInput').value.trim();
     const radius = parseFloat(document.getElementById('radiusInput').value);
@@ -190,6 +204,7 @@
     }
   });
 
+  // Geolocation
   document.getElementById('geoBtn').addEventListener('click', () => {
     if (!navigator.geolocation) return alert("Geolocation not supported");
     navigator.geolocation.getCurrentPosition(pos => {
@@ -205,6 +220,17 @@
     });
     return allClubs;
   }
+
+  // Load clubs.json and US states GeoJSON
+  Promise.all([
+    fetch("clubs.json").then(r => r.json()),
+    fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json").then(r => r.json())
+  ]).then(([clubs, statesData]) => {
+    clubsByState = clubs;
+    assignColors(statesData);
+    geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
+  }).catch(err => console.error(err));
+
 </script>
 
 </body>
