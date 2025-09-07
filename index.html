@@ -8,16 +8,28 @@
 <style>
   html, body { height: 100%; margin: 0; padding: 0; font-family: sans-serif; }
   body { display: flex; flex-direction: column; }
-
   #searchForm {
     flex: 0 0 auto;
     padding: 10px;
     background: #f8f8f8;
     box-shadow: 0 0 4px rgba(0,0,0,0.3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
   }
-  #searchForm input { padding: 5px; margin-right: 5px; }
+  #searchForm input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+  #searchForm button { 
+    padding: 8px 12px; 
+    background: #4c7ef3; 
+    color: white; 
+    border: none; 
+    border-radius: 4px; 
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  #searchForm button:hover { background: #3b5fc7; }
   #map { flex: 1 1 auto; width: 100%; }
-
   .leaflet-control-reset {
     background: white;
     padding: 6px 10px;
@@ -28,7 +40,18 @@
     text-align: center;
     margin-bottom: 6px;
   }
-
+  .state-label {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+    text-shadow: 1px 1px 2px white, -1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white;
+    pointer-events: none;
+    text-align: center;
+  }
+  .state-label.highlight {
+    color: #d43f3a;
+    font-size: 16px;
+  }
   .club-label {
     background: rgba(255,255,255,0.8);
     padding: 2px 6px;
@@ -38,29 +61,18 @@
     font-size: 13px;
     box-shadow: 0 0 2px rgba(0,0,0,0.4);
   }
-
-  /* State labels: remove box and center more accurately */
-  .state-label {
-    font-weight: bold;
-    font-size: 14px;
-    color: #333;
-    background: none;
-    padding: 0;
-    border-radius: 0;
-    text-align: center;
-    box-shadow: none;
-  }
-
-  /* Popup styling */
-  .custom-popup .popup-content {
-    font-size: 16px;       /* Larger text */
-    line-height: 1.5;      /* Better spacing */
-    color: #333;
-  }
-
-  .custom-popup a {
-    color: #4c7ef3;
-    text-decoration: underline;
+  .info-panel {
+    position: absolute;
+    top: 70px;
+    right: 10px;
+    z-index: 1000;
+    background: white;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.3);
+    max-width: 300px;
+    max-height: 80%;
+    overflow-y: auto;
   }
 </style>
 </head>
@@ -78,10 +90,9 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
-const defaultCenter = [37.8, -96];
+const defaultCenter = [39.8283, -98.5795]; // Geographic center of US
 const defaultZoom = 4;
 
-// Disable default zoom control to prevent duplicates
 const map = L.map('map', { minZoom: 3, maxZoom: 18, zoomControl: false }).setView(defaultCenter, defaultZoom);
 
 // Base map: Carto Voyager No Labels
@@ -105,13 +116,66 @@ const ResetControl = L.Control.extend({
   }
 });
 map.addControl(new ResetControl());
-
-// Single zoom control (top-left)
 L.control.zoom({ position: 'topleft' }).addTo(map);
 
 let clubsByState = {};
 let geojsonLayer;
-let clubMarkers = [];
+let stateLabels = {};
+
+// State centroids for better label placement
+const stateCentroids = {
+  "Alabama": [32.806671, -86.791130],
+  "Alaska": [61.370716, -152.404419],
+  "Arizona": [34.048928, -111.093731],
+  "Arkansas": [34.969704, -92.373123],
+  "California": [36.778261, -119.417932],
+  "Colorado": [39.550051, -105.782067],
+  "Connecticut": [41.603221, -73.087749],
+  "Delaware": [38.910832, -75.527670],
+  "Florida": [27.664827, -81.515754],
+  "Georgia": [32.165622, -82.900075],
+  "Hawaii": [19.898682, -155.665857],
+  "Idaho": [44.068202, -114.742041],
+  "Illinois": [40.633125, -89.398528],
+  "Indiana": [39.849426, -86.258278],
+  "Iowa": [42.011539, -93.210526],
+  "Kansas": [38.526600, -96.726486],
+  "Kentucky": [37.668140, -84.670067],
+  "Louisiana": [31.169546, -91.867805],
+  "Maine": [44.693947, -69.381927],
+  "Maryland": [39.063946, -76.802101],
+  "Massachusetts": [42.407211, -71.382437],
+  "Michigan": [44.314844, -85.602364],
+  "Minnesota": [46.729553, -94.685900],
+  "Mississippi": [32.741646, -89.678696],
+  "Missouri": [38.456085, -92.288368],
+  "Montana": [46.879682, -110.362566],
+  "Nebraska": [41.492537, -99.901813],
+  "Nevada": [38.802610, -116.419389],
+  "New Hampshire": [43.193852, -71.572395],
+  "New Jersey": [40.058324, -74.405661],
+  "New Mexico": [34.972730, -105.032363],
+  "New York": [43.299428, -74.217933],
+  "North Carolina": [35.759573, -79.019300],
+  "North Dakota": [47.551493, -101.002012],
+  "Ohio": [40.417287, -82.907123],
+  "Oklahoma": [35.007752, -97.092877],
+  "Oregon": [43.804133, -120.554201],
+  "Pennsylvania": [41.203322, -77.194525],
+  "Rhode Island": [41.580095, -71.477429],
+  "South Carolina": [33.836081, -81.163725],
+  "South Dakota": [44.299782, -99.438828],
+  "Tennessee": [35.517491, -86.580447],
+  "Texas": [31.968599, -99.901813],
+  "Utah": [39.320980, -111.093731],
+  "Vermont": [44.558803, -72.577841],
+  "Virginia": [37.431573, -78.656894],
+  "Washington": [47.751074, -120.740139],
+  "West Virginia": [38.597626, -80.454903],
+  "Wisconsin": [43.784440, -88.787868],
+  "Wyoming": [43.075968, -107.290284],
+  "DC": [38.907192, -77.036873]
+};
 
 // Load clubs.json and US states GeoJSON
 Promise.all([
@@ -127,102 +191,94 @@ Promise.all([
 function style(feature) {
   return { fillColor: "#66c2a5", weight: 2, opacity: 1, color: "white", dashArray: "3", fillOpacity: 0.7 };
 }
+
 function highlightFeature(e) {
   const layer = e.target;
   layer.setStyle({ weight: 3, color: "#666", dashArray: "", fillOpacity: 0.9 });
   layer.bringToFront();
+  
+  // Highlight the state label
+  const stateName = layer.feature.properties.name === 'District of Columbia' ? 'DC' : layer.feature.properties.name;
+  if (stateLabels[stateName]) {
+    stateLabels[stateName].getElement().classList.add('highlight');
+  }
 }
+
 function resetHighlight(e) {
   geojsonLayer.resetStyle(e.target);
+  
+  // Remove label highlight
+  const stateName = e.target.feature.properties.name === 'District of Columbia' ? 'DC' : e.target.feature.properties.name;
+  if (stateLabels[stateName]) {
+    stateLabels[stateName].getElement().classList.remove('highlight');
+  }
 }
+
 function onEachFeature(feature, layer) {
   const stateName = feature.properties.name === 'District of Columbia' ? 'DC' : feature.properties.name;
   const clubs = clubsByState[stateName] || [];
   let popupContent = `<b>${stateName}</b><br/>`;
-  if (clubs.length === 0) popupContent += "No clubs listed yet";
-  else clubs.forEach(club => {
-    popupContent += club.url ? `<a href="${club.url}" target="_blank">${club.name}</a><br/>` : `${club.name}<br/>`;
-  });
-
+  if (clubs.length === 0) {
+    popupContent += "No clubs listed yet";
+  } else {
+    clubs.forEach(club => {
+      popupContent += club.url ? `<a href="${club.url}" target="_blank">${club.name}</a><br/>` : `${club.name}<br/>`;
+    });
+  }
+  
   layer.on({
     mouseover: highlightFeature,
     mouseout: resetHighlight,
     click: () => {
-      layer.bindPopup(`<div class="popup-content">${popupContent}</div>`, {
-        maxWidth: 400,
-        minWidth: 250,
-        className: 'custom-popup'
-      }).openPopup();
+      layer.bindPopup(popupContent).openPopup();
+      // Center the state on click
       map.fitBounds(layer.getBounds(), { padding: [50, 50] });
     }
   });
 }
 
-// Add state labels manually for better accuracy
+// Add state labels using centroids
 function addStateLabels() {
-  const labels = [
-    {name: 'WA', coords: [47.5, -120]},
-    {name: 'OR', coords: [44, -120]},
-    {name: 'CA', coords: [37, -119]},
-    {name: 'NV', coords: [39, -117]},
-    {name: 'ID', coords: [44.5, -114]},
-    {name: 'MT', coords: [46.5, -110]},
-    {name: 'WY', coords: [43, -107]},
-    {name: 'UT', coords: [39.5, -111.5]},
-    {name: 'AZ', coords: [34, -111]},
-    {name: 'NM', coords: [34.5, -106]},
-    {name: 'CO', coords: [39, -105]},
-    {name: 'ND', coords: [47.5, -100]},
-    {name: 'SD', coords: [44.5, -100]},
-    {name: 'NE', coords: [41.5, -99]},
-    {name: 'KS', coords: [38.5, -98]},
-    {name: 'OK', coords: [35.5, -97]},
-    {name: 'TX', coords: [31, -99]},
-    {name: 'MN', coords: [46, -94]},
-    {name: 'IA', coords: [42.5, -93]},
-    {name: 'MO', coords: [38.5, -92.5]},
-    {name: 'AR', coords: [34.7, -92.5]},
-    {name: 'LA', coords: [31.5, -92]},
-    {name: 'WI', coords: [44.5, -89]},
-    {name: 'IL', coords: [40, -89]},
-    {name: 'MS', coords: [32.5, -90]},
-    {name: 'MI', coords: [44, -84]},
-    {name: 'IN', coords: [40, -86]},
-    {name: 'OH', coords: [40, -82]},
-    {name: 'KY', coords: [37.5, -85.5]},
-    {name: 'TN', coords: [36, -86]},
-    {name: 'AL', coords: [32.5, -86)],
-    {name: 'GA', coords: [33.5, -83]},
-    {name: 'FL', coords: [28, -82]},
-    {name: 'SC', coords: [33.5, -81]},
-    {name: 'NC', coords: [35.5, -79]},
-    {name: 'VA', coords: [37.5, -79]},
-    {name: 'WV', coords: [38.5, -80]},
-    {name: 'PA', coords: [41, -77]},
-    {name: 'NY', coords: [43, -75]},
-    {name: 'NJ', coords: [40, -74.5]},
-    {name: 'DE', coords: [39, -75.5]},
-    {name: 'MD', coords: [39, -77]},
-    {name: 'DC', coords: [38.9, -77]},
-    {name: 'CT', coords: [41.5, -72.7]},
-    {name: 'RI', coords: [41.7, -71.5]},
-    {name: 'MA', coords: [42.3, -71]},
-    {name: 'VT', coords: [43.9, -72.6]},
-    {name: 'NH', coords: [43.3, -71.5]},
-    {name: 'ME', coords: [45.5, -69.3]}
-  ];
-
-  labels.forEach(label => {
-    L.marker(label.coords, {
+  Object.entries(stateCentroids).forEach(([stateName, coords]) => {
+    const label = L.marker(coords, {
       icon: L.divIcon({
         className: 'state-label',
-        html: label.name,
-        iconSize: [100, 20],
-        iconAnchor: [50, 0]
-      })
+        html: stateName,
+        iconSize: [0, 0],
+        iconAnchor: [0, 0]
+      }),
+      interactive: false
     }).addTo(map);
+    
+    stateLabels[stateName] = label;
   });
 }
+
+// Search functionality
+document.getElementById('searchBtn').addEventListener('click', () => {
+  const zipCode = document.getElementById('zipInput').value;
+  if (zipCode) {
+    alert(`Search functionality for ZIP code ${zipCode} would be implemented here.`);
+    // In a real implementation, you would geocode the ZIP and search clubs
+  }
+});
+
+document.getElementById('geoBtn').addEventListener('click', () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const { latitude, longitude } = position.coords;
+        map.setView([latitude, longitude], 8);
+        alert(`Location found! Showing clubs near you would be implemented here.`);
+      },
+      error => {
+        alert('Unable to retrieve your location. Please ensure location services are enabled.');
+      }
+    );
+  } else {
+    alert('Geolocation is not supported by your browser.');
+  }
+});
 </script>
 </body>
 </html>
