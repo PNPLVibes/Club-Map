@@ -30,19 +30,12 @@
     }
     #searchForm {
       padding: 10px;
-      background: rgba(255,255,255,0.8); /* translucent background */
+      background: #f8f8f8;
       box-shadow: 0 0 4px rgba(0,0,0,0.3);
     }
     #searchForm input {
       padding: 5px;
       margin-right: 5px;
-    }
-    .state-label {
-      font-size: 14px;
-      font-weight: bold;
-      color: black;
-      text-shadow: 1px 1px 2px white;
-      pointer-events: none;
     }
   </style>
 </head>
@@ -59,21 +52,19 @@
 
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<!-- Turf.js for centroid calculation -->
-<script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
-
+<!-- Zip code to Lat/Lng (via Zippopotam.us API) -->
 <script>
   const defaultCenter = [37.8, -96];
   const defaultZoom = 5;
   const map = L.map('map', { minZoom: 3, maxZoom: 7, zoomControl: false }).setView(defaultCenter, defaultZoom);
 
-  // prettier base map: Carto Voyager
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
-    subdomains: 'abcd',
-    maxZoom: 19
+  // Tile layer
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
 
+  // Reset View Button
   const ResetControl = L.Control.extend({
     options: { position: 'topleft' },
     onAdd: function(map) {
@@ -87,44 +78,38 @@
     }
   });
   map.addControl(new ResetControl());
+
+  // Zoom control
   L.control.zoom({ position: 'topleft' }).addTo(map);
 
   let clubsByState = {};
   let geojsonLayer;
   let clubMarkers = [];
 
-  // color palette
-  const colors = ["#008080", "#FF69B4", "#800080", "#ADD8E6", "#00FF00", "#FFFF00"]; // teal, pink, purple, light blue, lime, yellow
-
-  function getStateColor(stateName) {
-    let hash = 0;
-    for (let i = 0; i < stateName.length; i++) hash = stateName.charCodeAt(i) + ((hash << 5) - hash);
-    const index = Math.abs(hash) % colors.length;
-    return colors[index];
-  }
-
+  // Fetch clubs.json and US states GeoJSON
   Promise.all([
     fetch("clubs.json").then(r => r.json()),
     fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json").then(r => r.json())
   ]).then(([clubs, statesData]) => {
     clubsByState = clubs;
-
-    geojsonLayer = L.geoJson(statesData, {
-      style: feature => ({
-        fillColor: getStateColor(feature.properties.name),
-        weight: 2,
-        opacity: 1,
-        color: "white",
-        dashArray: "3",
-        fillOpacity: 0.8
-      }),
-      onEachFeature
-    }).addTo(map);
+    geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
   }).catch(err => console.error(err));
+
+  // Style and highlight functions
+  function style(feature) {
+    return {
+      fillColor: "#66c2a5",
+      weight: 2,
+      opacity: 1,
+      color: "white",
+      dashArray: "3",
+      fillOpacity: 0.7
+    };
+  }
 
   function highlightFeature(e) {
     const layer = e.target;
-    layer.setStyle({ weight: 3, color: "#666", dashArray: "", fillOpacity: 1 });
+    layer.setStyle({ weight: 3, color: "#666", dashArray: "", fillOpacity: 0.9 });
     layer.bringToFront();
   }
 
@@ -137,8 +122,9 @@
     const clubs = clubsByState[stateName] || [];
     let popupContent = `<b>${stateName}</b><br/>`;
 
-    if (clubs.length === 0) popupContent += "No clubs listed yet";
-    else {
+    if (clubs.length === 0) {
+      popupContent += "No clubs listed yet";
+    } else {
       clubs.forEach(club => {
         if (club.url) popupContent += `<a href="${club.url}" target="_blank">${club.name}</a><br/>`;
         else popupContent += `${club.name}<br/>`;
@@ -150,25 +136,16 @@
       mouseout: resetHighlight,
       click: () => layer.bindPopup(popupContent).openPopup()
     });
-
-    // Use pointOnFeature for guaranteed inside label
-    const point = turf.pointOnFeature(feature).geometry.coordinates;
-    const label = L.marker([point[1], point[0]], {
-      icon: L.divIcon({
-        className: 'state-label',
-        html: stateName,
-        iconSize: null
-      }),
-      interactive: false
-    }).addTo(map);
   }
 
+  // Add nearby club markers
   function addClubMarkers(clubs, center, radius) {
+    // Clear old markers
     clubMarkers.forEach(m => map.removeLayer(m));
     clubMarkers = [];
 
     clubs.forEach(club => {
-      if (!club.lat || !club.lng) return;
+      if (!club.lat || !club.lng) return; // skip clubs without coordinates
       const distance = getDistance(center.lat, center.lng, club.lat, club.lng);
       if (distance <= radius) {
         const marker = L.marker([club.lat, club.lng])
@@ -182,8 +159,9 @@
     else alert("No clubs found within that radius.");
   }
 
+  // Haversine distance in miles
   function getDistance(lat1, lon1, lat2, lon2) {
-    const R = 3958.8;
+    const R = 3958.8; // Earth radius in miles
     const dLat = (lat2 - lat1) * Math.PI/180;
     const dLon = (lon2 - lon1) * Math.PI/180;
     const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
@@ -191,6 +169,7 @@
     return R * c;
   }
 
+  // Search by ZIP
   document.getElementById('searchBtn').addEventListener('click', async () => {
     const zip = document.getElementById('zipInput').value.trim();
     const radius = parseFloat(document.getElementById('radiusInput').value);
@@ -207,6 +186,7 @@
     }
   });
 
+  // Geolocation button
   document.getElementById('geoBtn').addEventListener('click', () => {
     if (!navigator.geolocation) return alert("Geolocation not supported");
     navigator.geolocation.getCurrentPosition(pos => {
@@ -215,6 +195,7 @@
     }, err => alert("Geolocation error: " + err.message));
   });
 
+  // Flatten clubsByState into one array with lat/lng
   function flattenClubs() {
     const allClubs = [];
     Object.values(clubsByState).forEach(stateClubs => {
