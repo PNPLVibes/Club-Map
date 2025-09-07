@@ -38,7 +38,7 @@
     #map {
       flex: 1 1 auto;
       width: 100%;
-      height: 100%;
+      min-height: 400px; /* ✅ ensures visible on desktop */
       position: relative;
       z-index: 1;
     }
@@ -54,7 +54,6 @@
       margin-bottom: 6px;
     }
 
-    /* Club label styling */
     .club-label {
       background: rgba(255,255,255,0.8);
       padding: 2px 6px;
@@ -65,7 +64,6 @@
       box-shadow: 0 0 2px rgba(0,0,0,0.4);
     }
 
-    /* State label styling */
     .state-label {
       font-weight: bold;
       font-size: 14px;
@@ -104,7 +102,7 @@
     maxZoom: 19
   }).addTo(map);
 
-  // Reset View Button
+  // ✅ Reset View Button (only one set of controls now)
   const ResetControl = L.Control.extend({
     options: { position: 'topleft' },
     onAdd: function(map) {
@@ -119,14 +117,12 @@
   });
   map.addControl(new ResetControl());
 
-  // Zoom control
-  L.control.zoom({ position: 'topleft' }).addTo(map);
+  // ✅ Do NOT add L.control.zoom() → avoids double zoom buttons
 
   let clubsByState = {};
   let geojsonLayer;
   let clubMarkers = [];
 
-  // Load data
   Promise.all([
     fetch("clubs.json").then(r => r.json()),
     fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json").then(r => r.json())
@@ -138,14 +134,7 @@
   }).catch(err => console.error(err));
 
   function style(feature) {
-    return {
-      fillColor: "#66c2a5",
-      weight: 2,
-      opacity: 1,
-      color: "white",
-      dashArray: "3",
-      fillOpacity: 0.7
-    };
+    return { fillColor: "#66c2a5", weight: 2, opacity: 1, color: "white", dashArray: "3", fillOpacity: 0.7 };
   }
 
   function highlightFeature(e) {
@@ -153,40 +142,26 @@
     layer.setStyle({ weight: 3, color: "#666", dashArray: "", fillOpacity: 0.9 });
     layer.bringToFront();
   }
-
-  function resetHighlight(e) {
-    geojsonLayer.resetStyle(e.target);
-  }
+  function resetHighlight(e) { geojsonLayer.resetStyle(e.target); }
 
   function onEachFeature(feature, layer) {
     const stateName = feature.properties.name;
     const clubs = clubsByState[stateName] || [];
     let popupContent = `<b>${stateName}</b><br/>`;
-
-    if (clubs.length === 0) {
-      popupContent += "No clubs listed yet";
-    } else {
-      clubs.forEach(club => {
-        if (club.url) popupContent += `<a href="${club.url}" target="_blank">${club.name}</a><br/>`;
-        else popupContent += `${club.name}<br/>`;
-      });
-    }
-
-    layer.on({
-      mouseover: highlightFeature,
-      mouseout: resetHighlight,
-      click: () => layer.bindPopup(popupContent).openPopup()
+    if (clubs.length === 0) popupContent += "No clubs listed yet";
+    else clubs.forEach(club => {
+      popupContent += club.url
+        ? `<a href="${club.url}" target="_blank">${club.name}</a><br/>`
+        : `${club.name}<br/>`;
     });
+    layer.on({ mouseover: highlightFeature, mouseout: resetHighlight, click: () => layer.bindPopup(popupContent).openPopup() });
   }
 
-  function flattenClubs() {
-    return Object.values(clubsByState).flat();
-  }
+  function flattenClubs() { return Object.values(clubsByState).flat(); }
 
   function addClubMarkers(clubs, center, radius) {
     clubMarkers.forEach(m => map.removeLayer(m));
     clubMarkers = [];
-
     clubs.forEach(club => {
       if (!club.lat || !club.lng) return;
       const distance = getDistance(center.lat, center.lng, club.lat, club.lng);
@@ -197,24 +172,15 @@
         clubMarkers.push(marker);
       }
     });
-
-    if (clubMarkers.length > 0) {
-      map.fitBounds(L.featureGroup(clubMarkers).getBounds());
-    } else {
-      alert("No clubs found within that radius.");
-    }
+    if (clubMarkers.length > 0) map.fitBounds(L.featureGroup(clubMarkers).getBounds());
+    else alert("No clubs found within that radius.");
   }
 
   function addPermanentClubLabels() {
     flattenClubs().forEach(club => {
       if (!club.lat || !club.lng) return;
       L.marker([club.lat, club.lng], {
-        icon: L.divIcon({
-          className: 'club-label',
-          html: club.name,
-          iconSize: [100, 20],
-          iconAnchor: [50, -5]
-        })
+        icon: L.divIcon({ className: 'club-label', html: club.name, iconSize: [100, 20], iconAnchor: [50, -5] })
       }).addTo(map);
     });
   }
@@ -223,39 +189,26 @@
     geojsonLayer.eachLayer(layer => {
       const center = layer.getBounds().getCenter();
       L.marker(center, {
-        icon: L.divIcon({
-          className: 'state-label',
-          html: layer.feature.properties.name,
-          iconSize: [100, 20],
-          iconAnchor: [50, 0]
-        })
+        icon: L.divIcon({ className: 'state-label', html: layer.feature.properties.name, iconSize: [100, 20], iconAnchor: [50, 0] })
       }).addTo(map);
     });
   }
 
   function getDistance(lat1, lon1, lat2, lon2) {
-    const R = 3958.8;
-    const dLat = (lat2 - lat1) * Math.PI/180;
-    const dLon = (lon2 - lon1) * Math.PI/180;
+    const R = 3958.8, dLat = (lat2-lat1)*Math.PI/180, dLon = (lon2-lon1)*Math.PI/180;
     const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
+    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
   }
 
-  // ✅ Search with proxy (GitHub-safe)
   document.getElementById('searchBtn').addEventListener('click', async () => {
     const zip = document.getElementById('zipInput').value.trim();
     const radius = parseFloat(document.getElementById('radiusInput').value);
     if (!zip) return alert("Please enter a ZIP code");
-
     try {
       const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent("https://api.zippopotam.us/us/" + zip)}`);
       if (!res.ok) throw new Error("Invalid ZIP code");
       const wrapper = await res.json();
       const data = JSON.parse(wrapper.contents);
-
-      console.log("ZIP lookup:", data);
-
       const { latitude, longitude } = data.places[0];
       addClubMarkers(flattenClubs(), { lat: parseFloat(latitude), lng: parseFloat(longitude) }, radius);
     } catch (err) {
@@ -264,7 +217,6 @@
     }
   });
 
-  // Geolocation
   document.getElementById('geoBtn').addEventListener('click', () => {
     if (!navigator.geolocation) return alert("Geolocation not supported");
     navigator.geolocation.getCurrentPosition(pos => {
@@ -272,7 +224,6 @@
       addClubMarkers(flattenClubs(), center, parseFloat(document.getElementById('radiusInput').value));
     }, err => alert("Geolocation error: " + err.message));
   });
-
 </script>
 
 </body>
