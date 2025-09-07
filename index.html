@@ -291,7 +291,7 @@ function resetHighlight(e) {
 }
 
 function onEachFeature(feature, layer) {
-  const stateName = feature.properties.name === 'District of Columbia' : 'DC' : feature.properties.name;
+  const stateName = feature.properties.name === 'District of Columbia' ? 'DC' : feature.properties.name;
   const clubs = clubsByState[stateName] || [];
   let popupContent = `<div class="state-popup-title">${stateName}</div>`;
   if (clubs.length === 0) {
@@ -346,16 +346,22 @@ function updateLabelSizes() {
       // Calculate base font size based on state area (larger states get larger text)
       const area = stateAreas[stateName] || 25000;
       
-      // New continuous scaling formula for more noticeable font size changes
-      // Base size increases more significantly with each zoom level
-      const baseSize = 8 + (zoom - 4) * 2.5; // More aggressive zoom scaling
-      const areaFactor = 2 + (Math.log(area) / 10); // Area-based scaling factor
-      
-      // Combine both factors for final font size
-      let fontSize = baseSize * areaFactor;
+      // Adjust font size based on zoom level - more dramatic scaling
+      let fontSize;
+      if (zoom <= 5) {
+        fontSize = 8 + (Math.log(area) / 15);
+      } else if (zoom <= 6) {
+        fontSize = 10 + (Math.log(area) / 12);
+      } else if (zoom <= 7) {
+        fontSize = 12 + (Math.log(area) / 10);
+      } else if (zoom <= 8) {
+        fontSize = 14 + (Math.log(area) / 8);
+      } else {
+        fontSize = 16 + (Math.log(area) / 6);
+      }
       
       // Apply minimum and maximum limits
-      fontSize = Math.max(10, Math.min(30, fontSize));
+      fontSize = Math.max(8, Math.min(24, fontSize));
       
       el.style.fontSize = `${fontSize}px`;
     }
