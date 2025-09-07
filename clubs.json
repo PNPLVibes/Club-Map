@@ -1,7 +1,182 @@
 {
-  "Florida": ["Miami Nights", "Orlando Paradise", "Tampa Vibes"],
-  "California": ["Club Sunset", "Golden Gate Lounge"],
-  "Texas": ["Dallas Connection", "Houston Heat"],
-  "New York": ["Manhattan After Dark", "Brooklyn Bliss"],
-  "Nevada": ["Vegas Lifestyle Club"]
+  "Alabama": [
+    { "name": "Club A1", "url": "https://example.com/club-a1" },
+    { "name": "Club A2", "url": "https://example.com/club-a2" }
+  ],
+  "Alaska": [
+    { "name": "Club AK1", "url": "https://example.com/club-ak1" }
+  ],
+  "Arizona": [
+    { "name": "Club AZ1", "url": "https://example.com/club-az1" },
+    { "name": "Club AZ2", "url": "https://example.com/club-az2" }
+  ],
+  "Arkansas": [
+    { "name": "Club AR1", "url": "https://example.com/club-ar1" }
+  ],
+  "California": [
+    { "name": "Club CA1", "url": "https://example.com/club-ca1" },
+    { "name": "Club CA2", "url": "https://example.com/club-ca2" },
+    { "name": "Club CA3", "url": "https://example.com/club-ca3" }
+  ],
+  "Colorado": [
+    { "name": "Club CO1", "url": "https://example.com/club-co1" },
+    { "name": "Club CO2", "url": "https://example.com/club-co2" }
+  ],
+  "Connecticut": [
+    { "name": "Club CT1", "url": "https://example.com/club-ct1" }
+  ],
+  "Delaware": [
+    { "name": "Club DE1", "url": "https://example.com/club-de1" }
+  ],
+  "Florida": [
+    { "name": "Club FL1", "url": "https://example.com/club-fl1" },
+    { "name": "Club FL2", "url": "https://example.com/club-fl2" },
+    { "name": "Club FL3", "url": "https://example.com/club-fl3" }
+  ],
+  "Georgia": [
+    { "name": "Club GA1", "url": "https://example.com/club-ga1" },
+    { "name": "Club GA2", "url": "https://example.com/club-ga2" }
+  ],
+  "Hawaii": [
+    { "name": "Club HI1", "url": "https://example.com/club-hi1" }
+  ],
+  "Idaho": [
+    { "name": "Club ID1", "url": "https://example.com/club-id1" }
+  ],
+  "Illinois": [
+    { "name": "Club IL1", "url": "https://example.com/club-il1" },
+    { "name": "Club IL2", "url": "https://example.com/club-il2" }
+  ],
+  "Indiana": [
+    { "name": "Club IN1", "url": "https://example.com/club-in1" }
+  ],
+  "Iowa": [
+    { "name": "Club IA1", "url": "https://example.com/club-ia1" }
+  ],
+  "Kansas": [
+    { "name": "Club KS1", "url": "https://example.com/club-ks1" }
+  ],
+  "Kentucky": [
+    { "name": "Club KY1", "url": "https://example.com/club-ky1" }
+  ],
+  "Louisiana": [
+    { "name": "Club LA1", "url": "https://example.com/club-la1" },
+    { "name": "Club LA2", "url": "https://example.com/club-la2" }
+  ],
+  "Maine": [
+    { "name": "Club ME1", "url": "https://example.com/club-me1" }
+  ],
+  "Maryland": [
+    { "name": "Club MD1", "url": "https://example.com/club-md1" },
+    { "name": "Club MD2", "url": "https://example.com/club-md2" }
+  ],
+  "Massachusetts": [
+    { "name": "Club MA1", "url": "https://example.com/club-ma1" },
+    { "name": "Club MA2", "url": "https://example.com/club-ma2" }
+  ],
+  "Michigan": [
+    { "name": "Club MI1", "url": "https://example.com/club-mi1" },
+    { "name": "Club MI2", "url": "https://example.com/club-mi2" }
+  ],
+  "Minnesota": [
+    { "name": "Club MN1", "url": "https://example.com/club-mn1" }
+  ],
+  "Mississippi": [
+    { "name": "Club MS1", "url": "https://example.com/club-ms1" }
+  ],
+  "Missouri": [
+    { "name": "Club MO1", "url": "https://example.com/club-mo1" },
+    { "name": "Club MO2", "url": "https://example.com/club-mo2" }
+  ],
+  "Montana": [
+    { "name": "Club MT1", "url": "https://example.com/club-mt1" }
+  ],
+  "Nebraska": [
+    { "name": "Club NE1", "url": "https://example.com/club-ne1" }
+  ],
+  "Nevada": [
+    { "name": "Club NV1", "url": "https://example.com/club-nv1" },
+    { "name": "Club NV2", "url": "https://example.com/club-nv2" }
+  ],
+  "New Hampshire": [
+    { "name": "Club NH1", "url": "https://example.com/club-nh1" }
+  ],
+  "New Jersey": [
+    { "name": "Club NJ1", "url": "https://example.com/club-nj1" },
+    { "name": "Club NJ2", "url": "https://example.com/club-nj2" }
+  ],
+  "New Mexico": [
+    { "name": "Club NM1", "url": "https://example.com/club-nm1" }
+  ],
+  "New York": [
+    { "name": "Club NY1", "url": "https://example.com/club-ny1" },
+    { "name": "Club NY2", "url": "https://example.com/club-ny2" },
+    { "name": "Club NY3", "url": "https://example.com/club-ny3" }
+  ],
+  "North Carolina": [
+    { "name": "Club NC1", "url": "https://example.com/club-nc1" },
+    { "name": "Club NC2", "url": "https://example.com/club-nc2" }
+  ],
+  "North Dakota": [
+    { "name": "Club ND1", "url": "https://example.com/club-nd1" }
+  ],
+  "Ohio": [
+    { "name": "Club OH1", "url": "https://example.com/club-oh1" },
+    { "name": "Club OH2", "url": "https://example.com/club-oh2" }
+  ],
+  "Oklahoma": [
+    { "name": "Club OK1", "url": "https://example.com/club-ok1" }
+  ],
+  "Oregon": [
+    { "name": "Club OR1", "url": "https://example.com/club-or1" },
+    { "name": "Club OR2", "url": "https://example.com/club-or2" }
+  ],
+  "Pennsylvania": [
+    { "name": "Club PA1", "url": "https://example.com/club-pa1" },
+    { "name": "Club PA2", "url": "https://example.com/club-pa2" },
+    { "name": "Club PA3", "url": "https://example.com/club-pa3" }
+  ],
+  "Rhode Island": [
+    { "name": "Club RI1", "url": "https://example.com/club-ri1" }
+  ],
+  "South Carolina": [
+    { "name": "Club SC1", "url": "https://example.com/club-sc1" },
+    { "name": "Club SC2", "url": "https://example.com/club-sc2" }
+  ],
+  "South Dakota": [
+    { "name": "Club SD1", "url": "https://example.com/club-sd1" }
+  ],
+  "Tennessee": [
+    { "name": "Club TN1", "url": "https://example.com/club-tn1" },
+    { "name": "Club TN2", "url": "https://example.com/club-tn2" }
+  ],
+  "Texas": [
+    { "name": "Club TX1", "url": "https://example.com/club-tx1" },
+    { "name": "Club TX2", "url": "https://example.com/club-tx2" },
+    { "name": "Club TX3", "url": "https://example.com/club-tx3" }
+  ],
+  "Utah": [
+    { "name": "Club UT1", "url": "https://example.com/club-ut1" }
+  ],
+  "Vermont": [
+    { "name": "Club VT1", "url": "https://example.com/club-vt1" }
+  ],
+  "Virginia": [
+    { "name": "Club VA1", "url": "https://example.com/club-va1" },
+    { "name": "Club VA2", "url": "https://example.com/club-va2" }
+  ],
+  "Washington": [
+    { "name": "Club WA1", "url": "https://example.com/club-wa1" },
+    { "name": "Club WA2", "url": "https://example.com/club-wa2" }
+  ],
+  "West Virginia": [
+    { "name": "Club WV1", "url": "https://example.com/club-wv1" }
+  ],
+  "Wisconsin": [
+    { "name": "Club WI1", "url": "https://example.com/club-wi1" },
+    { "name": "Club WI2", "url": "https://example.com/club-wi2" }
+  ],
+  "Wyoming": [
+    { "name": "Club WY1", "url": "https://example.com/club-wy1" }
+  ]
 }
