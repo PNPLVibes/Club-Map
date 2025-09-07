@@ -212,8 +212,8 @@ L.control.zoom({ position: 'topleft' }).addTo(map);
 let clubsByState = {};
 let geojsonLayer;
 let stateLabels = {};
-let stateCenters = {}; // Store the center points of each state
 
+// Updated centroids with better positioning
 const stateCentroids = {
   "Alabama": [32.9, -86.8], "Alaska": [61.5, -152.5], "Arizona": [34.3, -111.7],
   "Arkansas": [34.9, -92.4], "California": [37.2, -119.5], "Colorado": [39.0, -105.6],
@@ -234,6 +234,7 @@ const stateCentroids = {
   "Wisconsin": [44.6, -89.8], "Wyoming": [43.0, -107.5], "DC": [38.9, -77.0]
 };
 
+// State area data for scaling font sizes
 const stateAreas = {
   "Alaska":665384, "Texas":268596, "California":163695, "Montana":147040, "New Mexico":121590,
   "Arizona":113990, "Nevada":110572, "Colorado":104094, "Oregon":98379, "Wyoming":97813,
@@ -248,20 +249,25 @@ const stateAreas = {
   "Rhode Island":1545, "DC":68
 };
 
+// Adjusted label positions - moved up and left
 const labelAdjustments = {
-  "Michigan": [0.5, 0],
-  "Florida": [0, -0.7],
-  "New York": [0, -0.5],
-  "Massachusetts": [0, -0.5],
-  "Maryland": [0, -0.5],
-  "DC": [0, -0.8],
-  "Rhode Island": [0, -0.8],
-  "New Jersey": [0, -0.5],
-  "Connecticut": [0, -0.5],
-  "Delaware": [0, -0.5],
-  "New Hampshire": [0, -0.5],
-  "Vermont": [0, -0.5],
-  "West Virginia": [0, -0.3],
+  "Alabama": [-0.3, -0.3], "Alaska": [-0.5, 0], "Arizona": [-0.3, -0.3],
+  "Arkansas": [-0.3, -0.3], "California": [-0.4, -0.4], "Colorado": [-0.3, -0.3],
+  "Connecticut": [-0.4, -0.4], "Delaware": [-0.4, -0.4], "Florida": [-0.5, -0.5],
+  "Georgia": [-0.3, -0.3], "Hawaii": [-0.3, -0.3], "Idaho": [-0.3, -0.3],
+  "Illinois": [-0.3, -0.3], "Indiana": [-0.3, -0.3], "Iowa": [-0.3, -0.3],
+  "Kansas": [-0.3, -0.3], "Kentucky": [-0.3, -0.3], "Louisiana": [-0.3, -0.3],
+  "Maine": [-0.3, -0.3], "Maryland": [-0.4, -0.4], "Massachusetts": [-0.4, -0.4],
+  "Michigan": [-0.4, -0.4], "Minnesota": [-0.3, -0.3], "Mississippi": [-0.3, -0.3],
+  "Missouri": [-0.3, -0.3], "Montana": [-0.3, -0.3], "Nebraska": [-0.3, -0.3],
+  "Nevada": [-0.3, -0.3], "New Hampshire": [-0.4, -0.4], "New Jersey": [-0.4, -0.4],
+  "New Mexico": [-0.3, -0.3], "New York": [-0.4, -0.4], "North Carolina": [-0.3, -0.3],
+  "North Dakota": [-0.3, -0.3], "Ohio": [-0.3, -0.3], "Oklahoma": [-0.3, -0.3],
+  "Oregon": [-0.3, -0.3], "Pennsylvania": [-0.3, -0.3], "Rhode Island": [-0.5, -0.5],
+  "South Carolina": [-0.3, -0.3], "South Dakota": [-0.3, -0.3], "Tennessee": [-0.3, -0.3],
+  "Texas": [-0.4, -0.4], "Utah": [-0.3, -0.3], "Vermont": [-0.4, -0.4],
+  "Virginia": [-0.3, -0.3], "Washington": [-0.3, -0.3], "West Virginia": [-0.3, -0.3],
+  "Wisconsin": [-0.3, -0.3], "Wyoming": [-0.3, -0.3], "DC": [-0.5, -0.5]
 };
 
 // Sample clubs data for demonstration
@@ -290,16 +296,8 @@ fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us
 .then(response => response.json())
 .then(statesData => {
   geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
-  
-  // Calculate and store the center of each state
-  geojsonLayer.eachLayer(layer => {
-    const stateName = layer.feature.properties.name === 'District of Columbia' ? 'DC' : layer.feature.properties.name;
-    stateCenters[stateName] = layer.getBounds().getCenter();
-  });
-  
   addStateLabels();
-  updateLabelSizes();
-  updateLabelPositions(); // Initial position update
+  updateLabelSizes(); // Initial update
 })
 .catch(err => console.error("Error loading data:", err));
 
@@ -364,21 +362,7 @@ function addStateLabels() {
   });
 }
 
-// Update label positions based on current view
-function updateLabelPositions() {
-  Object.entries(stateLabels).forEach(([stateName, label]) => {
-    if (stateCenters[stateName]) {
-      const center = stateCenters[stateName];
-      const point = map.latLngToLayerPoint(center);
-      const adjustedPoint = L.point(point.x, point.y);
-      const adjustedLatLng = map.layerPointToLatLng(adjustedPoint);
-      
-      label.setLatLng(adjustedLatLng);
-    }
-  });
-}
-
-// Fixed mobile state label display
+// Improved label sizing function
 function updateLabelSizes() {
   const zoom = map.getZoom();
   const isMobileNow = window.matchMedia("(max-width: 768px)").matches;
@@ -386,8 +370,8 @@ function updateLabelSizes() {
   Object.entries(stateLabels).forEach(([stateName, label]) => {
     const el = label.getElement();
     
-    // Show labels at all zoom levels except the very lowest
-    if (zoom <= (isMobileNow ? 2 : 3)) {
+    // Hide labels at default zoom level and show when zoomed in
+    if (zoom <= (isMobileNow ? 3 : 4)) {
       el.style.display = 'none';
     } else {
       el.style.display = 'block';
@@ -395,14 +379,14 @@ function updateLabelSizes() {
       // Calculate base font size based on state area
       const area = stateAreas[stateName] || 25000;
       
-      // Base size for different zoom levels - adjusted for mobile
+      // Base size for different zoom levels
       let baseSize;
-      if (zoom <= (isMobileNow ? 3 : 4)) baseSize = 10; // First zoom level after default
-      else if (zoom <= (isMobileNow ? 4 : 5)) baseSize = 12;
-      else if (zoom <= (isMobileNow ? 5 : 6)) baseSize = 14;
-      else if (zoom <= (isMobileNow ? 6 : 7)) baseSize = 16;
-      else if (zoom <= (isMobileNow ? 7 : 8)) baseSize = 18;
-      else baseSize = 20;
+      if (zoom === (isMobileNow ? 4 : 5)) baseSize = 10; // First zoom level after default
+      else if (zoom === (isMobileNow ? 5 : 6)) baseSize = 14;
+      else if (zoom === (isMobileNow ? 6 : 7)) baseSize = 18;
+      else if (zoom === (isMobileNow ? 7 : 8)) baseSize = 22;
+      else if (zoom > (isMobileNow ? 7 : 8)) baseSize = 26;
+      else baseSize = 10;
       
       // Area-based scaling factor
       const areaFactor = Math.log(area) / 20;
@@ -411,7 +395,7 @@ function updateLabelSizes() {
       let fontSize = baseSize + areaFactor;
       
       // Apply minimum and maximum limits
-      fontSize = Math.max(8, Math.min(24, fontSize));
+      fontSize = Math.max(8, Math.min(30, fontSize));
       
       // Special adjustments for small states
       if (area < 10000) {
@@ -450,14 +434,8 @@ document.getElementById('geoBtn').addEventListener('click', () => {
   } else alert("Geolocation is not supported by your browser.");
 });
 
-// Update labels on zoom and move
-map.on('zoomend', function() {
-  updateLabelSizes();
-  updateLabelPositions();
-});
-map.on('moveend', function() {
-  updateLabelPositions();
-});
+// Update labels on zoom
+map.on('zoomend', updateLabelSizes);
 
 // Initial update
 updateLabelSizes();
