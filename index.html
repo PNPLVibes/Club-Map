@@ -320,7 +320,7 @@
             "Kentucky": 40408, "Indiana": 36420, "Maine": 35380, "South Carolina": 32020,
             "West Virginia": 24230, "Maryland": 12406, "Vermont": 9616, "New Hampshire": 9349,
             "Massachusetts": 10554, "New Jersey": 8723, "Hawaii": 10932, "Connecticut": 5543,
-            "Delaware": 2489, "Rhode Island": 1545, "DC": 68
+            "Delaware": 2489, "Rhode Island": 1545, "D.C.": 68
         };
         
         // Adjusted label positions
@@ -341,7 +341,7 @@
             "South Carolina": [-0.3, -0.3], "South Dakota": [-0.3, -0.3], "Tennessee": [-0.3, -0.3],
             "Texas": [-0.4, -0.4], "Utah": [-0.3, -0.3], "Vermont": [-0.4, -0.4],
             "Virginia": [-0.3, -0.3], "Washington": [-0.3, -0.3], "West Virginia": [-0.3, -0.3],
-            "Wisconsin": [-0.3, -0.3], "Wyoming": [-0.3, -0.3], "DC": [-0.5, -0.5]
+            "Wisconsin": [-0.3, -0.3], "Wyoming": [-0.3, -0.3], "D.C.": [-0.5, -0.5]
         };
         
         // Sample clubs data for fallback
@@ -420,7 +420,7 @@
         }
         
         function onEachFeature(feature, layer) {
-            const stateName = feature.properties.name === 'District of Columbia' ? 'DC' : feature.properties.name;
+            const stateName = feature.properties.name === 'District of Columbia' ? 'D.C.' : feature.properties.name;
             const clubs = clubsByState[stateName] || [];
             
             let popupContent = `<div class="state-popup-title">${stateName}</div>`;
@@ -533,5 +533,6 @@
     </script> 
 </body> 
 </html>
+
 
 
