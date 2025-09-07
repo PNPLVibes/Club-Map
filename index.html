@@ -15,10 +15,29 @@
       padding: 0;
       font-family: sans-serif;
     }
-    #map {
-      width: 100%;
-      height: calc(100% - 60px); /* leave space for search bar */
+
+    body {
+      display: flex;
+      flex-direction: column;
     }
+
+    #searchForm {
+      flex: 0 0 auto;
+      padding: 10px;
+      background: #f8f8f8;
+      box-shadow: 0 0 4px rgba(0,0,0,0.3);
+    }
+
+    #searchForm input {
+      padding: 5px;
+      margin-right: 5px;
+    }
+
+    #map {
+      flex: 1 1 auto;
+      width: 100%;
+    }
+
     .leaflet-control-reset {
       background: white;
       padding: 6px 10px;
@@ -28,15 +47,6 @@
       font-size: 16px;
       text-align: center;
       margin-bottom: 6px;
-    }
-    #searchForm {
-      padding: 10px;
-      background: #f8f8f8;
-      box-shadow: 0 0 4px rgba(0,0,0,0.3);
-    }
-    #searchForm input {
-      padding: 5px;
-      margin-right: 5px;
     }
 
     /* Club label styling */
@@ -230,17 +240,16 @@
     return R * c;
   }
 
-  // Search by ZIP (fixed for GitHub Pages CORS)
+  // Search by ZIP (GitHub Pages safe with /raw)
   document.getElementById('searchBtn').addEventListener('click', async () => {
     const zip = document.getElementById('zipInput').value.trim();
     const radius = parseFloat(document.getElementById('radiusInput').value);
     if (!zip) return alert("Please enter a ZIP code");
 
     try {
-      const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent("https://api.zippopotam.us/us/" + zip)}`);
+      const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent("https://api.zippopotam.us/us/" + zip)}`);
       if (!res.ok) throw new Error("Invalid ZIP code");
-      const wrapper = await res.json();
-      const data = JSON.parse(wrapper.contents);
+      const data = await res.json();
 
       const { latitude, longitude } = data.places[0];
       addClubMarkers(flattenClubs(), { lat: parseFloat(latitude), lng: parseFloat(longitude) }, radius);
