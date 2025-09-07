@@ -37,6 +37,13 @@
       padding: 5px;
       margin-right: 5px;
     }
+    /* Persistent state labels */
+    .state-label {
+      font-weight: bold;
+      color: #222;
+      font-size: 14px;
+      text-shadow: 1px 1px 2px white;
+    }
   </style>
 </head>
 <body>
@@ -52,16 +59,22 @@
 
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<!-- Zip code to Lat/Lng (via Zippopotam.us API) -->
+
 <script>
   const defaultCenter = [37.8, -96];
   const defaultZoom = 5;
-  const map = L.map('map', { minZoom: 3, maxZoom: 7, zoomControl: false }).setView(defaultCenter, defaultZoom);
 
-  // Tile layer
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; OpenStreetMap contributors'
+  const map = L.map('map', { 
+    minZoom: 3, 
+    maxZoom: 7, 
+    zoomControl: false,
+    attributionControl: false // hide attribution
+  }).setView(defaultCenter, defaultZoom);
+
+  // Modern light base map (Carto Light)
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      subdomains: 'abcd',
+      maxZoom: 19
   }).addTo(map);
 
   // Reset View Button
@@ -101,7 +114,7 @@
       fillColor: "#66c2a5",
       weight: 2,
       opacity: 1,
-      color: "white",
+      color: "#fff",
       dashArray: "3",
       fillOpacity: 0.7
     };
@@ -119,17 +132,14 @@
 
   function onEachFeature(feature, layer) {
     const stateName = feature.properties.name;
+    
+    // Add persistent state label
+    layer.bindTooltip(stateName, { permanent: true, direction: "center", className: "state-label" });
+
     const clubs = clubsByState[stateName] || [];
     let popupContent = `<b>${stateName}</b><br/>`;
-
-    if (clubs.length === 0) {
-      popupContent += "No clubs listed yet";
-    } else {
-      clubs.forEach(club => {
-        if (club.url) popupContent += `<a href="${club.url}" target="_blank">${club.name}</a><br/>`;
-        else popupContent += `${club.name}<br/>`;
-      });
-    }
+    if (clubs.length === 0) popupContent += "No clubs listed yet";
+    else clubs.forEach(club => popupContent += club.url ? `<a href="${club.url}" target="_blank">${club.name}</a><br/>` : `${club.name}<br/>`);
 
     layer.on({
       mouseover: highlightFeature,
@@ -140,12 +150,11 @@
 
   // Add nearby club markers
   function addClubMarkers(clubs, center, radius) {
-    // Clear old markers
     clubMarkers.forEach(m => map.removeLayer(m));
     clubMarkers = [];
 
     clubs.forEach(club => {
-      if (!club.lat || !club.lng) return; // skip clubs without coordinates
+      if (!club.lat || !club.lng) return;
       const distance = getDistance(center.lat, center.lng, club.lat, club.lng);
       if (distance <= radius) {
         const marker = L.marker([club.lat, club.lng])
@@ -161,7 +170,7 @@
 
   // Haversine distance in miles
   function getDistance(lat1, lon1, lat2, lon2) {
-    const R = 3958.8; // Earth radius in miles
+    const R = 3958.8;
     const dLat = (lat2 - lat1) * Math.PI/180;
     const dLon = (lon2 - lon1) * Math.PI/180;
     const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
@@ -195,7 +204,6 @@
     }, err => alert("Geolocation error: " + err.message));
   });
 
-  // Flatten clubsByState into one array with lat/lng
   function flattenClubs() {
     const allClubs = [];
     Object.values(clubsByState).forEach(stateClubs => {
