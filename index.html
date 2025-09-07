@@ -40,13 +40,11 @@
   #searchForm button#geoBtn {
     background: #27ae60;
   }
-  #searchForm button#geoBtn:hover { background: #219653; }
+  #searchForm button#geoBtn:hover {
+    background: #219653;
+  }
   #map { flex: 1 1 auto; width: 100%; }
   .leaflet-control-reset {
-    position: absolute;
-    top: 60px;  /* slightly lower than top */
-    right: 10px;
-    z-index: 1000;
     background: white;
     padding: 10px 15px;
     cursor: pointer;
@@ -55,9 +53,12 @@
     font-size: 16px;
     font-weight: bold;
     text-align: center;
+    margin-bottom: 10px;
     border: 2px solid rgba(0,0,0,0.2);
   }
-  .leaflet-control-reset:hover { background: #f8f8f8; }
+  .leaflet-control-reset:hover {
+    background: #f8f8f8;
+  }
   .state-label {
     font-weight: bold;
     font-size: 14px;
@@ -66,14 +67,23 @@
     pointer-events: none;
     text-align: center;
   }
-  .state-label.highlight { color: #e74c3c; font-size: 16px; }
+  .state-label.highlight {
+    color: #e74c3c;
+    font-size: 16px;
+  }
+  
   .leaflet-popup-content-wrapper {
     border-radius: 8px;
     padding: 2px;
     background: #f8f9fa;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   }
-  .leaflet-popup-content { margin: 18px; font-size: 18px; line-height: 1.5; min-width: 250px; }
+  .leaflet-popup-content {
+    margin: 18px;
+    font-size: 18px;
+    line-height: 1.5;
+    min-width: 250px;
+  }
   .state-popup-title {
     font-size: 22px;
     font-weight: bold;
@@ -83,9 +93,18 @@
     border-bottom: 2px solid #3498db;
     text-align: center;
   }
-  .club-list { list-style-type: none; padding: 0; margin: 0; }
-  .club-item { padding: 12px 0; border-bottom: 1px solid #e0e0e0; }
-  .club-item:last-child { border-bottom: none; }
+  .club-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  .club-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .club-item:last-child {
+    border-bottom: none;
+  }
   .club-link {
     color: #2980b9;
     text-decoration: none;
@@ -95,11 +114,40 @@
     border-radius: 4px;
     transition: background 0.2s;
   }
-  .club-link:hover { background: #e8f4fd; color: #e74c3c; }
-  .no-clubs { font-style: italic; color: #7f8c8d; text-align: center; padding: 15px 0; font-size: 16px; }
+  .club-link:hover {
+    background: #e8f4fd;
+    color: #e74c3c;
+  }
+  .no-clubs {
+    font-style: italic;
+    color: #7f8c8d;
+    text-align: center;
+    padding: 15px 0;
+    font-size: 16px;
+  }
+  
+  .info-panel {
+    position: absolute;
+    top: 100px;
+    right: 20px;
+    z-index: 1000;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.2);
+    max-width: 320px;
+    max-height: 70%;
+    overflow-y: auto;
+  }
+  
   @media (max-width: 768px) {
-    #searchForm { flex-direction: column; align-items: stretch; }
-    #searchForm input { min-width: auto; }
+    #searchForm {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    #searchForm input {
+      min-width: auto;
+    }
   }
 </style>
 </head>
@@ -115,9 +163,10 @@
 <div id="map"></div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <script>
-const defaultCenter = [39.8283, -98.5795]; // US center
-const defaultZoom = 3; // zoomed out by factor of one
+const defaultCenter = [39.8283, -98.5795]; // Geographic center of US
+const defaultZoom = 4;
 
 const map = L.map('map', { minZoom: 3, maxZoom: 18, zoomControl: false }).setView(defaultCenter, defaultZoom);
 
@@ -142,8 +191,6 @@ const ResetControl = L.Control.extend({
   }
 });
 map.addControl(new ResetControl());
-
-// Zoom buttons
 L.control.zoom({ position: 'topleft' }).addTo(map);
 
 let clubsByState = {};
@@ -212,7 +259,9 @@ function onEachFeature(feature, layer) {
     popupContent += `<ul class="club-list">`;
     clubs.forEach(club => {
       popupContent += `<li class="club-item">`;
-      popupContent += club.url ? `<a class="club-link" href="${club.url}" target="_blank">${club.name}</a>` : `<span>${club.name}</span>`;
+      popupContent += club.url 
+        ? `<a class="club-link" href="${club.url}" target="_blank">${club.name}</a>` 
+        : `<span>${club.name}</span>`;
       popupContent += `</li>`;
     });
     popupContent += `</ul>`;
@@ -234,11 +283,12 @@ function addStateLabels() {
   });
 }
 
-// Search buttons (ZIP / geolocation placeholders)
+// Search functionality
 document.getElementById('searchBtn').addEventListener('click', () => {
   const zipCode = document.getElementById('zipInput').value;
-  if (zipCode) alert(`Search functionality for ZIP code ${zipCode} would be implemented here.`);
-  else alert('Please enter a ZIP code to search.');
+  if (zipCode) {
+    alert(`Search functionality for ZIP code ${zipCode} would be implemented here.`);
+  } else alert('Please enter a ZIP code to search.');
 });
 
 document.getElementById('geoBtn').addEventListener('click', () => {
