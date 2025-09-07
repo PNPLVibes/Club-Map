@@ -9,40 +9,15 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
   <style>
-    html, body {
-      height: 100%;
+    body {
       margin: 0;
       padding: 0;
       font-family: sans-serif;
     }
-
-    body {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-
-    #searchForm {
-      flex: 0 0 auto;
-      padding: 10px;
-      background: #f8f8f8;
-      box-shadow: 0 0 4px rgba(0,0,0,0.3);
-      z-index: 1000;
-    }
-
-    #searchForm input {
-      padding: 5px;
-      margin-right: 5px;
-    }
-
     #map {
-      flex: 1 1 auto;
       width: 100%;
-      height: 100%;
-      position: relative;
-      z-index: 1;
+      height: 90vh;
     }
-
     .leaflet-control-reset {
       background: white;
       padding: 6px 10px;
@@ -53,28 +28,24 @@
       text-align: center;
       margin-bottom: 6px;
     }
-
-    /* Club label styling */
-    .club-label {
-      background: rgba(255,255,255,0.8);
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-weight: bold;
-      color: #333;
-      font-size: 13px;
-      box-shadow: 0 0 2px rgba(0,0,0,0.4);
+    #searchForm {
+      padding: 10px;
+      background: #f8f8f8;
+      box-shadow: 0 0 4px rgba(0,0,0,0.3);
     }
-
-    /* State label styling */
-    .state-label {
+    #searchForm input {
+      padding: 5px;
+      margin-right: 5px;
+    }
+    /* Persistent state labels without white background */
+    .state-label.leaflet-tooltip {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      color: #222; /* text color */
       font-weight: bold;
       font-size: 14px;
-      color: #333;
-      background: rgba(255,255,255,0.7);
-      padding: 2px 4px;
-      border-radius: 3px;
-      text-align: center;
-      box-shadow: 0 0 2px rgba(0,0,0,0.3);
+      text-shadow: 1px 1px 2px white; /* keeps labels readable on map */
     }
   </style>
 </head>
@@ -94,14 +65,19 @@
 
 <script>
   const defaultCenter = [37.8, -96];
-  const defaultZoom = 4;
-  const map = L.map('map', { minZoom: 3, maxZoom: 18 }).setView(defaultCenter, defaultZoom);
+  const defaultZoom = 5;
 
-  // Base map
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://www.carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    subdomains: 'abcd',
-    maxZoom: 19
+  const map = L.map('map', { 
+    minZoom: 3, 
+    maxZoom: 7, 
+    zoomControl: false,
+    attributionControl: false // hide attribution
+  }).setView(defaultCenter, defaultZoom);
+
+  // Modern light base map (Carto Light)
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      subdomains: 'abcd',
+      maxZoom: 19
   }).addTo(map);
 
   // Reset View Button
@@ -126,23 +102,22 @@
   let geojsonLayer;
   let clubMarkers = [];
 
-  // Load data
+  // Fetch clubs.json and US states GeoJSON
   Promise.all([
     fetch("clubs.json").then(r => r.json()),
     fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json").then(r => r.json())
   ]).then(([clubs, statesData]) => {
     clubsByState = clubs;
     geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
-    addStateLabels(geojsonLayer);
-    addPermanentClubLabels();
   }).catch(err => console.error(err));
 
+  // Style and highlight functions
   function style(feature) {
     return {
       fillColor: "#66c2a5",
       weight: 2,
       opacity: 1,
-      color: "white",
+      color: "#fff",
       dashArray: "3",
       fillOpacity: 0.7
     };
@@ -160,17 +135,14 @@
 
   function onEachFeature(feature, layer) {
     const stateName = feature.properties.name;
+    
+    // Add persistent state label without white background
+    layer.bindTooltip(stateName, { permanent: true, direction: "center", className: "state-label" });
+
     const clubs = clubsByState[stateName] || [];
     let popupContent = `<b>${stateName}</b><br/>`;
-
-    if (clubs.length === 0) {
-      popupContent += "No clubs listed yet";
-    } else {
-      clubs.forEach(club => {
-        if (club.url) popupContent += `<a href="${club.url}" target="_blank">${club.name}</a><br/>`;
-        else popupContent += `${club.name}<br/>`;
-      });
-    }
+    if (clubs.length === 0) popupContent += "No clubs listed yet";
+    else clubs.forEach(club => popupContent += club.url ? `<a href="${club.url}" target="_blank">${club.name}</a><br/>` : `${club.name}<br/>`);
 
     layer.on({
       mouseover: highlightFeature,
@@ -179,10 +151,7 @@
     });
   }
 
-  function flattenClubs() {
-    return Object.values(clubsByState).flat();
-  }
-
+  // Add nearby club markers
   function addClubMarkers(clubs, center, radius) {
     clubMarkers.forEach(m => map.removeLayer(m));
     clubMarkers = [];
@@ -192,47 +161,17 @@
       const distance = getDistance(center.lat, center.lng, club.lat, club.lng);
       if (distance <= radius) {
         const marker = L.marker([club.lat, club.lng])
-          .bindPopup(`<b>${club.name}</b><br/>${club.url ? `<a href="${club.url}" target="_blank">${club.url}</a>` : ''}`)
-          .addTo(map);
+          .bindPopup(`<b>${club.name}</b><br/>${club.url ? `<a href="${club.url}" target="_blank">${club.url}</a>` : ''}`);
+        marker.addTo(map);
         clubMarkers.push(marker);
       }
     });
 
-    if (clubMarkers.length > 0) {
-      map.fitBounds(L.featureGroup(clubMarkers).getBounds());
-    } else {
-      alert("No clubs found within that radius.");
-    }
+    if (clubMarkers.length > 0) map.fitBounds(L.featureGroup(clubMarkers).getBounds());
+    else alert("No clubs found within that radius.");
   }
 
-  function addPermanentClubLabels() {
-    flattenClubs().forEach(club => {
-      if (!club.lat || !club.lng) return;
-      L.marker([club.lat, club.lng], {
-        icon: L.divIcon({
-          className: 'club-label',
-          html: club.name,
-          iconSize: [100, 20],
-          iconAnchor: [50, -5]
-        })
-      }).addTo(map);
-    });
-  }
-
-  function addStateLabels(geojsonLayer) {
-    geojsonLayer.eachLayer(layer => {
-      const center = layer.getBounds().getCenter();
-      L.marker(center, {
-        icon: L.divIcon({
-          className: 'state-label',
-          html: layer.feature.properties.name,
-          iconSize: [100, 20],
-          iconAnchor: [50, 0]
-        })
-      }).addTo(map);
-    });
-  }
-
+  // Haversine distance in miles
   function getDistance(lat1, lon1, lat2, lon2) {
     const R = 3958.8;
     const dLat = (lat2 - lat1) * Math.PI/180;
@@ -242,29 +181,24 @@
     return R * c;
   }
 
-  // ✅ Search with proxy (GitHub-safe)
+  // Search by ZIP
   document.getElementById('searchBtn').addEventListener('click', async () => {
     const zip = document.getElementById('zipInput').value.trim();
     const radius = parseFloat(document.getElementById('radiusInput').value);
     if (!zip) return alert("Please enter a ZIP code");
 
     try {
-      const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent("https://api.zippopotam.us/us/" + zip)}`);
+      const res = await fetch(`https://api.zippopotam.us/us/${zip}`);
       if (!res.ok) throw new Error("Invalid ZIP code");
-      const wrapper = await res.json();
-      const data = JSON.parse(wrapper.contents);
-
-      console.log("ZIP lookup:", data);
-
+      const data = await res.json();
       const { latitude, longitude } = data.places[0];
       addClubMarkers(flattenClubs(), { lat: parseFloat(latitude), lng: parseFloat(longitude) }, radius);
     } catch (err) {
-      console.error("ZIP Search Error:", err);
       alert("Error: " + err.message);
     }
   });
 
-  // Geolocation
+  // Geolocation button
   document.getElementById('geoBtn').addEventListener('click', () => {
     if (!navigator.geolocation) return alert("Geolocation not supported");
     navigator.geolocation.getCurrentPosition(pos => {
@@ -273,6 +207,13 @@
     }, err => alert("Geolocation error: " + err.message));
   });
 
+  function flattenClubs() {
+    const allClubs = [];
+    Object.values(clubsByState).forEach(stateClubs => {
+      stateClubs.forEach(club => allClubs.push(club));
+    });
+    return allClubs;
+  }
 </script>
 
 </body>
