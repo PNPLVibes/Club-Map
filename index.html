@@ -39,11 +39,11 @@
     font-weight: bold;
     font-size: 14px;
     color: #333;
-    background: rgba(255,255,255,0.7);
-    padding: 2px 4px;
-    border-radius: 3px;
+    background: none;      /* Removed background */
+    padding: 0;            /* Removed padding */
+    border-radius: 0;      /* Removed border radius */
     text-align: center;
-    box-shadow: 0 0 2px rgba(0,0,0,0.3);
+    box-shadow: none;      /* Removed shadow */
   }
 </style>
 </head>
@@ -129,15 +129,22 @@ function onEachFeature(feature, layer) {
   layer.on({ mouseover: highlightFeature, mouseout: resetHighlight, click: () => layer.bindPopup(popupContent).openPopup() });
 }
 
-// Add state labels at centroids
+// Add state labels at centroids, properly centered
 function addStateLabels(layerGroup) {
   layerGroup.eachLayer(layer => {
-    const center = layer.getBounds().getCenter();
+    const bounds = layer.getBounds();
+    const center = bounds.getCenter();
     const stateName = layer.feature.properties.name === 'District of Columbia' ? 'DC' : layer.feature.properties.name;
-    L.marker(center, { icon: L.divIcon({ className: 'state-label', html: stateName, iconSize: [100, 20], iconAnchor: [50, 0] })}).addTo(map);
+    L.marker(center, {
+      icon: L.divIcon({
+        className: 'state-label',
+        html: stateName,
+        iconSize: [0, 0],   // size irrelevant for text-only marker
+        iconAnchor: [0, 0]
+      })
+    }).addTo(map);
   });
 }
-
 </script>
 </body>
 </html>
