@@ -8,115 +8,53 @@
 <style>
   body { margin: 0; padding: 0; }
   #map { width: 100vw; height: 100vh; }
-  .leaflet-top.leaflet-left { top: 10px; left: 10px; } /* Move controls slightly down */
-  .leaflet-control-reset {
-    background: white;
-    padding: 5px 8px;
-    cursor: pointer;
-    border-radius: 4px;
-    box-shadow: 0 0 4px rgba(0,0,0,0.3);
-    text-align: center;
-    font-size: 14px;
-    margin-bottom: 4px;
-  }
+  .leaflet-top.leaflet-left { top: 10px; left: 10px; } /* Move zoom/reset slightly down */
 </style>
 </head>
 <body>
 <div id="map"></div>
 
-<!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<!-- US States GeoJSON -->
-<script src="https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json"></script>
-
 <script>
-const defaultCenter = [37.8, -96];
-const defaultZoom = 5;
+  // Initialize map
+  const map = L.map('map').setView([37.8, -96], 4);
 
-// Initialize map
-const map = L.map('map', { zoomControl: false, minZoom: 3, maxZoom: 7 })
-               .setView(defaultCenter, defaultZoom);
+  // Add tile layer
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
 
-// Add OpenStreetMap tiles
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
-
-// Add zoom control
-L.control.zoom({ position: 'topleft' }).addTo(map);
-
-// Add Reset View button above zoom controls
-const resetBtn = L.DomUtil.create('div', 'leaflet-control-reset');
-resetBtn.innerHTML = 'Reset View';
-resetBtn.onclick = () => map.setView(defaultCenter, defaultZoom);
-document.querySelector('.leaflet-top.leaflet-left').prepend(resetBtn);
-
-let clubs = {};
-
-// Load clubs.json
-fetch("clubs.json")
-  .then(r => r.json())
-  .then(data => {
-    clubs = data;
-    initMap();
-  })
-  .catch(err => console.error("Error loading clubs.json:", err));
-
-// Style for states
-function style(feature) {
-  return {
-    fillColor: "#66c2a5",
-    weight: 2,
-    opacity: 1,
-    color: "white",
-    dashArray: "3",
-    fillOpacity: 0.7
-  };
-}
-
-// Highlight on hover
-function highlightFeature(e) {
-  const layer = e.target;
-  layer.setStyle({ weight: 3, color: "#666", dashArray: "", fillOpacity: 0.9 });
-  layer.bringToFront();
-}
-
-// Reset highlight
-function resetHighlight(e) {
-  geojson.resetStyle(e.target);
-}
-
-// On each state feature
-function onEachFeature(feature, layer) {
-  const stateName = feature.properties.name;
-
-  layer.on({
-    mouseover: highlightFeature,
-    mouseout: resetHighlight,
-    click: (e) => {
-      const stateClubs = clubs[stateName];
-      let content = '';
-
-      if (stateClubs && stateClubs.length > 0) {
-        content = '<ul>';
-        stateClubs.forEach(club => {
-          content += `<li><a href="${club.url}" target="_blank">${club.name}</a></li>`;
-        });
-        content += '</ul>';
-      } else {
-        content = 'No clubs listed in this state.';
-      }
-
-      layer.bindPopup(`<strong>${stateName}</strong><br>${content}`).openPopup();
+  // Add reset view button
+  const resetControl = L.Control.extend({
+    options: { position: 'topleft' },
+    onAdd: function () {
+      const container = L.DomUtil.create('button', '');
+      container.innerHTML = 'Reset View';
+      container.style.backgroundColor = 'white';
+      container.style.padding = '5px';
+      container.style.cursor = 'pointer';
+      container.onclick = () => map.setView([37.8, -96], 4);
+      return container;
     }
   });
-}
+  map.addControl(new resetControl());
 
-let geojson;
-function initMap() {
-  geojson = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
-}
+  // Load clubs.json
+  fetch('clubs.json')
+    .then(response => response.json())
+    .then(data => {
+      for (const state in data) {
+        data[state].forEach(club => {
+          // You can set coordinates here. For demo, random coords
+          const lat = 30 + Math.random() * 20; 
+          const lng = -120 + Math.random() * 30;
+          const marker = L.marker([lat, lng]).addTo(map);
+          marker.bindPopup(`<strong>${club.name}</strong><br><a href="${club.url}" target="_blank">${club.url}</a>`);
+        });
+      }
+    })
+    .catch(err => console.error('Error loading clubs.json:', err));
 </script>
 </body>
 </html>
