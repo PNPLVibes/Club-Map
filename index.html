@@ -212,6 +212,7 @@ L.control.zoom({ position: 'topleft' }).addTo(map);
 let clubsByState = {};
 let geojsonLayer;
 let stateLabels = {};
+let stateCenters = {}; // Store the center points of each state
 
 const stateCentroids = {
   "Alabama": [32.9, -86.8], "Alaska": [61.5, -152.5], "Arizona": [34.3, -111.7],
@@ -289,8 +290,16 @@ fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us
 .then(response => response.json())
 .then(statesData => {
   geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
+  
+  // Calculate and store the center of each state
+  geojsonLayer.eachLayer(layer => {
+    const stateName = layer.feature.properties.name === 'District of Columbia' ? 'DC' : layer.feature.properties.name;
+    stateCenters[stateName] = layer.getBounds().getCenter();
+  });
+  
   addStateLabels();
   updateLabelSizes();
+  updateLabelPositions(); // Initial position update
 })
 .catch(err => console.error("Error loading data:", err));
 
@@ -352,6 +361,20 @@ function addStateLabels() {
       interactive: false
     }).addTo(map);
     stateLabels[stateName] = label;
+  });
+}
+
+// Update label positions based on current view
+function updateLabelPositions() {
+  Object.entries(stateLabels).forEach(([stateName, label]) => {
+    if (stateCenters[stateName]) {
+      const center = stateCenters[stateName];
+      const point = map.latLngToLayerPoint(center);
+      const adjustedPoint = L.point(point.x, point.y);
+      const adjustedLatLng = map.layerPointToLatLng(adjustedPoint);
+      
+      label.setLatLng(adjustedLatLng);
+    }
   });
 }
 
@@ -428,8 +451,13 @@ document.getElementById('geoBtn').addEventListener('click', () => {
 });
 
 // Update labels on zoom and move
-map.on('zoomend', updateLabelSizes);
-map.on('moveend', updateLabelSizes);
+map.on('zoomend', function() {
+  updateLabelSizes();
+  updateLabelPositions();
+});
+map.on('moveend', function() {
+  updateLabelPositions();
+});
 
 // Initial update
 updateLabelSizes();
