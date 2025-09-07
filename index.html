@@ -140,6 +140,7 @@
     overflow-y: auto;
   }
   
+  /* Mobile-specific styles */
   @media (max-width: 768px) {
     #searchForm {
       flex-direction: column;
@@ -147,6 +148,20 @@
     }
     #searchForm input {
       min-width: auto;
+    }
+    
+    /* Adjust state labels for mobile */
+    .state-label {
+      font-size: 12px;
+    }
+    
+    /* Adjust popup size for mobile */
+    .leaflet-popup-content {
+      font-size: 16px;
+      min-width: 200px;
+    }
+    .state-popup-title {
+      font-size: 20px;
     }
   }
 </style>
@@ -165,8 +180,10 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
+// Determine initial zoom based on screen size
+const isMobile = window.matchMedia("(max-width: 768px)").matches;
 const defaultCenter = [39.8283, -98.5795]; // Geographic center of US
-const defaultZoom = 4;
+const defaultZoom = isMobile ? 3 : 4; // Zoom level 3 for mobile, 4 for desktop
 
 const map = L.map('map', { minZoom: 3, maxZoom: 18, zoomControl: false }).setView(defaultCenter, defaultZoom);
 
@@ -302,6 +319,12 @@ document.getElementById('geoBtn').addEventListener('click', () => {
       () => alert('Unable to retrieve your location. Please ensure location services are enabled.')
     );
   } else alert('Geolocation is not supported by your browser.');
+});
+
+// Handle window resize to adjust zoom if needed
+window.addEventListener('resize', function() {
+  // This is just to handle the reset button functionality
+  // We're not changing zoom on resize, only on initial load
 });
 </script>
 </body>
