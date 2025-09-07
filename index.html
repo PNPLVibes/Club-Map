@@ -38,11 +38,11 @@
       margin-right: 5px;
     }
     .state-label {
-      font-size: 16px; /* bigger font */
+      font-size: 14px;
       font-weight: bold;
-      color: #333;
-      text-shadow: 1px 1px 2px #fff;
-      pointer-events: none; /* so labels don't block map interactions */
+      color: black;
+      text-shadow: 1px 1px 2px white; /* optional subtle outline for visibility */
+      pointer-events: none;
     }
   </style>
 </head>
@@ -96,11 +96,12 @@
     "#70C1B3", "#FF1654", "#247BA0", "#B5E48C", "#F4F1DE"
   ];
 
-  function getStateColor(stateName, usedColors = {}) {
-    let color = colors[Math.floor(Math.random() * colors.length)];
-    if (usedColors[stateName]) color = usedColors[stateName];
-    usedColors[stateName] = color;
-    return color;
+  // deterministic color based on state name
+  function getStateColor(stateName) {
+    let hash = 0;
+    for (let i = 0; i < stateName.length; i++) hash = stateName.charCodeAt(i) + ((hash << 5) - hash);
+    const index = Math.abs(hash) % colors.length;
+    return colors[index];
   }
 
   Promise.all([
@@ -108,10 +109,10 @@
     fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json").then(r => r.json())
   ]).then(([clubs, statesData]) => {
     clubsByState = clubs;
-    const usedColors = {};
+
     geojsonLayer = L.geoJson(statesData, {
       style: feature => ({
-        fillColor: getStateColor(feature.properties.name, usedColors),
+        fillColor: getStateColor(feature.properties.name),
         weight: 2,
         opacity: 1,
         color: "white",
@@ -145,18 +146,22 @@
       });
     }
 
-    // Add permanent state label
-    layer.bindTooltip(stateName, {
-      permanent: true,
-      direction: "center",
-      className: "state-label"
-    }).openTooltip();
-
     layer.on({
       mouseover: highlightFeature,
       mouseout: resetHighlight,
       click: () => layer.bindPopup(popupContent).openPopup()
     });
+
+    // Add state name label in center
+    const center = layer.getBounds().getCenter();
+    const label = L.marker(center, {
+      icon: L.divIcon({
+        className: 'state-label',
+        html: stateName,
+        iconSize: null
+      }),
+      interactive: false
+    }).addTo(map);
   }
 
   function addClubMarkers(clubs, center, radius) {
