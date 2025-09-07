@@ -27,7 +27,8 @@
       padding: 10px;
       background: #f8f8f8;
       box-shadow: 0 0 4px rgba(0,0,0,0.3);
-      z-index: 1000;
+      z-index: 2000; /* stays above map */
+      position: relative;
     }
 
     #searchForm input {
@@ -38,11 +39,12 @@
     #map {
       flex: 1 1 auto;
       width: 100%;
-      min-height: 400px; /* ✅ ensures visible on desktop */
+      min-height: 600px; /* ✅ ensures visible on desktop */
       position: relative;
       z-index: 1;
     }
 
+    /* Reset button styling */
     .leaflet-control-reset {
       background: white;
       padding: 6px 10px;
@@ -51,7 +53,11 @@
       box-shadow: 0 0 4px rgba(0,0,0,0.3);
       font-size: 16px;
       text-align: center;
-      margin-bottom: 6px;
+    }
+
+    /* ✅ Ensure controls always appear above map & not hidden by search bar */
+    .leaflet-control {
+      z-index: 1500 !important;
     }
 
     .club-label {
@@ -102,7 +108,7 @@
     maxZoom: 19
   }).addTo(map);
 
-  // ✅ Reset View Button (only one set of controls now)
+  // ✅ Reset View Button (top-left, above zoom)
   const ResetControl = L.Control.extend({
     options: { position: 'topleft' },
     onAdd: function(map) {
@@ -116,8 +122,6 @@
     }
   });
   map.addControl(new ResetControl());
-
-  // ✅ Do NOT add L.control.zoom() → avoids double zoom buttons
 
   let clubsByState = {};
   let geojsonLayer;
