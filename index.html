@@ -216,11 +216,19 @@
   function addStateLabels(geojsonLayer) {
     geojsonLayer.eachLayer(layer => {
       const center = layer.getBounds().getCenter();
+      let offset = [0,0];
+
+      // Adjustments for specific states
+      const stateName = layer.feature.properties.name;
+      if(stateName === "Virginia") offset = [-15,0]; // move left
+      if(stateName === "DC") offset = [5,0]; // small offset for DC
+      if(stateName === "Maryland") offset = [5,0]; // small offset for MD
+
       layer.bindTooltip(layer.feature.properties.name, {
         permanent: true,
         direction: 'center',
         className: 'state-tooltip',
-        offset: [0,0]
+        offset: offset
       }).openTooltip();
     });
   }
