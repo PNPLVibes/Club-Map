@@ -37,8 +37,7 @@
       padding: 5px;
       margin-right: 5px;
     }
-
-    /* Club label styling */
+    /* Style for permanent club labels */
     .club-label {
       background: rgba(255,255,255,0.8);
       padding: 2px 6px;
@@ -47,18 +46,6 @@
       color: #333;
       font-size: 13px;
       box-shadow: 0 0 2px rgba(0,0,0,0.4);
-    }
-
-    /* State label styling */
-    .state-label {
-      font-weight: bold;
-      font-size: 14px;
-      color: #333;
-      background: rgba(255,255,255,0.7);
-      padding: 2px 4px;
-      border-radius: 3px;
-      text-align: center;
-      box-shadow: 0 0 2px rgba(0,0,0,0.3);
     }
   </style>
 </head>
@@ -81,7 +68,7 @@
   const defaultZoom = 5;
   const map = L.map('map', { minZoom: 3, maxZoom: 7, zoomControl: false }).setView(defaultCenter, defaultZoom);
 
-  // Base map: Carto Voyager No Labels
+  // Carto Voyager No Labels
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://www.carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     subdomains: 'abcd',
@@ -117,8 +104,7 @@
   ]).then(([clubs, statesData]) => {
     clubsByState = clubs;
     geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
-    addStateLabels(geojsonLayer); // add state names
-    addPermanentClubLabels();      // add club names
+    addPermanentClubLabels(); // add labels once data is loaded
   }).catch(err => console.error(err));
 
   // Style and highlight functions
@@ -202,19 +188,6 @@
         html: club.name,
         iconSize: [100, 20],
         iconAnchor: [50, -5]
-      })}).addTo(map);
-    });
-  }
-
-  // Add state labels at centroids
-  function addStateLabels(geojsonLayer) {
-    geojsonLayer.eachLayer(layer => {
-      const center = layer.getBounds().getCenter();
-      L.marker(center, { icon: L.divIcon({
-        className: 'state-label',
-        html: layer.feature.properties.name,
-        iconSize: [100, 20],
-        iconAnchor: [50, 0]
       })}).addTo(map);
     });
   }
