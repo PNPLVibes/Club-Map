@@ -3,6 +3,7 @@
     {
       "name": "Red Chair",
       "city": "Birmingham",
+      "state": "AL",
       "zip": "35203",
       "url": "https://www.theredchair.org/"
     }
@@ -11,12 +12,14 @@
     {
       "name": "Arizona Power Exchange (Apex)",
       "city": "Phoenix",
+      "state": "AZ",
       "zip": "85001",
       "url": "https://arizonapowerexchange.org/"
     },
     {
       "name": "Desert Dominion",
       "city": "Tucson",
+      "state": "AZ",
       "zip": "85701",
       "url": "https://www.desertdominion.org/"
     }
@@ -25,24 +28,28 @@
     {
       "name": "Society of Janus",
       "city": "San Francisco",
+      "state": "CA",
       "zip": "94102",
       "url": "https://soj.org/"
     },
     {
       "name": "The 15 Association",
       "city": "San Francisco",
+      "state": "CA",
       "zip": "94110",
       "url": "https://the15association.org/"
     },
     {
       "name": "The Exiles",
       "city": "San Francisco",
+      "state": "CA",
       "zip": "94103",
       "url": "https://theexiles.org/"
     },
     {
       "name": "Threshold",
       "city": "Los Angeles",
+      "state": "CA",
       "zip": "90015",
       "url": "https://thresholdla.org/"
     }
@@ -51,6 +58,7 @@
     {
       "name": "Denver Sanctuary",
       "city": "Denver",
+      "state": "CO",
       "zip": "80202",
       "url": "https://www.denversanctuary.com/"
     }
@@ -59,18 +67,21 @@
     {
       "name": "Black Rose",
       "city": "D.C.",
+      "state": "DC",
       "zip": "20002",
       "url": "https://br.org/"
     },
     {
       "name": "Crucible",
       "city": "D.C.",
+      "state": "DC",
       "zip": "20002",
       "url": "https://the-crucible.com/"
     },
     {
       "name": "Special Interest Group Men’s Association (SigMa)",
       "city": "Baltimore/D.C.",
+      "state": "DC",
       "zip": "20002",
       "url": ""
     }
@@ -79,18 +90,21 @@
     {
       "name": "Club SwInkster",
       "city": "Kissimmee",
+      "state": "FL",
       "zip": "34741",
       "url": "https://www.secretsfl.com/club-swinkster"
     },
     {
       "name": "Panhandle Alternative Lifestyles Society (PALS)",
       "city": "Pensacola",
+      "state": "FL",
       "zip": "32501",
       "url": ""
     },
     {
       "name": "The Woodshed",
       "city": "Orlando",
+      "state": "FL",
       "zip": "32801",
       "url": "https://www.thewoodshedorlando.com/"
     }
@@ -99,12 +113,14 @@
     {
       "name": "Galleria Domain",
       "city": "Chicago",
+      "state": "IL",
       "zip": "60606",
       "url": "https://galleriadomain.org/"
     },
     {
       "name": "The Chicago Rose Club",
       "city": "Chicago",
+      "state": "IL",
       "zip": "60601",
       "url": "https://www.thechicagoroseclub.org/"
     }
@@ -113,6 +129,7 @@
     {
       "name": "Dungeons Dungeon IX",
       "city": "Kansas City",
+      "state": "KS",
       "zip": "66101",
       "url": "https://www.kcpioneers.org/"
     }
@@ -121,6 +138,7 @@
     {
       "name": "New England Dungeon Society (NE-DS)",
       "city": "Boston",
+      "state": "MA",
       "zip": "02108",
       "url": "https://www.ne-ds.org/"
     }
@@ -129,18 +147,21 @@
     {
       "name": "Baltimore Educational and Social Society (BESS)",
       "city": "Baltimore",
+      "state": "MD",
       "zip": "21201",
       "url": ""
     },
     {
       "name": "Dark Odyssey",
       "city": "Baltimore",
+      "state": "MD",
       "zip": "21201",
       "url": "https://darkodyssey.com/"
     },
     {
       "name": "Camp Crucible",
       "city": "Northern Maryland",
+      "state": "MD",
       "zip": "20878",
       "url": "https://www.campcrucible.com/"
     }
@@ -149,6 +170,7 @@
     {
       "name": "Charlotte Area Power Exchange (CAPEX)",
       "city": "Charlotte",
+      "state": "NC",
       "zip": "28202",
       "url": ""
     }
@@ -157,12 +179,14 @@
     {
       "name": "Rochester Kink Society",
       "city": "Rochester",
+      "state": "NY",
       "zip": "14604",
       "url": "https://www.rochesterkinksociety.com/"
     },
     {
       "name": "The Eulenspiegel Society (TES)",
       "city": "New York City",
+      "state": "NY",
       "zip": "10010",
       "url": "https://www.tes.org/"
     }
@@ -171,6 +195,7 @@
     {
       "name": "OhioSMART",
       "city": "Cleveland",
+      "state": "OH",
       "zip": "44113",
       "url": "https://ohiosmart.org/"
     }
@@ -179,6 +204,7 @@
     {
       "name": "Portland Leather Alliance",
       "city": "Portland",
+      "state": "OR",
       "zip": "97201",
       "url": "https://www.portlandleather.org/"
     }
@@ -187,6 +213,7 @@
     {
       "name": "The Mark",
       "city": "Nashville",
+      "state": "TN",
       "zip": "37203",
       "url": "https://themarkbycpi.org/"
     }
@@ -195,12 +222,14 @@
     {
       "name": "DFW Dungeon",
       "city": "Dallas",
+      "state": "TX",
       "zip": "75201",
       "url": "https://dfwdungeon.com/"
     },
     {
       "name": "Infliction Hall",
       "city": "Euless",
+      "state": "TX",
       "zip": "76039",
       "url": "https://members.inflictionhall.com/"
     }
@@ -209,6 +238,7 @@
     {
       "name": "Charlottesville Underground Fetish Fellowship (CUFF)",
       "city": "Charlottesville",
+      "state": "VA",
       "zip": "22903",
       "url": ""
     }
