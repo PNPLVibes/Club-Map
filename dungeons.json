@@ -58,19 +58,19 @@
   "DC": [
     {
       "name": "Crucible",
-      "city": "Washington",
+      "city": "D.C.",
       "zip": "20002",
       "url": "https://the-crucible.com/"
     },
     {
       "name": "Black Rose",
-      "city": "Washington",
+      "city": "D.C.",
       "zip": "20002",
       "url": "https://br.org/"
     },
     {
       "name": "Special Interest Group Men’s Association (SigMa)",
-      "city": "Baltimore/Washington",
+      "city": "Baltimore/D.C.",
       "zip": "20002",
       "url": ""
     }
