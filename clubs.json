@@ -1,185 +1,59 @@
 {
   "Alabama": [
-    { "name": "Club A1", "url": "https://example.com/club-a1" },
-    { "name": "Club A2", "url": "https://example.com/club-a2" }
+    { "name": "Gems Club", "url": "https://www.gemsclub.co/", "city": "Birmingham", "state": "AL", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Erotica", "url": "https://eroticaparty.com/", "city": "Huntsville", "state": "AL", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Seduction", "url": "https://seductionparties.club/", "city": "Birmingham", "state": "AL", "zip": "", "lat": 0.0, "lng": 0.0 }
   ],
-  "Alaska": [
-    { "name": "Club AK1", "url": "https://example.com/club-ak1" }
-  ],
+  "Alaska": [],
   "Arizona": [
-    { "name": "Club AZ1", "url": "https://example.com/club-az1" },
-    { "name": "Club AZ2", "url": "https://example.com/club-az2" }
+    { "name": "Club Encounters", "url": "https://clubencounters.com/", "city": "Phoenix", "state": "AZ", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Vixxxins", "url": "https://www.vixxxins.info/", "city": "Goodyear", "state": "AZ", "zip": "", "lat": 0.0, "lng": 0.0 }
   ],
   "Arkansas": [
-    { "name": "Club AR1", "url": "https://example.com/club-ar1" }
+    { "name": "Arkansas Swinger", "url": "http://arkansasswinger.net/", "city": "Rogers/Pine Bluff", "state": "AR", "zip": "", "lat": 0.0, "lng": 0.0 }
   ],
   "California": [
-    { "name": "Club CA1", "url": "https://example.com/club-ca1" },
-    { "name": "Club CA2", "url": "https://example.com/club-ca2" },
-    { "name": "Club CA3", "url": "https://example.com/club-ca3" }
+    { "name": "Allures", "url": "https://www.allureslifestyle.com/", "city": "Sacramento", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Gary and Margaret's", "url": "https://garyandmargarets.org/", "city": "Mira Loma", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "SoCal Circus", "url": "https://socalcircusowner.wix.com/socalcircus", "city": "Huntington Beach", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Bronze Party", "url": "https://bronzeparty.com/", "city": "Palo Alto", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Twist", "url": "https://www.twist-sf.com/", "city": "San Francisco", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Sea Mountain Nude Resort and Lifestyle Hotel", "url": "https://www.seamountainranch.com/", "city": "Palm Springs", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Simply Living Silver", "url": "https://simplylivingsilver.com/", "city": "Bakersfield", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Exotic Dreams Resort", "url": "https://www.edrhotel.com/", "city": "Palm Springs", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "The Suite Life", "url": "https://thesuitelifeplatinum.com/", "city": "Sacramento", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Tangerine's Dream", "url": "https://tangerinesdream.com/", "city": "San Jose", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Thads", "url": "https://www.thads.com/", "city": "San Diego", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "247Fetish", "url": "https://247fetish.net/", "city": "San Francisco", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Club Labyrinth", "url": "https://clublabyrinth.com/", "city": "Los Angeles", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Tentaciones", "url": "https://www.tentacionesla.com/", "city": "Los Angeles", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Club Joi", "url": "https://www.clubjoi.com/", "city": "Los Angeles", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Gemini Social Club", "url": "https://geminisocialclub.wordpress.com/", "city": "Pomona", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Kinky Rabbit Club", "url": "https://knkyrabbitclub.com/", "city": "Los Angeles", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Playmates Parties", "url": "https://swingersclubsreviews.org/", "city": "Los Angeles", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "House of Black", "url": "https://www.houseofblack.com/", "city": "San Diego", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Club Safeword", "url": "https://www.clubsafeword.com/", "city": "San Diego", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "SoCal BBW Swingers and Admirers", "url": "https://bbwswingers.party/", "city": "Anaheim", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "The Cougars Den", "url": "https://www.thecougarsden.info/", "city": "Quartz Hill", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Noches Atrevidas", "url": "https://nochesatrevidaslosangeles.weebly.com/", "city": "Los Angeles", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "The Mountainside Acres", "url": "https://mountainsideacresresort.com/", "city": "San Bernardino", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Vixen", "url": "https://www.vixenclub.com/", "city": "Van Nuys", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Club Kiss", "url": "https://www.clubkiss.us/", "city": "San Francisco", "state": "CA", "zip": "", "lat": 0.0, "lng": 0.0 }
   ],
   "Colorado": [
-    { "name": "Club CO1", "url": "https://example.com/club-co1" },
-    { "name": "Club CO2", "url": "https://example.com/club-co2" }
+    { "name": "Scarlet Ranch", "url": "https://www.scarletranch.com/", "city": "Littleton", "state": "CO", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Mon Chalet", "url": "https://mon-chalet.com/", "city": "Aurora", "state": "CO", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Rocky Mountain Parties", "url": "https://www.rmpfun.com/", "city": "", "state": "CO", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Voodoo Leatherworks", "url": "https://www.voodooleatherworks.com/", "city": "Colorado Springs", "state": "CO", "zip": "", "lat": 0.0, "lng": 0.0 }
   ],
   "Connecticut": [
-    { "name": "Club CT1", "url": "https://example.com/club-ct1" }
+    { "name": "Wicked Fun", "url": "https://members.wickedfunclub.com/", "city": "Terryville", "state": "CT", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Leisure Time Club", "url": "https://www.leisuretime-club.com/", "city": "Hartford", "state": "CT", "zip": "", "lat": 0.0, "lng": 0.0 }
   ],
-  "D.C.": [
-    { "name": "Club DC1", "url": "https://example.com/club-dc1" }
-  ],
-  "Delaware": [
-    { "name": "Club DE1", "url": "https://example.com/club-de1" }
-  ],
+  "Delaware": [],
   "Florida": [
-    { "name": "Club FL1", "url": "https://example.com/club-fl1" },
-    { "name": "Club FL2", "url": "https://example.com/club-fl2" },
-    { "name": "Club FL3", "url": "https://example.com/club-fl3" }
-  ],
-  "Georgia": [
-    { "name": "Club GA1", "url": "https://example.com/club-ga1" },
-    { "name": "Club GA2", "url": "https://example.com/club-ga2" }
-  ],
-  "Hawaii": [
-    { "name": "Club HI1", "url": "https://example.com/club-hi1" }
-  ],
-  "Idaho": [
-    { "name": "Club ID1", "url": "https://example.com/club-id1" }
-  ],
-  "Illinois": [
-    { "name": "Club IL1", "url": "https://example.com/club-il1" },
-    { "name": "Club IL2", "url": "https://example.com/club-il2" }
-  ],
-  "Indiana": [
-    { "name": "Club IN1", "url": "https://example.com/club-in1" }
-  ],
-  "Iowa": [
-    { "name": "Club IA1", "url": "https://example.com/club-ia1" }
-  ],
-  "Kansas": [
-    { "name": "Club KS1", "url": "https://example.com/club-ks1" }
-  ],
-  "Kentucky": [
-    { "name": "Club KY1", "url": "https://example.com/club-ky1" }
-  ],
-  "Louisiana": [
-    { "name": "Club LA1", "url": "https://example.com/club-la1" },
-    { "name": "Club LA2", "url": "https://example.com/club-la2" }
-  ],
-  "Maine": [
-    { "name": "Club ME1", "url": "https://example.com/club-me1" }
-  ],
-  "Maryland": [
-    { "name": "Club MD1", "url": "https://example.com/club-md1" },
-    { "name": "Club MD2", "url": "https://example.com/club-md2" }
-  ],
-  "Massachusetts": [
-    { "name": "Club MA1", "url": "https://example.com/club-ma1" },
-    { "name": "Club MA2", "url": "https://example.com/club-ma2" }
-  ],
-  "Michigan": [
-    { "name": "Club MI1", "url": "https://example.com/club-mi1" },
-    { "name": "Club MI2", "url": "https://example.com/club-mi2" }
-  ],
-  "Minnesota": [
-    { "name": "Club MN1", "url": "https://example.com/club-mn1" }
-  ],
-  "Mississippi": [
-    { "name": "Club MS1", "url": "https://example.com/club-ms1" }
-  ],
-  "Missouri": [
-    { "name": "Club MO1", "url": "https://example.com/club-mo1" },
-    { "name": "Club MO2", "url": "https://example.com/club-mo2" }
-  ],
-  "Montana": [
-    { "name": "Club MT1", "url": "https://example.com/club-mt1" }
-  ],
-  "Nebraska": [
-    { "name": "Club NE1", "url": "https://example.com/club-ne1" }
-  ],
-  "Nevada": [
-    { "name": "Club NV1", "url": "https://example.com/club-nv1" },
-    { "name": "Club NV2", "url": "https://example.com/club-nv2" }
-  ],
-  "New Hampshire": [
-    { "name": "Club NH1", "url": "https://example.com/club-nh1" }
-  ],
-  "New Jersey": [
-    { "name": "Club NJ1", "url": "https://example.com/club-nj1" },
-    { "name": "Club NJ2", "url": "https://example.com/club-nj2" }
-  ],
-  "New Mexico": [
-    { "name": "Club NM1", "url": "https://example.com/club-nm1" }
-  ],
-  "New York": [
-    { "name": "Club NY1", "url": "https://example.com/club-ny1" },
-    { "name": "Club NY2", "url": "https://example.com/club-ny2" },
-    { "name": "Club NY3", "url": "https://example.com/club-ny3" }
-  ],
-  "North Carolina": [
-    { "name": "Club NC1", "url": "https://example.com/club-nc1" },
-    { "name": "Club NC2", "url": "https://example.com/club-nc2" }
-  ],
-  "North Dakota": [
-    { "name": "Club ND1", "url": "https://example.com/club-nd1" }
-  ],
-  "Ohio": [
-    { "name": "Club OH1", "url": "https://example.com/club-oh1" },
-    { "name": "Club OH2", "url": "https://example.com/club-oh2" }
-  ],
-  "Oklahoma": [
-    { "name": "Club OK1", "url": "https://example.com/club-ok1" }
-  ],
-  "Oregon": [
-    { "name": "Club OR1", "url": "https://example.com/club-or1" },
-    { "name": "Club OR2", "url": "https://example.com/club-or2" }
-  ],
-  "Pennsylvania": [
-    { "name": "Club PA1", "url": "https://example.com/club-pa1" },
-    { "name": "Club PA2", "url": "https://example.com/club-pa2" },
-    { "name": "Club PA3", "url": "https://example.com/club-pa3" }
-  ],
-  "Rhode Island": [
-    { "name": "Club RI1", "url": "https://example.com/club-ri1" }
-  ],
-  "South Carolina": [
-    { "name": "Club SC1", "url": "https://example.com/club-sc1" },
-    { "name": "Club SC2", "url": "https://example.com/club-sc2" }
-  ],
-  "South Dakota": [
-    { "name": "Club SD1", "url": "https://example.com/club-sd1" }
-  ],
-  "Tennessee": [
-    { "name": "Club TN1", "url": "https://example.com/club-tn1" },
-    { "name": "Club TN2", "url": "https://example.com/club-tn2" }
-  ],
-  "Texas": [
-    { "name": "Club TX1", "url": "https://example.com/club-tx1" },
-    { "name": "Club TX2", "url": "https://example.com/club-tx2" },
-    { "name": "Club TX3", "url": "https://example.com/club-tx3" }
-  ],
-  "Utah": [
-    { "name": "Club UT1", "url": "https://example.com/club-ut1" }
-  ],
-  "Vermont": [
-    { "name": "Club VT1", "url": "https://example.com/club-vt1" }
-  ],
-  "Virginia": [
-    { "name": "Club VA1", "url": "https://example.com/club-va1" },
-    { "name": "Club VA2", "url": "https://example.com/club-va2" }
-  ],
-  "Washington": [
-    { "name": "Club WA1", "url": "https://example.com/club-wa1" },
-    { "name": "Club WA2", "url": "https://example.com/club-wa2" }
-  ],
-  "West Virginia": [
-    { "name": "Club WV1", "url": "https://example.com/club-wv1" }
-  ],
-  "Wisconsin": [
-    { "name": "Club WI1", "url": "https://example.com/club-wi1" },
-    { "name": "Club WI2", "url": "https://example.com/club-wi2" }
-  ],
-  "Wyoming": [
-    { "name": "Club WY1", "url": "https://example.com/club-wy1" }
+    { "name": "Eyz Wide Shut", "url": "https://eyzwideshut.com/", "city": "Tampa", "state": "FL", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Caliente Club and Resort", "url": "https://calienteresorts.com/", "city": "Land O' Lakes", "state": "FL", "zip": "", "lat": 0.0, "lng": 0.0 },
+    { "name": "Trapeze", "url": "https://trapezeclubs.com/", "city": "Fort Lauderdale", "state": "FL", "zip": "", "lat": 0.0, "lng": 0.0 }
   ]
 }
