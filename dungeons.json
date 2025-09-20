@@ -1,34 +1,216 @@
 {
-  "Dungeons": [
-    { "name": "Dungeon IX", "city": "Kansas City", "state": "KS", "url": "https://www.kcpioneers.org/" },
-    { "name": "The Mark", "city": "Nashville", "state": "TN", "url": "https://themarkbycpi.org/" },
-    { "name": "Crucible", "city": "Washington DC", "state": "DC", "url": "https://the-crucible.com/" },
-    { "name": "Club SwInkster", "city": "Kissimmee", "state": "FL", "url": "https://www.secretsfl.com/club-swinkster" },
-    { "name": "Infliction Hall", "city": "Euless", "state": "TX", "url": "https://members.inflictionhall.com/" },
-    { "name": "DFW Dungeon", "city": "Dallas", "state": "TX", "url": "https://dfwdungeon.com/" },
-    { "name": "The Woodshed", "city": "Orlando", "state": "FL", "url": "https://www.thewoodshedorlando.com/" },
-    { "name": "The Chicago Rose Club", "city": "Chicago", "state": "IL", "url": "https://www.thechicagoroseclub.org/" },
-    { "name": "Galleria Domain", "city": "Chicago", "state": "IL", "url": "https://galleriadomain.org/" },
-    { "name": "Apex (Arizona Power Exchange)", "city": "Phoenix", "state": "AZ", "url": "https://arizonapowerexchange.org/" },
-    { "name": "Desert Dominion", "city": "Tucson", "state": "AZ", "url": "https://www.desertdominion.org/" },
-    { "name": "Denver Sanctuary", "city": "Denver", "state": "CO", "url": "https://www.denversanctuary.com/" },
-    { "name": "Society of Janus", "city": "San Francisco", "state": "CA", "url": "https://soj.org/" },
-    { "name": "Portland Leather Alliance", "city": "Portland", "state": "OR", "url": "https://www.portlandleather.org/" },
-    { "name": "Threshold", "city": "Los Angeles", "state": "CA", "url": "https://thresholdla.org/" },
-    { "name": "The Exiles", "city": "San Francisco", "state": "CA", "url": "https://theexiles.org/" },
-    { "name": "The 15 Association", "city": "San Francisco", "state": "CA", "url": "https://the15association.org/" },
-    { "name": "The Eulenspiegel Society (TES)", "city": "New York City", "state": "NY", "url": "https://www.tes.org/" },
-    { "name": "Black Rose", "city": "Washington", "state": "DC", "url": "https://br.org/" },
-    { "name": "Baltimore Educational and Social Society (BESS)", "city": "Baltimore", "state": "MD", "url": "" },
-    { "name": "Charlotte Area Power Exchange (CAPEX)", "city": "Charlotte", "state": "NC", "url": "" },
-    { "name": "Charlottesville Underground Fetish Fellowship (CUFF)", "city": "Charlottesville", "state": "VA", "url": "" },
-    { "name": "New England Dungeon Society (NE-DS)", "city": "Boston", "state": "MA", "url": "https://www.ne-ds.org/" },
-    { "name": "OhioSMART", "city": "Cleveland", "state": "OH", "url": "https://ohiosmart.org/" },
-    { "name": "Panhandle Alternative Lifestyles Society (PALS)", "city": "Northwestern", "state": "FL", "url": "" },
-    { "name": "Rochester Kink Society", "city": "Rochester", "state": "NY", "url": "https://www.rochesterkinksociety.com/" },
-    { "name": "Special Interest Group Men’s Association (SigMa)", "city": "Baltimore/Washington DC area", "state": "MD/DC", "url": "" },
-    { "name": "Red Chair", "city": "Birmingham", "state": "AL", "url": "https://www.theredchair.org/" },
-    { "name": "Camp Crucible", "city": "Northern Maryland", "state": "MD", "url": "https://www.campcrucible.com/" },
-    { "name": "Dark Odyssey", "city": "Baltimore", "state": "MD", "url": "https://darkodyssey.com/" }
+  "AL": [
+    {
+      "name": "Red Chair",
+      "city": "Birmingham",
+      "zip": "35203",
+      "url": "https://www.theredchair.org/"
+    }
+  ],
+  "AZ": [
+    {
+      "name": "Arizona Power Exchange (Apex)",
+      "city": "Phoenix",
+      "zip": "85001",
+      "url": "https://arizonapowerexchange.org/"
+    },
+    {
+      "name": "Desert Dominion",
+      "city": "Tucson",
+      "zip": "85701",
+      "url": "https://www.desertdominion.org/"
+    }
+  ],
+  "CA": [
+    {
+      "name": "Society of Janus",
+      "city": "San Francisco",
+      "zip": "94102",
+      "url": "https://soj.org/"
+    },
+    {
+      "name": "Threshold",
+      "city": "Los Angeles",
+      "zip": "90015",
+      "url": "https://thresholdla.org/"
+    },
+    {
+      "name": "The Exiles",
+      "city": "San Francisco",
+      "zip": "94103",
+      "url": "https://theexiles.org/"
+    },
+    {
+      "name": "The 15 Association",
+      "city": "San Francisco",
+      "zip": "94110",
+      "url": "https://the15association.org/"
+    }
+  ],
+  "CO": [
+    {
+      "name": "Denver Sanctuary",
+      "city": "Denver",
+      "zip": "80202",
+      "url": "https://www.denversanctuary.com/"
+    }
+  ],
+  "DC": [
+    {
+      "name": "Crucible",
+      "city": "Washington",
+      "zip": "20002",
+      "url": "https://the-crucible.com/"
+    },
+    {
+      "name": "Black Rose",
+      "city": "Washington",
+      "zip": "20002",
+      "url": "https://br.org/"
+    },
+    {
+      "name": "Special Interest Group Men’s Association (SigMa)",
+      "city": "Baltimore/Washington",
+      "zip": "20002",
+      "url": ""
+    }
+  ],
+  "FL": [
+    {
+      "name": "Club SwInkster",
+      "city": "Kissimmee",
+      "zip": "34741",
+      "url": "https://www.secretsfl.com/club-swinkster"
+    },
+    {
+      "name": "The Woodshed",
+      "city": "Orlando",
+      "zip": "32801",
+      "url": "https://www.thewoodshedorlando.com/"
+    },
+    {
+      "name": "Panhandle Alternative Lifestyles Society (PALS)",
+      "city": "Pensacola",
+      "zip": "32501",
+      "url": ""
+    }
+  ],
+  "IL": [
+    {
+      "name": "The Chicago Rose Club",
+      "city": "Chicago",
+      "zip": "60601",
+      "url": "https://www.thechicagoroseclub.org/"
+    },
+    {
+      "name": "Galleria Domain",
+      "city": "Chicago",
+      "zip": "60606",
+      "url": "https://galleriadomain.org/"
+    }
+  ],
+  "KS": [
+    {
+      "name": "Dungeons Dungeon IX",
+      "city": "Kansas City",
+      "zip": "66101",
+      "url": "https://www.kcpioneers.org/"
+    }
+  ],
+  "MA": [
+    {
+      "name": "New England Dungeon Society (NE-DS)",
+      "city": "Boston",
+      "zip": "02108",
+      "url": "https://www.ne-ds.org/"
+    }
+  ],
+  "MD": [
+    {
+      "name": "Baltimore Educational and Social Society (BESS)",
+      "city": "Baltimore",
+      "zip": "21201",
+      "url": ""
+    },
+    {
+      "name": "Camp Crucible",
+      "city": "Northern Maryland",
+      "zip": "20878",
+      "url": "https://www.campcrucible.com/"
+    },
+    {
+      "name": "Dark Odyssey",
+      "city": "Baltimore",
+      "zip": "21201",
+      "url": "https://darkodyssey.com/"
+    }
+  ],
+  "NC": [
+    {
+      "name": "Charlotte Area Power Exchange (CAPEX)",
+      "city": "Charlotte",
+      "zip": "28202",
+      "url": ""
+    }
+  ],
+  "NY": [
+    {
+      "name": "The Eulenspiegel Society (TES)",
+      "city": "New York City",
+      "zip": "10010",
+      "url": "https://www.tes.org/"
+    },
+    {
+      "name": "Rochester Kink Society",
+      "city": "Rochester",
+      "zip": "14604",
+      "url": "https://www.rochesterkinksociety.com/"
+    }
+  ],
+  "OH": [
+    {
+      "name": "OhioSMART",
+      "city": "Cleveland",
+      "zip": "44113",
+      "url": "https://ohiosmart.org/"
+    }
+  ],
+  "OR": [
+    {
+      "name": "Portland Leather Alliance",
+      "city": "Portland",
+      "zip": "97201",
+      "url": "https://www.portlandleather.org/"
+    }
+  ],
+  "TN": [
+    {
+      "name": "The Mark",
+      "city": "Nashville",
+      "zip": "37203",
+      "url": "https://themarkbycpi.org/"
+    }
+  ],
+  "TX": [
+    {
+      "name": "Infliction Hall",
+      "city": "Euless",
+      "zip": "76039",
+      "url": "https://members.inflictionhall.com/"
+    },
+    {
+      "name": "DFW Dungeon",
+      "city": "Dallas",
+      "zip": "75201",
+      "url": "https://dfwdungeon.com/"
+    }
+  ],
+  "VA": [
+    {
+      "name": "Charlottesville Underground Fetish Fellowship (CUFF)",
+      "city": "Charlottesville",
+      "zip": "22903",
+      "url": ""
+    }
   ]
 }
