@@ -26,6 +26,13 @@
   ],
   "California": [
     {
+      "name": "Threshold",
+      "city": "Los Angeles",
+      "state": "CA",
+      "zip": "90015",
+      "url": "https://thresholdla.org/"
+    },
+    {
       "name": "Society of Janus",
       "city": "San Francisco",
       "state": "CA",
@@ -45,13 +52,6 @@
       "state": "CA",
       "zip": "94103",
       "url": "https://theexiles.org/"
-    },
-    {
-      "name": "Threshold",
-      "city": "Los Angeles",
-      "state": "CA",
-      "zip": "90015",
-      "url": "https://thresholdla.org/"
     }
   ],
   "Colorado": [
@@ -65,6 +65,13 @@
   ],
   "D.C.": [
     {
+      "name": "Special Interest Group Men’s Association (SigMa)",
+      "city": "Baltimore/D.C.",
+      "state": "DC",
+      "zip": "20002",
+      "url": ""
+    },
+    {
       "name": "Black Rose",
       "city": "D.C.",
       "state": "DC",
@@ -77,13 +84,6 @@
       "state": "DC",
       "zip": "20002",
       "url": "https://the-crucible.com/"
-    },
-    {
-      "name": "Special Interest Group Men’s Association (SigMa)",
-      "city": "Baltimore/D.C.",
-      "state": "DC",
-      "zip": "20002",
-      "url": ""
     }
   ],
   "Florida": [
@@ -95,18 +95,18 @@
       "url": "https://www.secretsfl.com/club-swinkster"
     },
     {
-      "name": "Panhandle Alternative Lifestyles Society (PALS)",
-      "city": "Pensacola",
-      "state": "FL",
-      "zip": "32501",
-      "url": ""
-    },
-    {
       "name": "The Woodshed",
       "city": "Orlando",
       "state": "FL",
       "zip": "32801",
       "url": "https://www.thewoodshedorlando.com/"
+    },
+    {
+      "name": "Panhandle Alternative Lifestyles Society (PALS)",
+      "city": "Pensacola",
+      "state": "FL",
+      "zip": "32501",
+      "url": ""
     }
   ],
   "Illinois": [
@@ -134,15 +134,6 @@
       "url": "https://www.kcpioneers.org/"
     }
   ],
-  "Massachusetts": [
-    {
-      "name": "New England Dungeon Society (NE-DS)",
-      "city": "Boston",
-      "state": "MA",
-      "zip": "02108",
-      "url": "https://www.ne-ds.org/"
-    }
-  ],
   "Maryland": [
     {
       "name": "Baltimore Educational and Social Society (BESS)",
@@ -166,6 +157,31 @@
       "url": "https://www.campcrucible.com/"
     }
   ],
+  "Massachusetts": [
+    {
+      "name": "New England Dungeon Society (NE-DS)",
+      "city": "Boston",
+      "state": "MA",
+      "zip": "02108",
+      "url": "https://www.ne-ds.org/"
+    }
+  ],
+  "New York": [
+    {
+      "name": "The Eulenspiegel Society (TES)",
+      "city": "New York City",
+      "state": "NY",
+      "zip": "10010",
+      "url": "https://www.tes.org/"
+    },
+    {
+      "name": "Rochester Kink Society",
+      "city": "Rochester",
+      "state": "NY",
+      "zip": "14604",
+      "url": "https://www.rochesterkinksociety.com/"
+    }
+  ],
   "North Carolina": [
     {
       "name": "Charlotte Area Power Exchange (CAPEX)",
@@ -173,22 +189,6 @@
       "state": "NC",
       "zip": "28202",
       "url": ""
-    }
-  ],
-  "New York": [
-    {
-      "name": "Rochester Kink Society",
-      "city": "Rochester",
-      "state": "NY",
-      "zip": "14604",
-      "url": "https://www.rochesterkinksociety.com/"
-    },
-    {
-      "name": "The Eulenspiegel Society (TES)",
-      "city": "New York City",
-      "state": "NY",
-      "zip": "10010",
-      "url": "https://www.tes.org/"
     }
   ],
   "Ohio": [
