@@ -244,9 +244,7 @@
         }).addTo(map);
         
         const ResetControl = L.Control.extend({
-            options: {
-                position: 'topleft'
-            },
+            options: { position: 'topleft' },
             onAdd: function(map) {
                 const container = L.DomUtil.create('div', 'leaflet-control-reset');
                 container.innerHTML = 'Reset View';
@@ -265,7 +263,6 @@
         let geojsonLayer;
         let stateLabels = {};
         
-        // Load clubs data
         fetch('clubs.json')
             .then(res => {
                 if (!res.ok) throw new Error('Failed to load clubs.json');
@@ -303,21 +300,14 @@
         
         function highlightFeature(e) {
             const layer = e.target;
-            layer.setStyle({
-                weight: 3,
-                color: "#666",
-                dashArray: "",
-                fillOpacity: 0.9
-            });
+            layer.setStyle({ weight: 3, color: "#666", dashArray: "", fillOpacity: 0.9 });
             layer.bringToFront();
-            
             const stateName = layer.feature.properties.name === 'District of Columbia' ? 'D.C.' : layer.feature.properties.name;
             if (stateLabels[stateName]) stateLabels[stateName].getElement().classList.add('highlight');
         }
         
         function resetHighlight(e) {
             geojsonLayer.resetStyle(e.target);
-            
             const stateName = e.target.feature.properties.name === 'District of Columbia' ? 'D.C.' : e.target.feature.properties.name;
             if (stateLabels[stateName]) stateLabels[stateName].getElement().classList.remove('highlight');
         }
@@ -334,9 +324,13 @@
                 popupContent += `<div class="club-list-container"><ul class="club-list">`;
                 clubs.forEach(club => {
                     popupContent += `<li class="club-item">`;
-                    popupContent += club.url ? 
-                        `<a class="club-link" href="${club.url}" target="_blank">${club.name}</a>` : 
-                        `<span>${club.name}</span>`;
+                    if (club.url) {
+                        popupContent += `<a class="club-link" href="${club.url}" target="_blank">${club.name}</a>`;
+                    } else {
+                        popupContent += `<span>${club.name}</span>`;
+                    }
+                    // Add city and state next to the name
+                    popupContent += ` - ${club.city}, ${club.state}`;
                     popupContent += `</li>`;
                 });
                 popupContent += `</ul></div>`;
@@ -355,12 +349,7 @@
                 const stateName = orig === 'District of Columbia' ? 'D.C.' : orig;
                 const c = layer.getBounds().getCenter();
                 const label = L.marker([c.lat, c.lng], {
-                    icon: L.divIcon({
-                        className: 'state-label hidden',
-                        html: stateName,
-                        iconSize: [0, 0],
-                        iconAnchor: [0, 0]
-                    }),
+                    icon: L.divIcon({ className: 'state-label hidden', html: stateName, iconSize: [0, 0], iconAnchor: [0, 0] }),
                     interactive: false
                 }).addTo(map);
                 stateLabels[stateName] = label;
@@ -371,9 +360,8 @@
             const zoom = map.getZoom();
             Object.entries(stateLabels).forEach(([stateName, label]) => {
                 const el = label.getElement();
-                if (zoom <= (isMobile ? 3 : 4)) {
-                    el.classList.add('hidden');
-                } else {
+                if (zoom <= (isMobile ? 3 : 4)) el.classList.add('hidden');
+                else {
                     el.classList.remove('hidden');
                     el.style.fontSize = `${Math.max(8, Math.min(24, zoom * 2))}px`;
                 }
