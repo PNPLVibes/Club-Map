@@ -1,13 +1,6 @@
 {
   "Alabama": [
     {
-      "name": "Erotica",
-      "city": "Huntsville",
-      "state": "AL",
-      "zip": "35801",
-      "url": "https://eroticaparty.com/"
-    },
-    {
       "name": "Gems Club",
       "city": "Birmingham",
       "state": "AL",
@@ -20,23 +13,30 @@
       "state": "AL",
       "zip": "35203",
       "url": "https://seductionparties.club/"
+    },
+    {
+      "name": "Erotica",
+      "city": "Huntsville",
+      "state": "AL",
+      "zip": "35801",
+      "url": "https://eroticaparty.com/"
     }
   ],
   "Alaska": [],
   "Arizona": [
-    {
-      "name": "Club Encounters",
-      "city": "Phoenix",
-      "state": "AZ",
-      "zip": "85004",
-      "url": "https://clubencounters.com/"
-    },
     {
       "name": "Vixxxins",
       "city": "Goodyear",
       "state": "AZ",
       "zip": "85338",
       "url": "https://www.vixxxins.info/"
+    },
+    {
+      "name": "Club Encounters",
+      "city": "Phoenix",
+      "state": "AZ",
+      "zip": "85004",
+      "url": "https://clubencounters.com/"
     }
   ],
   "Arkansas": [
@@ -50,102 +50,11 @@
   ],
   "California": [
     {
-      "name": "247Fetish",
-      "city": "San Francisco",
+      "name": "SoCal BBW Swingers and Admirers",
+      "city": "Anaheim",
       "state": "CA",
-      "zip": "94103",
-      "url": "https://247fetish.net/"
-    },
-    {
-      "name": "Allures",
-      "city": "Sacramento",
-      "state": "CA",
-      "zip": "95814",
-      "url": "https://www.allureslifestyle.com/"
-    },
-    {
-      "name": "Bronze Party",
-      "city": "Palo Alto",
-      "state": "CA",
-      "zip": "94301",
-      "url": "https://bronzeparty.com/"
-    },
-    {
-      "name": "Club Joi",
-      "city": "Los Angeles",
-      "state": "CA",
-      "zip": "90012",
-      "url": "https://www.clubjoi.com/"
-    },
-    {
-      "name": "Club Kiss",
-      "city": "San Francisco",
-      "state": "CA",
-      "zip": "94103",
-      "url": "https://www.clubkiss.us/"
-    },
-    {
-      "name": "Club Labyrinth",
-      "city": "Los Angeles",
-      "state": "CA",
-      "zip": "90012",
-      "url": "https://clublabyrinth.com/"
-    },
-    {
-      "name": "Exotic Dreams Resort",
-      "city": "Palm Springs",
-      "state": "CA",
-      "zip": "92262",
-      "url": "https://www.edrhotel.com/"
-    },
-    {
-      "name": "Gemini Social Club",
-      "city": "Pomona",
-      "state": "CA",
-      "zip": "91766",
-      "url": "https://geminisocialclub.wordpress.com/"
-    },
-    {
-      "name": "Gary and Margaret's",
-      "city": "Mira Loma",
-      "state": "CA",
-      "zip": "91752",
-      "url": "https://garyandmargarets.org/"
-    },
-    {
-      "name": "House of Black",
-      "city": "San Diego",
-      "state": "CA",
-      "zip": "92101",
-      "url": "https://www.houseofblack.com/"
-    },
-    {
-      "name": "Kinky Rabbit Club",
-      "city": "Los Angeles",
-      "state": "CA",
-      "zip": "90012",
-      "url": "https://knkyrabbitclub.com/"
-    },
-    {
-      "name": "Noches Atrevidas",
-      "city": "Los Angeles",
-      "state": "CA",
-      "zip": "90012",
-      "url": "https://nochesatrevidaslosangeles.weebly.com/"
-    },
-    {
-      "name": "Playmates Parties",
-      "city": "Los Angeles",
-      "state": "CA",
-      "zip": "90012",
-      "url": "https://swingersclubsreviews.org/"
-    },
-    {
-      "name": "Sea Mountain Nude Resort and Lifestyle Hotel",
-      "city": "Palm Springs",
-      "state": "CA",
-      "zip": "92262",
-      "url": "https://www.seamountainranch.com/"
+      "zip": "92801",
+      "url": "https://bbwswingers.party/"
     },
     {
       "name": "Simply Living Silver",
@@ -155,32 +64,18 @@
       "url": "https://simplylivingsilver.com/"
     },
     {
-      "name": "SoCal BBW Swingers and Admirers",
-      "city": "Anaheim",
+      "name": "Gary and Margaret's",
+      "city": "Mira Loma",
       "state": "CA",
-      "zip": "92801",
-      "url": "https://bbwswingers.party/"
+      "zip": "91752",
+      "url": "https://garyandmargarets.org/"
     },
     {
-      "name": "SoCal Circus",
-      "city": "Huntington Beach",
+      "name": "Gemini Social Club",
+      "city": "Pomona",
       "state": "CA",
-      "zip": "92648",
-      "url": "https://socalcircusowner.wix.com/socalcircus"
-    },
-    {
-      "name": "Tangerine's Dream",
-      "city": "San Jose",
-      "state": "CA",
-      "zip": "95113",
-      "url": "https://tangerinesdream.com/"
-    },
-    {
-      "name": "Tentaciones",
-      "city": "Los Angeles",
-      "state": "CA",
-      "zip": "90012",
-      "url": "https://www.tentacionesla.com/"
+      "zip": "91766",
+      "url": "https://geminisocialclub.wordpress.com/"
     },
     {
       "name": "The Cougars Den",
@@ -197,18 +92,25 @@
       "url": "https://mountainsideacresresort.com/"
     },
     {
-      "name": "The Suite Life",
-      "city": "Sacramento",
+      "name": "Tangerine's Dream",
+      "city": "San Jose",
       "state": "CA",
-      "zip": "95814",
-      "url": "https://thesuitelifeplatinum.com/"
+      "zip": "95113",
+      "url": "https://tangerinesdream.com/"
     },
     {
-      "name": "Thads",
-      "city": "San Diego",
+      "name": "247Fetish",
+      "city": "San Francisco",
       "state": "CA",
-      "zip": "92101",
-      "url": "https://www.thads.com/"
+      "zip": "94103",
+      "url": "https://247fetish.net/"
+    },
+    {
+      "name": "Club Kiss",
+      "city": "San Francisco",
+      "state": "CA",
+      "zip": "94103",
+      "url": "https://www.clubkiss.us/"
     },
     {
       "name": "Twist",
@@ -218,6 +120,69 @@
       "url": "https://www.twist-sf.com/"
     },
     {
+      "name": "Club Safeword",
+      "city": "San Diego",
+      "state": "CA",
+      "zip": "92101",
+      "url": "https://www.clubsafeword.com/"
+    },
+    {
+      "name": "House of Black",
+      "city": "San Diego",
+      "state": "CA",
+      "zip": "92101",
+      "url": "https://www.houseofblack.com/"
+    },
+    {
+      "name": "Thads",
+      "city": "San Diego",
+      "state": "CA",
+      "zip": "92101",
+      "url": "https://www.thads.com/"
+    },
+    {
+      "name": "SoCal Circus",
+      "city": "Huntington Beach",
+      "state": "CA",
+      "zip": "92648",
+      "url": "https://socalcircusowner.wix.com/socalcircus"
+    },
+    {
+      "name": "Bronze Party",
+      "city": "Palo Alto",
+      "state": "CA",
+      "zip": "94301",
+      "url": "https://bronzeparty.com/"
+    },
+    {
+      "name": "Exotic Dreams Resort",
+      "city": "Palm Springs",
+      "state": "CA",
+      "zip": "92262",
+      "url": "https://www.edrhotel.com/"
+    },
+    {
+      "name": "Sea Mountain Nude Resort and Lifestyle Hotel",
+      "city": "Palm Springs",
+      "state": "CA",
+      "zip": "92262",
+      "url": "https://www.seamountainranch.com/"
+    },
+    {
+      "name": "The Suite Life",
+      "city": "Sacramento",
+      "state": "CA",
+      "zip": "95814",
+      "url": "https://thesuitelifeplatinum.com/"
+    },
+    {
+      "name": "Allures",
+      "city": "Sacramento",
+      "state": "CA",
+      "zip": "95814",
+      "url": "https://www.allureslifestyle.com/"
+    },
+    {
       "name": "Vixen",
       "city": "Van Nuys",
       "state": "CA",
@@ -225,11 +190,46 @@
       "url": "https://www.vixenclub.com/"
     },
     {
-      "name": "Club Safeword",
-      "city": "San Diego",
+      "name": "Playmates Parties",
+      "city": "Los Angeles",
       "state": "CA",
-      "zip": "92101",
-      "url": "https://www.clubsafeword.com/"
+      "zip": "90012",
+      "url": "https://swingersclubsreviews.org/"
+    },
+    {
+      "name": "Club Joi",
+      "city": "Los Angeles",
+      "state": "CA",
+      "zip": "90012",
+      "url": "https://www.clubjoi.com/"
+    },
+    {
+      "name": "Club Labyrinth",
+      "city": "Los Angeles",
+      "state": "CA",
+      "zip": "90012",
+      "url": "https://clublabyrinth.com/"
+    },
+    {
+      "name": "Kinky Rabbit Club",
+      "city": "Los Angeles",
+      "state": "CA",
+      "zip": "90012",
+      "url": "https://knkyrabbitclub.com/"
+    },
+    {
+      "name": "Noches Atrevidas",
+      "city": "Los Angeles",
+      "state": "CA",
+      "zip": "90012",
+      "url": "https://nochesatrevidaslosangeles.weebly.com/"
+    },
+    {
+      "name": "Tentaciones",
+      "city": "Los Angeles",
+      "state": "CA",
+      "zip": "90012",
+      "url": "https://www.tentacionesla.com/"
     }
   ],
   "Colorado": [
@@ -290,11 +290,25 @@
   ],
   "Florida": [
     {
-      "name": "BBW Swing Kings",
-      "city": "Kissimmee",
+      "name": "Doodles Deviants",
+      "city": "East Lake Weir",
       "state": "FL",
-      "zip": "34741",
-      "url": "https://www.bskevents.com/"
+      "zip": "32134",
+      "url": "https://www.doodlesdeviants.com/"
+    },
+    {
+      "name": "Minglers Club",
+      "city": "Daytona Beach",
+      "state": "FL",
+      "zip": "32114",
+      "url": "https://www.minglerssocialclub.com/"
+    },
+    {
+      "name": "Twisted Pineapple",
+      "city": "Melbourne",
+      "state": "FL",
+      "zip": "32901",
+      "url": "https://thetwistedpineapple.wixsite.com/twistedpineapple"
     },
     {
       "name": "Caliente Club and Resort",
@@ -302,6 +316,27 @@
       "state": "FL",
       "zip": "34639",
       "url": "https://calienteresorts.com/"
+    },
+    {
+      "name": "Play at Paradise",
+      "city": "Lutz",
+      "state": "FL",
+      "zip": "33549",
+      "url": "https://paradiselakesresort.com/"
+    },
+    {
+      "name": "BBW Swing Kings",
+      "city": "Kissimmee",
+      "state": "FL",
+      "zip": "34741",
+      "url": "https://www.bskevents.com/"
+    },
+    {
+      "name": "Secrets Hideaway",
+      "city": "Kissimmee",
+      "state": "FL",
+      "zip": "34741",
+      "url": "https://www.secretsfl.com/"
     },
     {
       "name": "Club 3X",
@@ -325,20 +360,6 @@
       "url": "https://clubuninhibited.wixsite.com/club-uninhibited"
     },
     {
-      "name": "Doodles Deviants",
-      "city": "East Lake Weir",
-      "state": "FL",
-      "zip": "32134",
-      "url": "https://www.doodlesdeviants.com/"
-    },
-    {
-      "name": "Eyz Wide Shut",
-      "city": "Tampa",
-      "state": "FL",
-      "zip": "33602",
-      "url": "https://eyzwideshut.com/"
-    },
-    {
       "name": "Friction",
       "city": "Fort Lauderdale",
       "state": "FL",
@@ -346,32 +367,18 @@
       "url": "https://frictionparties.com/"
     },
     {
-      "name": "Hotspot",
-      "city": "Pierson",
+      "name": "Splash Takeovers",
+      "city": "Fort Lauderdale",
       "state": "FL",
-      "zip": "32180",
-      "url": "https://www.banginevents.com/"
+      "zip": "33301",
+      "url": "https://www.splashtakeovers.com/"
     },
     {
-      "name": "Minglers Club",
-      "city": "Daytona Beach",
+      "name": "The Goodfellaz - Fort Lauderdale",
+      "city": "Fort Lauderdale",
       "state": "FL",
-      "zip": "32114",
-      "url": "https://www.minglerssocialclub.com/"
-    },
-    {
-      "name": "Miami Velvet",
-      "city": "Miami",
-      "state": "FL",
-      "zip": "33132",
-      "url": "https://miamivelvet.com/site/"
-    },
-    {
-      "name": "Play at Paradise",
-      "city": "Lutz",
-      "state": "FL",
-      "zip": "33549",
-      "url": "https://paradiselakesresort.com/"
+      "zip": "33301",
+      "url": ""
     },
     {
       "name": "Roof Top Resort",
@@ -381,25 +388,11 @@
       "url": "https://www.rooftopresort.com/"
     },
     {
-      "name": "Secrets Hideaway",
-      "city": "Kissimmee",
+      "name": "Miami Velvet",
+      "city": "Miami",
       "state": "FL",
-      "zip": "34741",
-      "url": "https://www.secretsfl.com/"
-    },
-    {
-      "name": "SLS Radio",
-      "city": "Plantation",
-      "state": "FL",
-      "zip": "33324",
-      "url": "https://www.slsradio.me/"
-    },
-    {
-      "name": "Splash Takeovers",
-      "city": "Fort Lauderdale",
-      "state": "FL",
-      "zip": "33301",
-      "url": "https://www.splashtakeovers.com/"
+      "zip": "33132",
+      "url": "https://miamivelvet.com/site/"
     },
     {
       "name": "Tampa Bay Lifestylers",
@@ -416,11 +409,11 @@
       "url": "https://thefloridatreehouse.fun/"
     },
     {
-      "name": "The Goodfellaz - Fort Lauderdale",
-      "city": "Fort Lauderdale",
+      "name": "Eyz Wide Shut",
+      "city": "Tampa",
       "state": "FL",
-      "zip": "33301",
-      "url": ""
+      "zip": "33602",
+      "url": "https://eyzwideshut.com/"
     },
     {
       "name": "The Goodfellaz - Tampa",
@@ -430,34 +423,27 @@
       "url": ""
     },
     {
-      "name": "Trapeze",
-      "city": "Fort Lauderdale",
+      "name": "Hotspot",
+      "city": "Pierson",
       "state": "FL",
-      "zip": "33301",
-      "url": "https://trapezeclubs.com/"
-    },
-    {
-      "name": "Twisted Pineapple",
-      "city": "Melbourne",
-      "state": "FL",
-      "zip": "32901",
-      "url": "https://thetwistedpineapple.wixsite.com/twistedpineapple"
+      "zip": "32180",
+      "url": "https://www.banginevents.com/"
     }
   ],
   "Georgia": [
-    {
-      "name": "Friction",
-      "city": "Atlanta",
-      "state": "GA",
-      "zip": "30303",
-      "url": "https://frictionparties.com/"
-    },
     {
       "name": "Mountain Creek Grove",
       "city": "Cleveland",
       "state": "GA",
       "zip": "30528",
       "url": "https://mountaincreekgrove.net/"
+    },
+    {
+      "name": "Friction",
+      "city": "Atlanta",
+      "state": "GA",
+      "zip": "30303",
+      "url": "https://frictionparties.com/"
     },
     {
       "name": "The Loft",
@@ -485,55 +471,27 @@
   ],
   "Idaho": [
     {
-      "name": "The Idaho White Rose",
-      "city": "Post Falls",
-      "state": "ID",
-      "zip": "83854",
-      "url": "https://idahowhiterose.com/"
-    },
-    {
       "name": "The Warehouse",
       "city": "Boise",
       "state": "ID",
       "zip": "83702",
       "url": "https://the-warehouseboise.com/"
+    },
+    {
+      "name": "The Idaho White Rose",
+      "city": "Post Falls",
+      "state": "ID",
+      "zip": "83854",
+      "url": "https://idahowhiterose.com/"
     }
   ],
   "Illinois": [
-    {
-      "name": "CC's House Parties",
-      "city": "Country Club Hills",
-      "state": "IL",
-      "zip": "60478",
-      "url": "https://www.cchouseparty.com/"
-    },
-    {
-      "name": "Couples Playhouse",
-      "city": "Oswego",
-      "state": "IL",
-      "zip": "60543",
-      "url": "http://maxnevascouplesplayhouse.com/"
-    },
     {
       "name": "Friends Night Out",
       "city": "Aurora",
       "state": "IL",
       "zip": "60505",
       "url": "https://www.friendsnightout.com/"
-    },
-    {
-      "name": "Invite Only",
-      "city": "Chicago",
-      "state": "IL",
-      "zip": "60601",
-      "url": "https://www.inviteonlyparties.com/"
-    },
-    {
-      "name": "JR's Place",
-      "city": "Loves Park",
-      "state": "IL",
-      "zip": "61111",
-      "url": "http://www.jrsplaceinlovespark.com/"
     },
     {
       "name": "The Lux",
@@ -543,11 +501,39 @@
       "url": "https://www.thelux.net/"
     },
     {
+      "name": "CC's House Parties",
+      "city": "Country Club Hills",
+      "state": "IL",
+      "zip": "60478",
+      "url": "https://www.cchouseparty.com/"
+    },
+    {
+      "name": "JR's Place",
+      "city": "Loves Park",
+      "state": "IL",
+      "zip": "61111",
+      "url": "http://www.jrsplaceinlovespark.com/"
+    },
+    {
+      "name": "Invite Only",
+      "city": "Chicago",
+      "state": "IL",
+      "zip": "60601",
+      "url": "https://www.inviteonlyparties.com/"
+    },
+    {
       "name": "Young Couples Party",
       "city": "Chicago",
       "state": "IL",
       "zip": "60601",
       "url": "https://youngcouplesparty.com/"
+    },
+    {
+      "name": "Couples Playhouse",
+      "city": "Oswego",
+      "state": "IL",
+      "zip": "60543",
+      "url": "http://maxnevascouplesplayhouse.com/"
     }
   ],
   "Indiana": [
@@ -559,11 +545,11 @@
       "url": "https://clubmeet4more.com/"
     },
     {
-      "name": "Club NV",
-      "city": "Muncie",
+      "name": "Sun Aura Resort",
+      "city": "Lake Village",
       "state": "IN",
-      "zip": "47303",
-      "url": "https://www.clubnv.net/"
+      "zip": "46349",
+      "url": "https://sunauraresort.net/"
     },
     {
       "name": "Clubhouse 2050",
@@ -573,11 +559,11 @@
       "url": "https://clubhouse2050.org/"
     },
     {
-      "name": "Sun Aura Resort",
-      "city": "Lake Village",
+      "name": "Twizted Dezires",
+      "city": "Indianapolis",
       "state": "IN",
-      "zip": "46349",
-      "url": "https://sunauraresort.net/"
+      "zip": "46204",
+      "url": ""
     },
     {
       "name": "The Champagne Club",
@@ -594,11 +580,11 @@
       "url": "https://timberhouseparties.com/"
     },
     {
-      "name": "Twizted Dezires",
-      "city": "Indianapolis",
+      "name": "Club NV",
+      "city": "Muncie",
       "state": "IN",
-      "zip": "46204",
-      "url": ""
+      "zip": "47303",
+      "url": "https://www.clubnv.net/"
     }
   ],
   "Iowa": [
@@ -613,18 +599,18 @@
   "Kansas": [],
   "Kentucky": [
     {
-      "name": "The Sandbox",
-      "city": "Sparta",
-      "state": "KY",
-      "zip": "41086",
-      "url": "https://thesandboxclub.com/"
-    },
-    {
       "name": "Tempted",
       "city": "Louisville",
       "state": "KY",
       "zip": "40202",
       "url": "https://www.clubtempted.com/"
+    },
+    {
+      "name": "The Sandbox",
+      "city": "Sparta",
+      "state": "KY",
+      "zip": "41086",
+      "url": "https://thesandboxclub.com/"
     }
   ],
   "Louisiana": [
@@ -654,6 +640,13 @@
       "url": "https://www.blackringswing.com/"
     },
     {
+      "name": "Tabu Social Club",
+      "city": "Catonsville",
+      "state": "MD",
+      "zip": "21228",
+      "url": "https://tabulife.com/"
+    },
+    {
       "name": "Friction",
       "city": "Linthicum",
       "state": "MD",
@@ -675,13 +668,6 @@
       "url": "https://www.pleasure4themoment.com/"
     },
     {
-      "name": "Tabu Social Club",
-      "city": "Catonsville",
-      "state": "MD",
-      "zip": "21228",
-      "url": "https://tabulife.com/"
-    },
-    {
       "name": "The Private Affair",
       "city": "Port Deposit",
       "state": "MD",
@@ -698,18 +684,18 @@
   ],
   "Massachusetts": [
     {
-      "name": "Cherry Lane Nudist Resort",
-      "city": "North Adams",
-      "state": "MA",
-      "zip": "01247",
-      "url": "https://cherrylaneresort.com/"
-    },
-    {
       "name": "Club 4Play",
       "city": "Chicopee",
       "state": "MA",
       "zip": "01013",
       "url": "https://www.club4playparties.com"
+    },
+    {
+      "name": "Cherry Lane Nudist Resort",
+      "city": "North Adams",
+      "state": "MA",
+      "zip": "01247",
+      "url": "https://cherrylaneresort.com/"
     },
     {
       "name": "Club Sinz",
@@ -721,39 +707,25 @@
   ],
   "Michigan": [
     {
-      "name": "616 GR",
-      "city": "Grand Rapids",
-      "state": "MI",
-      "zip": "49503",
-      "url": "https://616gr.com/"
+      "name": "Camp NCN",
+      "city": "Black River Falls",
+      "state": "WI",
+      "zip": "54615",
+      "url": "https://campncn.com/"
     },
     {
-      "name": "Ace / Angel Entertainment",
-      "city": "Livonia",
+      "name": "The Wet Spot",
+      "city": "Benton Harbor",
       "state": "MI",
-      "zip": "48150",
-      "url": "https://www.angelentertainment.club/"
+      "zip": "49022",
+      "url": "https://www.thewetspotparties.com/"
     },
     {
-      "name": "Cherry Lane (possible duplicate entry)",
-      "city": "North Adams",
-      "state": "MA",
-      "zip": "01247",
+      "name": "Northaven Resort",
+      "city": "Brooklyn",
+      "state": "MI",
+      "zip": "49230",
       "url": "https://cherrylaneresort.com/"
-    },
-    {
-      "name": "Club Chameleon",
-      "city": "Flint",
-      "state": "MI",
-      "zip": "48502",
-      "url": "https://www.clubchameleonswingers.com/"
-    },
-    {
-      "name": "Club Iniquity",
-      "city": "Gaylord",
-      "state": "MI",
-      "zip": "49735",
-      "url": "https://clubiniquitymi.com/"
     },
     {
       "name": "Hidden Agenda",
@@ -770,18 +742,11 @@
       "url": "http://www.eroticforest.com/"
     },
     {
-      "name": "Northaven Resort",
-      "city": "Brooklyn",
+      "name": "Ace / Angel Entertainment",
+      "city": "Livonia",
       "state": "MI",
-      "zip": "49230",
-      "url": "https://cherrylaneresort.com/"
-    },
-    {
-      "name": "The Wet Spot",
-      "city": "Benton Harbor",
-      "state": "MI",
-      "zip": "49022",
-      "url": "https://www.thewetspotparties.com/"
+      "zip": "48150",
+      "url": "https://www.angelentertainment.club/"
     },
     {
       "name": "Wild Walkers",
@@ -791,11 +756,39 @@
       "url": "https://www.wildwalkersclub.com/"
     },
     {
+      "name": "Club Iniquity",
+      "city": "Gaylord",
+      "state": "MI",
+      "zip": "49735",
+      "url": "https://clubiniquitymi.com/"
+    },
+    {
+      "name": "Club Chameleon",
+      "city": "Flint",
+      "state": "MI",
+      "zip": "48502",
+      "url": "https://www.clubchameleonswingers.com/"
+    },
+    {
       "name": "Your Ali-Bi",
       "city": "Flint",
       "state": "MI",
       "zip": "48502",
       "url": "https://sites.google.com/view/your-ali-bi"
+    },
+    {
+      "name": "616 GR",
+      "city": "Grand Rapids",
+      "state": "MI",
+      "zip": "49503",
+      "url": "https://616gr.com/"
+    },
+    {
+      "name": "Cherry Lane (possible duplicate entry)",
+      "city": "North Adams",
+      "state": "MI",
+      "zip": "01247",
+      "url": "https://cherrylaneresort.com/"
     }
   ],
   "Minnesota": [
@@ -872,13 +865,6 @@
       "url": "https://members.purrfectlv.com/"
     },
     {
-      "name": "PK Social",
-      "city": "Reno",
-      "state": "NV",
-      "zip": "89501",
-      "url": "https://pksocialclub.org/"
-    },
-    {
       "name": "Red Rooster",
       "city": "Las Vegas",
       "state": "NV",
@@ -905,16 +891,37 @@
       "state": "NV",
       "zip": "89109",
       "url": "https://www.whispersvegas.com/"
+    },
+    {
+      "name": "PK Social",
+      "city": "Reno",
+      "state": "NV",
+      "zip": "89501",
+      "url": "https://pksocialclub.org/"
     }
   ],
   "New Hampshire": [],
   "New Jersey": [
+    {
+      "name": "Saints and Sinners",
+      "city": "Atlantic City",
+      "state": "NJ",
+      "zip": "08401",
+      "url": "https://saintsandsinnersclubs.com/"
+    },
     {
       "name": "Curvy and Fabulous Events",
       "city": "Hazlet",
       "state": "NJ",
       "zip": "07730",
       "url": "https://curvyandfabulous.com/"
+    },
+    {
+      "name": "Silver and Spicy",
+      "city": "Middleton",
+      "state": "NJ",
+      "zip": "07748",
+      "url": "https://silverandspicy.com/"
     },
     {
       "name": "Intimate Parties Group",
@@ -931,25 +938,11 @@
       "url": "https://karizmasocialclub.com/"
     },
     {
-      "name": "Saints and Sinners",
-      "city": "Atlantic City",
-      "state": "NJ",
-      "zip": "08401",
-      "url": "https://saintsandsinnersclubs.com/"
-    },
-    {
       "name": "Samantha's Stable",
       "city": "Monroeville",
       "state": "NJ",
       "zip": "08343",
       "url": "https://www.samanthasstable.com/"
-    },
-    {
-      "name": "Silver and Spicy",
-      "city": "Middleton",
-      "state": "NJ",
-      "zip": "07748",
-      "url": "https://silverandspicy.com/"
     }
   ],
   "New Mexico": [
@@ -963,11 +956,25 @@
   ],
   "New York": [
     {
-      "name": "Badd Kitty Club",
-      "city": "Liverpool",
+      "name": "SatinSheetDreams",
+      "city": "Albany",
       "state": "NY",
-      "zip": "13088",
-      "url": "http://www.baddkittyclub.com/"
+      "zip": "12207",
+      "url": "https://satinsheetdreams.com/"
+    },
+    {
+      "name": "My Frisky Business",
+      "city": "Babylon",
+      "state": "NY",
+      "zip": "11702",
+      "url": "http://www.myfriskybusiness.net"
+    },
+    {
+      "name": "The People's Party",
+      "city": "Babylon",
+      "state": "NY",
+      "zip": "11702",
+      "url": "https://swing67.wixsite.com/thepeoplesparty"
     },
     {
       "name": "Caligula",
@@ -975,6 +982,27 @@
       "state": "NY",
       "zip": "11102",
       "url": "https://www.caligulany.com/"
+    },
+    {
+      "name": "Deviate Network",
+      "city": "Kingston",
+      "state": "NY",
+      "zip": "12401",
+      "url": "https://www.thedeviatenetwork.com/events"
+    },
+    {
+      "name": "Mindbender Parties",
+      "city": "Moriches",
+      "state": "NY",
+      "zip": "11955",
+      "url": "https://www.mindbenderparties.com/"
+    },
+    {
+      "name": "Victoria's Soiree",
+      "city": "Newburgh",
+      "state": "NY",
+      "zip": "12550",
+      "url": "https://victoriassoiree.my.canva.site/"
     },
     {
       "name": "CheckMate New York",
@@ -991,48 +1019,6 @@
       "url": "https://clublabyrinth.com/"
     },
     {
-      "name": "Deviate Network",
-      "city": "Kingston",
-      "state": "NY",
-      "zip": "12401",
-      "url": "https://www.thedeviatenetwork.com/events"
-    },
-    {
-      "name": "Medusa's Playhouse",
-      "city": "West Babylon",
-      "state": "NY",
-      "zip": "11704",
-      "url": "https://sharenationevents.com/"
-    },
-    {
-      "name": "Mindbender Parties",
-      "city": "Moriches",
-      "state": "NY",
-      "zip": "11955",
-      "url": "https://www.mindbenderparties.com/"
-    },
-    {
-      "name": "My Frisky Business",
-      "city": "Babylon",
-      "state": "NY",
-      "zip": "11702",
-      "url": "http://www.myfriskybusiness.net"
-    },
-    {
-      "name": "SatinSheetDreams",
-      "city": "Albany",
-      "state": "NY",
-      "zip": "12207",
-      "url": "https://satinsheetdreams.com/"
-    },
-    {
-      "name": "Syracuse Speakeasy",
-      "city": "Liverpool",
-      "state": "NY",
-      "zip": "13088",
-      "url": "https://syracusespeakeasy.com/"
-    },
-    {
       "name": "The Diamond Club NYC",
       "city": "New York",
       "state": "NY",
@@ -1047,11 +1033,18 @@
       "url": "https://theloftesl.com/"
     },
     {
-      "name": "The People's Party",
-      "city": "Babylon",
+      "name": "Badd Kitty Club",
+      "city": "Liverpool",
       "state": "NY",
-      "zip": "11702",
-      "url": "https://swing67.wixsite.com/thepeoplesparty"
+      "zip": "13088",
+      "url": "http://www.baddkittyclub.com/"
+    },
+    {
+      "name": "Syracuse Speakeasy",
+      "city": "Liverpool",
+      "state": "NY",
+      "zip": "13088",
+      "url": "https://syracusespeakeasy.com/"
     },
     {
       "name": "Vanilla Needs Chocolate",
@@ -1061,11 +1054,11 @@
       "url": "http://www.vnclifestyle.com/"
     },
     {
-      "name": "Victoria's Soiree",
-      "city": "Newburgh",
+      "name": "Medusa's Playhouse",
+      "city": "West Babylon",
       "state": "NY",
-      "zip": "12550",
-      "url": "https://victoriassoiree.my.canva.site/"
+      "zip": "11704",
+      "url": "https://sharenationevents.com/"
     }
   ],
   "North Carolina": [
@@ -1077,11 +1070,11 @@
       "url": "https://carolinafriends.com/"
     },
     {
-      "name": "Club C3",
-      "city": "New Bern",
+      "name": "You Know Where",
+      "city": "Fayetteville",
       "state": "NC",
-      "zip": "28560",
-      "url": "https://clubc3.com/"
+      "zip": "28301",
+      "url": "https://www.youknowwherenc.com/"
     },
     {
       "name": "Club Red Door",
@@ -1091,18 +1084,18 @@
       "url": "https://www.clubreddoor.com/"
     },
     {
+      "name": "Club C3",
+      "city": "New Bern",
+      "state": "NC",
+      "zip": "28560",
+      "url": "https://clubc3.com/"
+    },
+    {
       "name": "Friction",
       "city": "Raleigh",
       "state": "NC",
       "zip": "27601",
       "url": "https://frictionparties.com/"
-    },
-    {
-      "name": "Ludus Social Club",
-      "city": "Wilmington",
-      "state": "NC",
-      "zip": "28401",
-      "url": "https://clubludus.co/"
     },
     {
       "name": "The House",
@@ -1112,70 +1105,21 @@
       "url": "https://iltephouse.com/"
     },
     {
-      "name": "You Know Where",
-      "city": "Fayetteville",
+      "name": "Ludus Social Club",
+      "city": "Wilmington",
       "state": "NC",
-      "zip": "28301",
-      "url": "https://www.youknowwherenc.com/"
+      "zip": "28401",
+      "url": "https://clubludus.co/"
     }
   ],
   "North Dakota": [],
   "Ohio": [
-    {
-      "name": "Club 440",
-      "city": "Milford",
-      "state": "OH",
-      "zip": "45150",
-      "url": "https://www.club440online.com/"
-    },
-    {
-      "name": "Club Eros",
-      "city": "Cleveland",
-      "state": "OH",
-      "zip": "44114",
-      "url": "https://clubludus.co/"
-    },
-    {
-      "name": "Club Escape",
-      "city": "Cleveland",
-      "state": "OH",
-      "zip": "44114",
-      "url": "https://www.clubescapecleveland.com/"
-    },
-    {
-      "name": "Club Flavor",
-      "city": "Massillon",
-      "state": "OH",
-      "zip": "44646",
-      "url": "https://www.clubflavorohio.com/"
-    },
     {
       "name": "Club Princeton",
       "city": "Columbus",
       "state": "OH",
       "zip": "43215",
       "url": "https://clubprinceton.com/"
-    },
-    {
-      "name": "Club Sinday",
-      "city": "Middletown",
-      "state": "OH",
-      "zip": "45042",
-      "url": "https://www.clubsinday.com/"
-    },
-    {
-      "name": "Euphoria",
-      "city": "Toledo",
-      "state": "OH",
-      "zip": "43604",
-      "url": "https://www.toledoadultparties.com/"
-    },
-    {
-      "name": "Explore",
-      "city": "Valley View",
-      "state": "OH",
-      "zip": "44125",
-      "url": "https://explore-events.com/"
     },
     {
       "name": "IntimateParties Group",
@@ -1197,6 +1141,55 @@
       "state": "OH",
       "zip": "43215",
       "url": "https://www.playchampagne.com/"
+    },
+    {
+      "name": "Club 440",
+      "city": "Milford",
+      "state": "OH",
+      "zip": "45150",
+      "url": "https://www.club440online.com/"
+    },
+    {
+      "name": "Club Sinday",
+      "city": "Middletown",
+      "state": "OH",
+      "zip": "45042",
+      "url": "https://www.clubsinday.com/"
+    },
+    {
+      "name": "Club Eros",
+      "city": "Cleveland",
+      "state": "OH",
+      "zip": "44114",
+      "url": "https://clubludus.co/"
+    },
+    {
+      "name": "Club Escape",
+      "city": "Cleveland",
+      "state": "OH",
+      "zip": "44114",
+      "url": "https://www.clubescapecleveland.com/"
+    },
+    {
+      "name": "Explore",
+      "city": "Valley View",
+      "state": "OH",
+      "zip": "44125",
+      "url": "https://explore-events.com/"
+    },
+    {
+      "name": "Club Flavor",
+      "city": "Massillon",
+      "state": "OH",
+      "zip": "44646",
+      "url": "https://www.clubflavorohio.com/"
+    },
+    {
+      "name": "Euphoria",
+      "city": "Toledo",
+      "state": "OH",
+      "zip": "43604",
+      "url": "https://www.toledoadultparties.com/"
     },
     {
       "name": "Secret Desires of Ohio",
@@ -1254,13 +1247,6 @@
   ],
   "Pennsylvania": [
     {
-      "name": "Body Shop",
-      "city": "Pittsburgh",
-      "state": "PA",
-      "zip": "15222",
-      "url": "https://bodyshopclubs.com/"
-    },
-    {
       "name": "Club Giggity",
       "city": "Allentown",
       "state": "PA",
@@ -1275,6 +1261,34 @@
       "url": "http://www.djsisland.com"
     },
     {
+      "name": "Secret Pleasures",
+      "city": "Emmaus",
+      "state": "PA",
+      "zip": "18049",
+      "url": "http://www.secretpleasures.club/"
+    },
+    {
+      "name": "TJ's Lasting Impressions",
+      "city": "Newport",
+      "state": "PA",
+      "zip": "17074",
+      "url": "https://tjslastingimpressions.com/"
+    },
+    {
+      "name": "Body Shop",
+      "city": "Pittsburgh",
+      "state": "PA",
+      "zip": "15222",
+      "url": "https://bodyshopclubs.com/"
+    },
+    {
+      "name": "Secret Sinsations",
+      "city": "Pittsburgh",
+      "state": "PA",
+      "zip": "15222",
+      "url": "http://www.secretsinsations.com/"
+    },
+    {
       "name": "Friction",
       "city": "Philadelphia",
       "state": "PA",
@@ -1287,13 +1301,6 @@
       "state": "PA",
       "zip": "19107",
       "url": "https://friction4her.com/"
-    },
-    {
-      "name": "The Korral",
-      "city": "Spring Grove",
-      "state": "PA",
-      "zip": "17362",
-      "url": "http://www.thekorral.com"
     },
     {
       "name": "Saints and Sinners",
@@ -1317,20 +1324,6 @@
       "url": "https://sinnersparadise.weebly.com/"
     },
     {
-      "name": "Secret Pleasures",
-      "city": "Emmaus",
-      "state": "PA",
-      "zip": "18049",
-      "url": "http://www.secretpleasures.club/"
-    },
-    {
-      "name": "Secret Sinsations",
-      "city": "Pittsburgh",
-      "state": "PA",
-      "zip": "15222",
-      "url": "http://www.secretsinsations.com/"
-    },
-    {
       "name": "Sugar and Spice",
       "city": "West Chester",
       "state": "PA",
@@ -1345,14 +1338,21 @@
       "url": "http://www.swingoutsocials.com/"
     },
     {
-      "name": "TJ's Lasting Impressions",
-      "city": "Newport",
+      "name": "The Korral",
+      "city": "Spring Grove",
       "state": "PA",
-      "zip": "17074",
-      "url": "https://tjslastingimpressions.com/"
+      "zip": "17362",
+      "url": "http://www.thekorral.com"
     }
   ],
   "Rhode Island": [
+    {
+      "name": "Rhody Boats",
+      "city": "Bristol",
+      "state": "RI",
+      "zip": "02809",
+      "url": "https://www.rhodyboats.com/"
+    },
     {
       "name": "Choice Social Club",
       "city": "Providence",
@@ -1373,16 +1373,16 @@
       "state": "RI",
       "zip": "02903",
       "url": "https://www.riplayground.net/"
-    },
-    {
-      "name": "Rhody Boats",
-      "city": "Bristol",
-      "state": "RI",
-      "zip": "02809",
-      "url": "https://www.rhodyboats.com/"
     }
   ],
   "South Carolina": [
+    {
+      "name": "Foothills Club",
+      "city": "Anderson",
+      "state": "SC",
+      "zip": "29621",
+      "url": "https://thefoothillsclub.com/"
+    },
     {
       "name": "Dalliance",
       "city": "Columbia",
@@ -1391,11 +1391,11 @@
       "url": "https://clubdalliance.com/"
     },
     {
-      "name": "Foothills Club",
-      "city": "Anderson",
+      "name": "The Melting Pot for Adult Fun",
+      "city": "Greenville",
       "state": "SC",
-      "zip": "29621",
-      "url": "https://thefoothillsclub.com/"
+      "zip": "29601",
+      "url": "https://www.mp4af.com/"
     },
     {
       "name": "Lacey's Playhouse",
@@ -1410,17 +1410,17 @@
       "state": "SC",
       "zip": "29715",
       "url": "http://www.lifestyleconnections.net/"
-    },
-    {
-      "name": "The Melting Pot for Adult Fun",
-      "city": "Greenville",
-      "state": "SC",
-      "zip": "29601",
-      "url": "https://www.mp4af.com/"
     }
   ],
   "South Dakota": [],
   "Tennessee": [
+    {
+      "name": "Pandora's Lifestyle Resort & Club",
+      "city": "Crossville",
+      "state": "TN",
+      "zip": "38555",
+      "url": "https://pandorasresort.com/"
+    },
     {
       "name": "Chemistry",
       "city": "Madison",
@@ -1457,13 +1457,6 @@
       "url": "https://club-genesis.com/"
     },
     {
-      "name": "Pandora's Lifestyle Resort & Club",
-      "city": "Crossville",
-      "state": "TN",
-      "zip": "38555",
-      "url": "https://pandorasresort.com/"
-    },
-    {
       "name": "RedRoom",
       "city": "Nashville",
       "state": "TN",
@@ -1471,35 +1464,21 @@
       "url": ""
     },
     {
-      "name": "Tennessee Temptations",
-      "city": "Johnson City",
-      "state": "TN",
-      "zip": "37601",
-      "url": "https://www.tntempt.com/"
-    },
-    {
       "name": "Vibe",
       "city": "Nashville",
       "state": "TN",
       "zip": "37203",
       "url": "https://www.partiesbyvibe.com/"
+    },
+    {
+      "name": "Tennessee Temptations",
+      "city": "Johnson City",
+      "state": "TN",
+      "zip": "37601",
+      "url": "https://www.tntempt.com/"
     }
   ],
   "Texas": [
-    {
-      "name": "Barehide Ranch",
-      "city": "Poolville",
-      "state": "TX",
-      "zip": "76085",
-      "url": "https://www.thebarehideranch.com/"
-    },
-    {
-      "name": "Castaways Travel",
-      "city": "Spring",
-      "state": "TX",
-      "zip": "77373",
-      "url": "https://castawaystravel.com/"
-    },
     {
       "name": "Colette - Austin",
       "city": "Austin",
@@ -1515,41 +1494,6 @@
       "url": "https://www.coletteclubs.com/"
     },
     {
-      "name": "Colette - Houston",
-      "city": "Houston",
-      "state": "TX",
-      "zip": "77002",
-      "url": "https://www.coletteclubs.com/"
-    },
-    {
-      "name": "Colette - San Antonio",
-      "city": "San Antonio",
-      "state": "TX",
-      "zip": "78205",
-      "url": "https://www.coletteclubs.com/"
-    },
-    {
-      "name": "Club Eden - Fort Worth",
-      "city": "Fort Worth",
-      "state": "TX",
-      "zip": "76102",
-      "url": "https://edenclubs.co/"
-    },
-    {
-      "name": "Club Eden - San Antonio",
-      "city": "San Antonio",
-      "state": "TX",
-      "zip": "78205",
-      "url": "https://edenclubs.co/"
-    },
-    {
-      "name": "Krewe of Swingtown",
-      "city": "Goodrich",
-      "state": "TX",
-      "zip": "77335",
-      "url": "https://www.kreweofswingtown.com/"
-    },
-    {
       "name": "Playhouse DFW",
       "city": "Dallas",
       "state": "TX",
@@ -1557,11 +1501,11 @@
       "url": "https://playhousedfw.com/"
     },
     {
-      "name": "Quiet Encounters",
-      "city": "El Paso",
+      "name": "Colette - Houston",
+      "city": "Houston",
       "state": "TX",
-      "zip": "79901",
-      "url": "https://quietencounters2.com/"
+      "zip": "77002",
+      "url": "https://www.coletteclubs.com/"
     },
     {
       "name": "The Night Game",
@@ -1578,11 +1522,60 @@
       "url": "https://pendulum.club/"
     },
     {
+      "name": "Club Eden - Fort Worth",
+      "city": "Fort Worth",
+      "state": "TX",
+      "zip": "76102",
+      "url": "https://edenclubs.co/"
+    },
+    {
+      "name": "Colette - San Antonio",
+      "city": "San Antonio",
+      "state": "TX",
+      "zip": "78205",
+      "url": "https://www.coletteclubs.com/"
+    },
+    {
+      "name": "Club Eden - San Antonio",
+      "city": "San Antonio",
+      "state": "TX",
+      "zip": "78205",
+      "url": "https://edenclubs.co/"
+    },
+    {
+      "name": "Krewe of Swingtown",
+      "city": "Goodrich",
+      "state": "TX",
+      "zip": "77335",
+      "url": "https://www.kreweofswingtown.com/"
+    },
+    {
+      "name": "Castaways Travel",
+      "city": "Spring",
+      "state": "TX",
+      "zip": "77373",
+      "url": "https://castawaystravel.com/"
+    },
+    {
       "name": "Tin Boxxx",
       "city": "Lubbock",
       "state": "TX",
       "zip": "79401",
       "url": "https://tinboxxx.com/"
+    },
+    {
+      "name": "Quiet Encounters",
+      "city": "El Paso",
+      "state": "TX",
+      "zip": "79901",
+      "url": "https://quietencounters2.com/"
+    },
+    {
+      "name": "Barehide Ranch",
+      "city": "Poolville",
+      "state": "TX",
+      "zip": "76085",
+      "url": "https://www.thebarehideranch.com/"
     },
     {
       "name": "OTR4U",
@@ -1596,18 +1589,18 @@
   "Vermont": [],
   "Virginia": [
     {
-      "name": "Interracial / International Couples and People Who Love Them",
-      "city": "Springfield",
-      "state": "VA",
-      "zip": "22150",
-      "url": "http://www.126044774866949457.com/"
-    },
-    {
       "name": "The Upside Down Pineapple Club",
       "city": "Manassas",
       "state": "VA",
       "zip": "20110",
       "url": "https://upsidedownpineapple.club/"
+    },
+    {
+      "name": "Interracial / International Couples and People Who Love Them",
+      "city": "Springfield",
+      "state": "VA",
+      "zip": "22150",
+      "url": "http://www.126044774866949457.com/"
     },
     {
       "name": "Virginia Friends",
@@ -1626,18 +1619,18 @@
   ],
   "Washington": [
     {
-      "name": "Couple's Cupid Lifestyle Lounge",
-      "city": "Seattle",
-      "state": "WA",
-      "zip": "98101",
-      "url": "https://www.couplescupid.org/"
-    },
-    {
       "name": "Eros",
       "city": "Redmond",
       "state": "WA",
       "zip": "98052",
       "url": "https://eros-events.org/"
+    },
+    {
+      "name": "Couple's Cupid Lifestyle Lounge",
+      "city": "Seattle",
+      "state": "WA",
+      "zip": "98101",
+      "url": "https://www.couplescupid.org/"
     },
     {
       "name": "Sapphire",
@@ -1665,18 +1658,18 @@
       "url": "https://campncn.com/"
     },
     {
-      "name": "Jen's Social Networking",
-      "city": "Milwaukee",
-      "state": "WI",
-      "zip": "53202",
-      "url": "https://jenssocialnetworking.com/"
-    },
-    {
       "name": "Mars Shags Venus",
       "city": "Madison",
       "state": "WI",
       "zip": "53703",
       "url": "https://marsshagsvenus.com/"
+    },
+    {
+      "name": "Jen's Social Networking",
+      "city": "Milwaukee",
+      "state": "WI",
+      "zip": "53202",
+      "url": "https://jenssocialnetworking.com/"
     }
   ],
   "Wyoming": []
