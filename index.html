@@ -417,22 +417,74 @@ body {
     display: none !important; 
 }
 
-/* Custom marker styles */
-.zip-marker, .user-location-marker {
-    font-size: 20px;
-    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+/* Custom marker styles using CSS shapes instead of emoji */
+.search-marker {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     animation: bounce 2s infinite;
+    position: relative;
+}
+
+.search-marker::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.user-location-marker {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    border-radius: 50%;
+    border: 4px solid white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    animation: pulse 2s infinite;
+    position: relative;
+}
+
+.user-location-marker::after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 @keyframes bounce {
     0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
+        transform: translateY(0) rotate(-45deg);
     }
     40% {
-        transform: translateY(-10px);
+        transform: translateY(-10px) rotate(-45deg);
     }
     60% {
-        transform: translateY(-5px);
+        transform: translateY(-5px) rotate(-45deg);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
     }
 }
 
@@ -580,7 +632,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/
 
 // Create a custom pane for radius circle with highest z-index
 map.createPane('radiusPane');
-map.getPane('radiusPane').style.zIndex = 650; // Higher than overlay pane (400) and popup pane (600)
+map.getPane('radiusPane').style.zIndex = 650;
 
 const ResetControl = L.Control.extend({
     options: { position: 'topleft' },
@@ -602,6 +654,26 @@ let currentFilter = 'all';
 let searchMarkers = [];
 let userLocationMarker = null;
 let radiusCircle = null;
+let dataLoaded = false;
+
+// Sample data - replace with your actual data files
+const sampleClubsData = {
+    "California": [
+        { name: "Sample Club LA", city: "Los Angeles", state: "CA", lat: 34.0522, lng: -118.2437, url: "https://example.com" }
+    ],
+    "New York": [
+        { name: "Sample Club NYC", city: "New York", state: "NY", lat: 40.7128, lng: -74.0060, url: "https://example.com" }
+    ]
+};
+
+const sampleDungeonsData = {
+    "California": [
+        { name: "Sample Dungeon SF", city: "San Francisco", state: "CA", lat: 37.7749, lng: -122.4194, url: "https://example.com" }
+    ],
+    "Texas": [
+        { name: "Sample Dungeon Austin", city: "Austin", state: "TX", lat: 30.2672, lng: -97.7431, url: "https://example.com" }
+    ]
+};
 
 // Utility functions
 function showMessage(message, type = 'info') {
@@ -644,10 +716,9 @@ function toRad(degrees) {
     return degrees * (Math.PI/180);
 }
 
-// ZIP code coordinate lookup with better error handling
+// ZIP code coordinate lookup
 async function getZipCoordinates(zipCode) {
     try {
-        // Use HTTPS to avoid mixed content issues
         const response = await fetch(`https://api.zippopotam.us/us/${zipCode}`);
         if (!response.ok) {
             throw new Error(response.status === 404 ? 'ZIP code not found' : `API error: ${response.status}`);
@@ -674,7 +745,6 @@ async function getZipCoordinates(zipCode) {
 
 // Reset search function
 function resetSearch() {
-    // Clear ALL markers including user location marker
     searchMarkers.forEach(marker => map.removeLayer(marker));
     searchMarkers = [];
     
@@ -688,7 +758,6 @@ function resetSearch() {
         radiusCircle = null;
     }
     
-    // Reset form inputs
     document.getElementById('zipInput').value = '';
     document.getElementById('radiusInput').value = '50';
     
@@ -697,15 +766,33 @@ function resetSearch() {
     showMessage('Search reset', 'success');
 }
 
-// Improved search results display
+// Create custom markers using CSS instead of emoji
+function createSearchMarker() {
+    return L.divIcon({
+        className: 'search-marker',
+        iconSize: [24, 24],
+        iconAnchor: [12, 24],
+        popupAnchor: [0, -24]
+    });
+}
+
+function createUserLocationMarker() {
+    return L.divIcon({
+        className: 'user-location-marker',
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+        popupAnchor: [0, -14]
+    });
+}
+
+// Search results display
 function displaySearchResults(venues, searchCoords, radius, searchLabel, isUserLocation = false) {
     console.log('displaySearchResults called with:', { searchCoords, radius, searchLabel, isUserLocation });
     
-    // Clear previous search markers
+    // Clear previous markers
     searchMarkers.forEach(marker => map.removeLayer(marker));
     searchMarkers = [];
     
-    // Clear previous user location marker
     if (userLocationMarker) {
         map.removeLayer(userLocationMarker);
         userLocationMarker = null;
@@ -713,14 +800,9 @@ function displaySearchResults(venues, searchCoords, radius, searchLabel, isUserL
 
     console.log('Creating search center marker at:', searchCoords.lat, searchCoords.lng);
 
-    // Add search center marker (ZIP code or search center)
+    // Add search center marker
     const searchMarker = L.marker([searchCoords.lat, searchCoords.lng], {
-        icon: L.divIcon({
-            className: 'zip-marker',
-            html: '📍',
-            iconSize: [24, 24],
-            iconAnchor: [12, 24]
-        })
+        icon: createSearchMarker()
     }).bindPopup(`
         <strong>Search Center</strong><br>
         ${searchLabel}<br>
@@ -732,24 +814,19 @@ function displaySearchResults(venues, searchCoords, radius, searchLabel, isUserL
     searchMarkers.push(searchMarker);
     console.log('Search marker added to map');
 
-    // If this is a user location search, create a separate user location marker
+    // If user location search, add user location marker
     if (isUserLocation) {
         console.log('Creating user location marker');
         userLocationMarker = L.marker([searchCoords.lat, searchCoords.lng], {
-            icon: L.divIcon({
-                className: 'user-location-marker',
-                html: '🎯', // Different icon to make it more visible
-                iconSize: [28, 28], // Slightly larger
-                iconAnchor: [14, 28]
-            })
-        }).bindPopup("📍 Your exact location");
+            icon: createUserLocationMarker()
+        }).bindPopup("Your Location");
         
         userLocationMarker.addTo(map);
         searchMarkers.push(userLocationMarker);
-        console.log('User location marker added to map');
+        console.log('User location marker added');
     }
 
-    // Add radius circle with custom pane for highest z-index
+    // Add radius circle
     radiusCircle = L.circle([searchCoords.lat, searchCoords.lng], {
         radius: radius * 1609.34, // Convert miles to meters
         fillColor: '#f8f9fa',
@@ -760,7 +837,7 @@ function displaySearchResults(venues, searchCoords, radius, searchLabel, isUserL
     }).addTo(map);
     searchMarkers.push(radiusCircle);
 
-    // Group venues by location to handle multiple venues at same location
+    // Group venues by location
     const locationGroups = {};
     venues.forEach(venue => {
         const key = `${venue.lat},${venue.lng}`;
@@ -770,7 +847,7 @@ function displaySearchResults(venues, searchCoords, radius, searchLabel, isUserL
         locationGroups[key].push(venue);
     });
 
-    // Add markers for each location group
+    // Add venue markers
     Object.values(locationGroups).forEach(venueGroup => {
         const firstVenue = venueGroup[0];
         let popupContent = '';
@@ -820,13 +897,13 @@ function displaySearchResults(venues, searchCoords, radius, searchLabel, isUserL
             `;
         }
 
-        const marker = L.marker([firstVenue.lat, firstVenue.lng])
+        const venueMarker = L.marker([firstVenue.lat, firstVenue.lng])
             .bindPopup(popupContent, { maxWidth: 300 })
             .addTo(map);
-        searchMarkers.push(marker);
+        searchMarkers.push(venueMarker);
     });
 
-    // Fit map to show all results with padding
+    // Fit map to show results
     if (venues.length > 0) {
         const group = new L.featureGroup(searchMarkers);
         map.fitBounds(group.getBounds().pad(0.1));
@@ -837,38 +914,45 @@ function displaySearchResults(venues, searchCoords, radius, searchLabel, isUserL
     }
 }
 
-// Load data with better error handling
-Promise.all([
-    fetch('clubs_geocoded.json').then(res => {
-        if (!res.ok) throw new Error('Failed to load clubs data');
-        return res.json();
-    }).catch(() => {
-        showMessage('Warning: Could not load clubs data', 'error');
-        return {};
-    }),
-    fetch('dungeons_geocoded.json').then(res => {
-        if (!res.ok) throw new Error('Failed to load dungeons data');
-        return res.json();
-    }).catch(() => {
-        showMessage('Warning: Could not load dungeons data', 'error');
-        return {};
-    })
-]).then(([clubsData, dungeonsData]) => {
-    clubsByState = clubsData;
-    dungeonsByState = dungeonsData;
-    return fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json");
-}).then(res => {
-    if (!res.ok) throw new Error('Failed to load map data');
-    return res.json();
-}).then(statesData => {
-    geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
-    addStateLabels();
-    updateLabelSizes();
-    showMessage('Map loaded successfully', 'success');
-}).catch(err => {
-    console.error("Error loading data:", err);
-    showMessage('Error loading map data. Please refresh the page.', 'error');
-});
+// Load data with fallback to sample data
+async function loadData() {
+    try {
+        const [clubsData, dungeonsData] = await Promise.all([
+            fetch('clubs_geocoded.json').then(res => {
+                if (!res.ok) throw new Error('Failed to load clubs data');
+                return res.json();
+            }).catch(() => {
+                console.log('Using sample clubs data - replace with your actual data file');
+                return sampleClubsData;
+            }),
+            fetch('dungeons_geocoded.json').then(res => {
+                if (!res.ok) throw new Error('Failed to load dungeons data');
+                return res.json();
+            }).catch(() => {
+                console.log('Using sample dungeons data - replace with your actual data file');
+                return sampleDungeonsData;
+            })
+        ]);
+        
+        clubsByState = clubsData;
+        dungeonsByState = dungeonsData;
+        dataLoaded = true;
+        
+        // Load states data
+        const statesResponse = await fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json");
+        if (!statesResponse.ok) throw new Error('Failed to load map data');
+        const statesData = await statesResponse.json();
+        
+        geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
+        addStateLabels();
+        updateLabelSizes();
+        showMessage('Map loaded successfully', 'success');
+        
+    } catch (err) {
+        console.error("Error loading data:", err);
+        showMessage('Error loading map data. Please refresh the page.', 'error');
+    }
+}
 
 function style(feature) {
     const stateName = feature.properties.name;
@@ -888,7 +972,6 @@ function highlightFeature(e) {
     const stateName = layer.feature.properties.name;
     if (stateLabels[stateName]) stateLabels[stateName].getElement().classList.add('highlight');
     
-    // Always keep radius circle on top after state highlight
     if (radiusCircle) {
         radiusCircle.bringToFront();
     }
@@ -959,7 +1042,6 @@ function addStateLabels() {
         const stateName = layer.feature.properties.name;
         let c = layer.getBounds().getCenter();
         
-        // Adjust Idaho's position for better centering
         if (stateName === 'Idaho') {
             c = L.latLng(c.lat - 0.5, c.lng - 0.8);
         }
@@ -991,7 +1073,7 @@ function updateLabelSizes() {
     });
 }
 
-// Event listeners with improved validation
+// Event listeners
 document.querySelectorAll('input[name="filterType"]').forEach(radio => {
     radio.addEventListener('change', e => {
         currentFilter = e.target.value;
@@ -1004,6 +1086,11 @@ document.querySelectorAll('input[name="filterType"]').forEach(radio => {
 document.getElementById('searchBtn').addEventListener('click', async () => {
     const zipCode = document.getElementById('zipInput').value.trim();
     const radius = parseFloat(document.getElementById('radiusInput').value) || 50;
+    
+    if (!dataLoaded) {
+        showMessage('Map data is still loading. Please wait...', 'error');
+        return;
+    }
     
     if (!zipCode) {
         showMessage('Please enter a ZIP code to search.', 'error');
@@ -1025,6 +1112,8 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
     try {
         const zipCoords = await getZipCoordinates(zipCode);
         const nearbyVenues = [];
+        
+        console.log('ZIP Search - Coordinates:', zipCoords);
         
         // Search clubs
         if (currentFilter === 'all' || currentFilter === 'clubs') {
@@ -1051,11 +1140,6 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
         }
         
         nearbyVenues.sort((a, b) => a.distance - b.distance);
-        
-        // Debug: Log coordinates to console
-        console.log('ZIP Search - Coordinates:', zipCoords);
-        
-        // Call with explicit false for isUserLocation
         displaySearchResults(nearbyVenues, zipCoords, radius, zipCode, false);
         
     } catch (error) {
@@ -1071,6 +1155,11 @@ document.getElementById('geoBtn').addEventListener('click', () => {
         return;
     }
     
+    if (!dataLoaded) {
+        showMessage('Map data is still loading. Please wait...', 'error');
+        return;
+    }
+    
     setButtonLoading('geoBtn', true);
     
     navigator.geolocation.getCurrentPosition(
@@ -1079,10 +1168,8 @@ document.getElementById('geoBtn').addEventListener('click', () => {
             const lng = pos.coords.longitude;
             const radius = parseFloat(document.getElementById('radiusInput').value) || 50;
             
-            // Create user location marker (this will be handled by displaySearchResults)
             const userLocationCoords = { lat, lng, city: 'Your Location', state: '' };
             
-            // Perform search from user location
             const nearbyVenues = [];
             
             // Search clubs
@@ -1110,8 +1197,6 @@ document.getElementById('geoBtn').addEventListener('click', () => {
             }
             
             nearbyVenues.sort((a, b) => a.distance - b.distance);
-            
-            // Display results with isUserLocation = true
             displaySearchResults(nearbyVenues, userLocationCoords, radius, 'Your Location', true);
             
             setButtonLoading('geoBtn', false);
@@ -1143,30 +1228,29 @@ document.getElementById('resetBtn').addEventListener('click', resetSearch);
 
 // Input validation
 document.getElementById('zipInput').addEventListener('input', function(e) {
-    // Only allow numbers
     this.value = this.value.replace(/\D/g, '');
-    // Limit to 5 digits
     if (this.value.length > 5) {
         this.value = this.value.slice(0, 5);
     }
 });
 
-// Allow Enter key to trigger search
 document.getElementById('zipInput').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         document.getElementById('searchBtn').click();
     }
 });
 
+// Initialize
 updateLabelSizes();
 map.on('zoomend', updateLabelSizes);
-
-// Keep radius circle on top when map is moved
 map.on('moveend zoomend', function() {
     if (radiusCircle) {
         radiusCircle.bringToFront();
     }
 });
+
+// Load data on startup
+loadData();
 </script>
 </body>
 </html>
