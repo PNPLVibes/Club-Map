@@ -5,7 +5,9 @@
       "city": "Birmingham",
       "state": "AL",
       "zip": "35203",
-      "url": "https://www.theredchair.org/"
+      "url": "https://www.theredchair.org/",
+      "lat": 33.521,
+      "lng": -86.8066
     }
   ],
   "Arizona": [
@@ -14,14 +16,18 @@
       "city": "Phoenix",
       "state": "AZ",
       "zip": "85001",
-      "url": "https://arizonapowerexchange.org/"
+      "url": "https://arizonapowerexchange.org/",
+      "lat": 33.448,
+      "lng": -112.074
     },
     {
       "name": "Desert Dominion",
       "city": "Tucson",
       "state": "AZ",
       "zip": "85701",
-      "url": "https://www.desertdominion.org/"
+      "url": "https://www.desertdominion.org/",
+      "lat": 32.2139,
+      "lng": -110.9694
     }
   ],
   "California": [
@@ -30,28 +36,36 @@
       "city": "Los Angeles",
       "state": "CA",
       "zip": "90015",
-      "url": "https://thresholdla.org/"
+      "url": "https://thresholdla.org/",
+      "lat": 34.0434,
+      "lng": -118.2716
     },
     {
       "name": "Society of Janus",
       "city": "San Francisco",
       "state": "CA",
       "zip": "94102",
-      "url": "https://soj.org/"
+      "url": "https://soj.org/",
+      "lat": 37.7813,
+      "lng": -122.4167
     },
     {
       "name": "The 15 Association",
       "city": "San Francisco",
       "state": "CA",
       "zip": "94110",
-      "url": "https://the15association.org/"
+      "url": "https://the15association.org/",
+      "lat": 37.7509,
+      "lng": -122.4153
     },
     {
       "name": "The Exiles",
       "city": "San Francisco",
       "state": "CA",
       "zip": "94103",
-      "url": "https://theexiles.org/"
+      "url": "https://theexiles.org/",
+      "lat": 37.7725,
+      "lng": -122.4147
     }
   ],
   "Colorado": [
@@ -60,7 +74,9 @@
       "city": "Denver",
       "state": "CO",
       "zip": "80202",
-      "url": "https://www.denversanctuary.com/"
+      "url": "https://www.denversanctuary.com/",
+      "lat": 39.7491,
+      "lng": -104.9946
     }
   ],
   "District of Columbia": [
@@ -69,14 +85,18 @@
       "city": "Washington",
       "state": "D.C.",
       "zip": "20002",
-      "url": "https://br.org/"
+      "url": "https://br.org/",
+      "lat": 38.9024,
+      "lng": -76.9901
     },
     {
       "name": "Crucible",
       "city": "Washington",
       "state": "D.C.",
       "zip": "20002",
-      "url": "https://the-crucible.com/"
+      "url": "https://the-crucible.com/",
+      "lat": 38.9024,
+      "lng": -76.9901
     }
   ],
   "Florida": [
@@ -85,21 +105,27 @@
       "city": "Kissimmee",
       "state": "FL",
       "zip": "34741",
-      "url": "https://www.secretsfl.com/club-swinkster"
+      "url": "https://www.secretsfl.com/club-swinkster",
+      "lat": 28.3051,
+      "lng": -81.4242
     },
     {
       "name": "The Woodshed",
       "city": "Orlando",
       "state": "FL",
       "zip": "32801",
-      "url": "https://www.thewoodshedorlando.com/"
+      "url": "https://www.thewoodshedorlando.com/",
+      "lat": 28.5399,
+      "lng": -81.3727
     },
     {
       "name": "Panhandle Alternative Lifestyles Society (PALS)",
       "city": "Pensacola",
       "state": "FL",
       "zip": "32501",
-      "url": "https://pals-fl.com/"
+      "url": "https://pals-fl.com/",
+      "lat": 30.4223,
+      "lng": -87.2248
     }
   ],
   "Illinois": [
@@ -108,14 +134,18 @@
       "city": "Chicago",
       "state": "IL",
       "zip": "60606",
-      "url": "https://galleriadomain.org/"
+      "url": "https://galleriadomain.org/",
+      "lat": 41.8868,
+      "lng": -87.6386
     },
     {
       "name": "The Chicago Rose Club",
       "city": "Chicago",
       "state": "IL",
       "zip": "60601",
-      "url": "https://www.thechicagoroseclub.org/"
+      "url": "https://www.thechicagoroseclub.org/",
+      "lat": 41.8858,
+      "lng": -87.6181
     }
   ],
   "Kansas": [
@@ -124,7 +154,9 @@
       "city": "Kansas City",
       "state": "KS",
       "zip": "66101",
-      "url": "https://www.kcpioneers.org/"
+      "url": "https://www.kcpioneers.org/",
+      "lat": 39.1157,
+      "lng": -94.6271
     }
   ],
   "Maryland": [
@@ -133,21 +165,27 @@
       "city": "Baltimore",
       "state": "MD",
       "zip": "21201",
-      "url": "https://bess-49.square.site/"
+      "url": "https://bess-49.square.site/",
+      "lat": 39.2946,
+      "lng": -76.6252
     },
     {
       "name": "Dark Odyssey",
       "city": "Baltimore",
       "state": "MD",
       "zip": "21201",
-      "url": "https://darkodyssey.com/"
+      "url": "https://darkodyssey.com/",
+      "lat": 39.2946,
+      "lng": -76.6252
     },
     {
       "name": "Camp Crucible",
       "city": "Northern Maryland",
       "state": "MD",
       "zip": "20878",
-      "url": "https://www.campcrucible.com/"
+      "url": "https://www.campcrucible.com/",
+      "lat": 39.1125,
+      "lng": -77.2515
     }
   ],
   "Massachusetts": [
@@ -156,7 +194,9 @@
       "city": "Boston",
       "state": "MA",
       "zip": "02108",
-      "url": "https://www.ne-ds.org/"
+      "url": "https://www.ne-ds.org/",
+      "lat": 42.3576,
+      "lng": -71.0684
     }
   ],
   "New York": [
@@ -165,14 +205,18 @@
       "city": "New York City",
       "state": "NY",
       "zip": "10010",
-      "url": "https://www.tes.org/"
+      "url": "https://www.tes.org/",
+      "lat": 40.7375,
+      "lng": -73.9813
     },
     {
       "name": "Rochester Kink Society",
       "city": "Rochester",
       "state": "NY",
       "zip": "14604",
-      "url": "https://www.rochesterkinksociety.com/"
+      "url": "https://www.rochesterkinksociety.com/",
+      "lat": 43.1577,
+      "lng": -77.608
     }
   ],
   "North Carolina": [
@@ -181,7 +225,9 @@
       "city": "Charlotte",
       "state": "NC",
       "zip": "28202",
-      "url": "https://capex.info/"
+      "url": "https://capex.info/",
+      "lat": 35.229,
+      "lng": -80.8419
     }
   ],
   "Ohio": [
@@ -190,7 +236,9 @@
       "city": "Cleveland",
       "state": "OH",
       "zip": "44113",
-      "url": "https://ohiosmart.org/"
+      "url": "https://ohiosmart.org/",
+      "lat": 41.4816,
+      "lng": -81.7018
     }
   ],
   "Oregon": [
@@ -199,7 +247,9 @@
       "city": "Portland",
       "state": "OR",
       "zip": "97201",
-      "url": "https://www.portlandleather.org/"
+      "url": "https://www.portlandleather.org/",
+      "lat": 45.5078,
+      "lng": -122.6897
     }
   ],
   "Tennessee": [
@@ -208,7 +258,9 @@
       "city": "Nashville",
       "state": "TN",
       "zip": "37203",
-      "url": "https://themarkbycpi.org/"
+      "url": "https://themarkbycpi.org/",
+      "lat": 36.1504,
+      "lng": -86.7916
     }
   ],
   "Texas": [
@@ -217,14 +269,18 @@
       "city": "Dallas",
       "state": "TX",
       "zip": "75201",
-      "url": "https://dfwdungeon.com/"
+      "url": "https://dfwdungeon.com/",
+      "lat": 32.7904,
+      "lng": -96.8044
     },
     {
       "name": "Infliction Hall",
       "city": "Euless",
       "state": "TX",
       "zip": "76039",
-      "url": "https://members.inflictionhall.com/"
+      "url": "https://members.inflictionhall.com/",
+      "lat": 32.8582,
+      "lng": -97.0832
     }
   ],
   "Virginia": [
@@ -233,7 +289,9 @@
       "city": "Charlottesville",
       "state": "VA",
       "zip": "22903",
-      "url": "https://www.cuff-va.com/"
+      "url": "https://www.cuff-va.com/",
+      "lat": 38.0339,
+      "lng": -78.4924
     }
   ]
 }
