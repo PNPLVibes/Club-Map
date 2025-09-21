@@ -65,13 +65,6 @@
   ],
   "D.C.": [
     {
-      "name": "Special Interest Group Men’s Association (SigMa)",
-      "city": "Baltimore/D.C.",
-      "state": "DC",
-      "zip": "20002",
-      "url": ""
-    },
-    {
       "name": "Black Rose",
       "city": "D.C.",
       "state": "DC",
@@ -106,7 +99,7 @@
       "city": "Pensacola",
       "state": "FL",
       "zip": "32501",
-      "url": ""
+      "url": "https://pals-fl.com/"
     }
   ],
   "Illinois": [
@@ -140,7 +133,7 @@
       "city": "Baltimore",
       "state": "MD",
       "zip": "21201",
-      "url": ""
+      "url": "https://bess-49.square.site/"
     },
     {
       "name": "Dark Odyssey",
@@ -188,7 +181,7 @@
       "city": "Charlotte",
       "state": "NC",
       "zip": "28202",
-      "url": ""
+      "url": "https://capex.info/"
     }
   ],
   "Ohio": [
@@ -240,7 +233,7 @@
       "city": "Charlottesville",
       "state": "VA",
       "zip": "22903",
-      "url": ""
+      "url": "https://www.cuff-va.com/"
     }
   ]
 }
