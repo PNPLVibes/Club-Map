@@ -698,18 +698,15 @@ function resetSearch() {
 }
 
 // Improved search results display
-function displaySearchResults(venues, searchCoords, radius, searchLabel) {
-    // Clear previous search markers (excluding user location)
-    searchMarkers.forEach(marker => {
-        if (marker !== userLocationMarker) {
-            map.removeLayer(marker);
-        }
-    });
+function displaySearchResults(venues, searchCoords, radius, searchLabel, isUserLocation = false) {
+    // Clear previous search markers
+    searchMarkers.forEach(marker => map.removeLayer(marker));
     searchMarkers = [];
     
-    // Re-add user location marker to searchMarkers if it exists
+    // Clear previous user location marker
     if (userLocationMarker) {
-        searchMarkers.push(userLocationMarker);
+        map.removeLayer(userLocationMarker);
+        userLocationMarker = null;
     }
 
     // Add search center marker (ZIP code or search center)
@@ -727,6 +724,19 @@ function displaySearchResults(venues, searchCoords, radius, searchLabel) {
         Radius: ${radius} miles
     `).addTo(map);
     searchMarkers.push(searchMarker);
+
+    // If this is a user location search, create a separate user location marker
+    if (isUserLocation) {
+        userLocationMarker = L.marker([searchCoords.lat, searchCoords.lng], {
+            icon: L.divIcon({
+                className: 'user-location-marker',
+                html: '🎯', // Different icon to make it more visible
+                iconSize: [28, 28], // Slightly larger
+                iconAnchor: [14, 28]
+            })
+        }).bindPopup("📍 Your exact location").addTo(map);
+        searchMarkers.push(userLocationMarker);
+    }
 
     // Add radius circle with custom pane for highest z-index
     radiusCircle = L.circle([searchCoords.lat, searchCoords.lng], {
@@ -1085,19 +1095,8 @@ document.getElementById('geoBtn').addEventListener('click', () => {
             
             nearbyVenues.sort((a, b) => a.distance - b.distance);
             
-            // Display results (this will create the search center marker)
-            displaySearchResults(nearbyVenues, userLocationCoords, radius, 'Your Location');
-            
-            // Now create a separate user location marker with different icon
-            userLocationMarker = L.marker([lat, lng], {
-                icon: L.divIcon({
-                    className: 'user-location-marker',
-                    html: '🔵',
-                    iconSize: [24, 24],
-                    iconAnchor: [12, 24]
-                })
-            }).bindPopup("You are here!").addTo(map);
-            searchMarkers.push(userLocationMarker);
+            // Display results with isUserLocation = true
+            displaySearchResults(nearbyVenues, userLocationCoords, radius, 'Your Location', true);
             
             setButtonLoading('geoBtn', false);
         },
