@@ -272,15 +272,23 @@ body {
     text-shadow: 2px 2px 8px rgba(231, 76, 60, 0.3);
 }
 
-/* Fixed marker styles - removed bounce animation and improved positioning */
-.zip-marker, .user-location-marker, .search-result-marker {
+/* Custom marker styles - removed positioning and animation that breaks icons */
+.zip-marker, .user-location-marker {
     font-size: 20px;
     filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    line-height: 1;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
 }
 
 .leaflet-popup-content-wrapper { 
@@ -684,19 +692,18 @@ function resetSearch() {
     showMessage('Search reset', 'success');
 }
 
-// Improved search results display with fixed marker positioning
+// Fixed search results display with proper marker icons
 function displaySearchResults(venues, zipCoords, radius, zipCode) {
     searchMarkers.forEach(marker => map.removeLayer(marker));
     searchMarkers = [];
 
-    // Add ZIP code marker with proper centering
+    // Add ZIP code marker with proper icon settings (same as working version)
     const zipMarker = L.marker([zipCoords.lat, zipCoords.lng], {
         icon: L.divIcon({
             className: 'zip-marker',
             html: '📍',
             iconSize: [24, 24],
-            iconAnchor: [12, 12], // Center the icon
-            popupAnchor: [0, -12]
+            iconAnchor: [12, 24]  // Changed to match working version
         })
     }).bindPopup(`
         <strong>Search Center</strong><br>
@@ -727,7 +734,7 @@ function displaySearchResults(venues, zipCoords, radius, zipCode) {
         locationGroups[key].push(venue);
     });
 
-    // Add markers for venues
+    // Add markers for venues (using default Leaflet markers instead of broken divIcon)
     Object.values(locationGroups).forEach(venueGroup => {
         const firstVenue = venueGroup[0];
         let popupContent = '';
@@ -767,15 +774,10 @@ function displaySearchResults(venues, zipCoords, radius, zipCode) {
             popupContent += `</ul><div style="text-align: center; margin-top: 10px; font-style: italic; color: #7f8c8d;">Distance: ${firstVenue.distance.toFixed(1)} miles</div></div>`;
         }
 
-        const marker = L.marker([firstVenue.lat, firstVenue.lng], {
-            icon: L.divIcon({
-                className: 'search-result-marker',
-                html: '🏢',
-                iconSize: [20, 20],
-                iconAnchor: [10, 10], // Center the icon
-                popupAnchor: [0, -10]
-            })
-        }).bindPopup(popupContent, { maxWidth: 300 }).addTo(map);
+        // Use default Leaflet marker instead of divIcon to avoid icon issues
+        const marker = L.marker([firstVenue.lat, firstVenue.lng])
+            .bindPopup(popupContent, { maxWidth: 300 })
+            .addTo(map);
         searchMarkers.push(marker);
     });
 
@@ -1017,8 +1019,7 @@ document.getElementById('geoBtn').addEventListener('click', () => {
                     className: 'user-location-marker',
                     html: '📍',
                     iconSize: [24, 24],
-                    iconAnchor: [12, 12],
-                    popupAnchor: [0, -12]
+                    iconAnchor: [12, 24]
                 })
             }).bindPopup("You are here!").addTo(map);
             
