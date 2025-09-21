@@ -140,7 +140,7 @@ Promise.all([
 }).catch(err => console.error("Error loading data:", err));
 
 function style(feature) {
-    const stateName = feature.properties.name === 'District of Columbia' ? 'D.C.' : feature.properties.name;
+    const stateName = feature.properties.name;
     const hasClubs = clubsByState[stateName] && clubsByState[stateName].length > 0;
     const hasDungeons = dungeonsByState[stateName] && dungeonsByState[stateName].length > 0;
     let fillColor = "#bdc3c7";
@@ -248,4 +248,5 @@ map.on('zoomend', updateLabelSizes);
 </script>
 </body>
 </html>
+
 
