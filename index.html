@@ -578,6 +578,10 @@ const defaultZoom = isMobile ? 3 : 4;
 const map = L.map('map', { minZoom: 3, maxZoom: 18, zoomControl: false, attributionControl: false }).setView(defaultCenter, defaultZoom);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', { subdomains: 'abcd', maxZoom: 19 }).addTo(map);
 
+// Create a custom pane for radius circle with highest z-index
+map.createPane('radiusPane');
+map.getPane('radiusPane').style.zIndex = 650; // Higher than overlay pane (400) and popup pane (600)
+
 const ResetControl = L.Control.extend({
     options: { position: 'topleft' },
     onAdd: function(map) {
@@ -712,16 +716,15 @@ function displaySearchResults(venues, zipCoords, radius, zipCode) {
     `).addTo(map);
     searchMarkers.push(zipMarker);
 
-    // Add radius circle with higher z-index to stay on top
+    // Add radius circle with custom pane for highest z-index
     radiusCircle = L.circle([zipCoords.lat, zipCoords.lng], {
         radius: radius * 1609.34, // Convert miles to meters
         fillColor: '#f8f9fa',
         fillOpacity: 0.3,
         color: '#dee2e6',
         weight: 2,
-        pane: 'overlayPane'
+        pane: 'radiusPane'
     }).addTo(map);
-    radiusCircle.bringToFront();
     searchMarkers.push(radiusCircle);
     searchMarkers.push(radiusCircle);
 
@@ -852,6 +855,11 @@ function highlightFeature(e) {
     layer.bringToFront();
     const stateName = layer.feature.properties.name;
     if (stateLabels[stateName]) stateLabels[stateName].getElement().classList.add('highlight');
+    
+    // Always keep radius circle on top after state highlight
+    if (radiusCircle) {
+        radiusCircle.bringToFront();
+    }
 }
 
 function resetHighlight(e) {
