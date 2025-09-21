@@ -696,12 +696,8 @@ function resetSearch() {
 
 // Improved search results display
 function displaySearchResults(venues, zipCoords, radius, zipCode) {
-    // Clear previous search markers but keep location markers separate
-    searchMarkers.forEach(marker => {
-        if (marker !== userLocationMarker && marker !== radiusCircle) {
-            map.removeLayer(marker);
-        }
-    });
+    // Clear previous search markers
+    searchMarkers.forEach(marker => map.removeLayer(marker));
     searchMarkers = [];
 
     // Add ZIP code marker with better popup
@@ -721,9 +717,6 @@ function displaySearchResults(venues, zipCoords, radius, zipCode) {
     searchMarkers.push(zipMarker);
 
     // Add radius circle with custom pane for highest z-index
-    if (radiusCircle) {
-        map.removeLayer(radiusCircle);
-    }
     radiusCircle = L.circle([zipCoords.lat, zipCoords.lng], {
         radius: radius * 1609.34, // Convert miles to meters
         fillColor: '#f8f9fa',
@@ -863,19 +856,10 @@ function highlightFeature(e) {
     const stateName = layer.feature.properties.name;
     if (stateLabels[stateName]) stateLabels[stateName].getElement().classList.add('highlight');
     
-    // Always keep radius circle and markers on top after state highlight
+    // Always keep radius circle on top after state highlight
     if (radiusCircle) {
         radiusCircle.bringToFront();
     }
-    if (userLocationMarker && map.hasLayer(userLocationMarker)) {
-        userLocationMarker.bringToFront();
-    }
-    // Bring search result markers to front too
-    searchMarkers.forEach(marker => {
-        if (marker && map.hasLayer(marker)) {
-            marker.bringToFront();
-        }
-    });
 }
 
 function resetHighlight(e) {
@@ -1152,14 +1136,10 @@ document.getElementById('zipInput').addEventListener('keypress', function(e) {
 updateLabelSizes();
 map.on('zoomend', updateLabelSizes);
 
-// Keep radius circle and markers on top when map is moved
+// Keep radius circle on top when map is moved
 map.on('moveend zoomend', function() {
     if (radiusCircle) {
         radiusCircle.bringToFront();
-    }
-    // Ensure user location marker stays visible
-    if (userLocationMarker && map.hasLayer(userLocationMarker)) {
-        userLocationMarker.bringToFront();
     }
 });
 </script>
