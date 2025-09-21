@@ -68,10 +68,12 @@ body { display: flex; flex-direction: column; }
 .state-popup-title { font-size: 22px; font-weight: bold; color: #2c3e50; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #3498db; text-align: center; }
 .club-list-container { max-height: 220px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px; background: #fff; padding: 5px; }
 .club-list { list-style-type: none; padding: 0; margin: 0; }
-.club-item { padding: 10px 0; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center; }
+.club-item { padding: 12px 0; border-bottom: 1px solid #e0e0e0; }
 .club-item:last-child { border-bottom: none; }
-.club-link { color: #2980b9; text-decoration: none; font-weight: 500; display: block; padding: 6px 10px; border-radius: 4px; transition: background 0.2s; flex: 1; }
+.club-name { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.club-link { color: #2980b9; text-decoration: none; font-weight: 500; padding: 6px 10px; border-radius: 4px; transition: background 0.2s; flex: 1; }
 .club-link:hover { background: #e8f4fd; color: #e74c3c; }
+.club-location { font-size: 14px; color: #7f8c8d; margin-left: 10px; font-style: italic; }
 .club-type { font-size: 12px; background: #ecf0f1; padding: 2px 6px; border-radius: 3px; margin-left: 8px; }
 .club-type.dungeon { background: #f39c12; color: white; }
 .no-clubs { font-style: italic; color: #7f8c8d; text-align: center; padding: 15px 0; font-size: 16px; }
@@ -88,8 +90,9 @@ body { display: flex; flex-direction: column; }
     .state-label { font-size: 10px; }
     .leaflet-popup-content { font-size: 16px; min-width: 200px; }
     .state-popup-title { font-size: 20px; }
-    .club-item { flex-direction: column; align-items: flex-start; }
+    .club-name { flex-direction: column; align-items: flex-start; }
     .club-type { margin-left: 0; margin-top: 4px; }
+    .club-location { margin-left: 0; margin-top: 2px; }
 }
 </style>
 </head>
@@ -390,20 +393,28 @@ function generatePopup(stateName) {
         popupContent += `<div class="club-list-container"><ul class="club-list">`;
         if (currentFilter !== 'dungeons') {
             clubs.forEach(c => {
+                const location = (c.city && c.state) ? `${c.city}, ${c.state}` : (c.state || '');
                 popupContent += `
                     <li class="club-item">
-                        <a class="club-link" href="${c.url||'#'}" target="_blank" rel="noopener">${c.name}</a>
-                        <span class="club-type">club</span>
+                        <div class="club-name">
+                            <a class="club-link" href="${c.url||'#'}" target="_blank" rel="noopener">${c.name}</a>
+                            <span class="club-type">club</span>
+                        </div>
+                        ${location ? `<div class="club-location">${location}</div>` : ''}
                     </li>
                 `;
             });
         }
         if (currentFilter !== 'clubs') {
             dungeons.forEach(d => {
+                const location = (d.city && d.state) ? `${d.city}, ${d.state}` : (d.state || '');
                 popupContent += `
                     <li class="club-item">
-                        <a class="club-link" href="${d.url||'#'}" target="_blank" rel="noopener">${d.name}</a>
-                        <span class="club-type dungeon">dungeon</span>
+                        <div class="club-name">
+                            <a class="club-link" href="${d.url||'#'}" target="_blank" rel="noopener">${d.name}</a>
+                            <span class="club-type dungeon">dungeon</span>
+                        </div>
+                        ${location ? `<div class="club-location">${location}</div>` : ''}
                     </li>
                 `;
             });
