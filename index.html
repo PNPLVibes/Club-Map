@@ -597,6 +597,7 @@ let stateLabels = {};
 let currentFilter = 'all';
 let searchMarkers = [];
 let userLocationMarker = null;
+let radiusCircle = null;
 
 // Utility functions
 function showMessage(message, type = 'info') {
@@ -675,6 +676,10 @@ function resetSearch() {
         map.removeLayer(userLocationMarker);
         userLocationMarker = null;
     }
+    if (radiusCircle) {
+        map.removeLayer(radiusCircle);
+        radiusCircle = null;
+    }
     
     // Reset form inputs
     document.getElementById('zipInput').value = '';
@@ -707,14 +712,17 @@ function displaySearchResults(venues, zipCoords, radius, zipCode) {
     `).addTo(map);
     searchMarkers.push(zipMarker);
 
-    // Add radius circle
-    const radiusCircle = L.circle([zipCoords.lat, zipCoords.lng], {
+    // Add radius circle with higher z-index to stay on top
+    radiusCircle = L.circle([zipCoords.lat, zipCoords.lng], {
         radius: radius * 1609.34, // Convert miles to meters
         fillColor: '#f8f9fa',
         fillOpacity: 0.3,
         color: '#dee2e6',
-        weight: 2
+        weight: 2,
+        pane: 'overlayPane'
     }).addTo(map);
+    radiusCircle.bringToFront();
+    searchMarkers.push(radiusCircle);
     searchMarkers.push(radiusCircle);
 
     // Group venues by location to handle multiple venues at same location
@@ -1035,8 +1043,8 @@ document.getElementById('geoBtn').addEventListener('click', () => {
                 icon: L.divIcon({
                     className: 'user-location-marker',
                     html: '📍',
-                    iconSize: [20, 20],
-                    iconAnchor: [10, 10]
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 24]
                 })
             }).bindPopup("You are here!").addTo(map);
             
@@ -1119,6 +1127,13 @@ document.getElementById('zipInput').addEventListener('keypress', function(e) {
 
 updateLabelSizes();
 map.on('zoomend', updateLabelSizes);
+
+// Keep radius circle on top when map is moved
+map.on('moveend zoomend', function() {
+    if (radiusCircle) {
+        radiusCircle.bringToFront();
+    }
+});
 </script>
 </body>
 </html>
