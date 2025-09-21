@@ -189,6 +189,7 @@ function toRad(degrees) {
 // ZIP code coordinate lookup with better error handling
 async function getZipCoordinates(zipCode) {
     try {
+        // Use HTTPS to avoid mixed content issues
         const response = await fetch(`https://api.zippopotam.us/us/${zipCode}`);
         if (!response.ok) {
             throw new Error(response.status === 404 ? 'ZIP code not found' : `API error: ${response.status}`);
@@ -556,7 +557,7 @@ document.getElementById('geoBtn').addEventListener('click', () => {
     setButtonLoading('geoBtn', true);
     
     navigator.geolocation.getCurrentPosition(
-        async pos => {
+        pos => {
             const lat = pos.coords.latitude;
             const lng = pos.coords.longitude;
             
@@ -565,11 +566,6 @@ document.getElementById('geoBtn').addEventListener('click', () => {
                 map.removeLayer(userLocationMarker);
             }
             
-            // Clear previous search results
-            searchMarkers.forEach(marker => map.removeLayer(marker));
-            searchMarkers = [];
-            
-            // Add user location marker
             userLocationMarker = L.marker([lat, lng], {
                 icon: L.divIcon({
                     className: 'user-location-marker',
@@ -579,65 +575,55 @@ document.getElementById('geoBtn').addEventListener('click', () => {
                 })
             }).bindPopup("You are here!").addTo(map);
             
-            // Get radius from input or use default
-            const radius = parseFloat(document.getElementById('radiusInput').value) || 50;
-            
-            // Search for nearby venues
-            const nearbyVenues = [];
-            
-            // Search clubs
-            if (currentFilter === 'all' || currentFilter === 'clubs') {
-                Object.values(clubsByState).flat().forEach(club => {
-                    if (club.lat && club.lng) {
-                        const distance = calculateDistance(lat, lng, club.lat, club.lng);
-                        if (distance <= radius) {
-                            nearbyVenues.push({...club, distance, type: 'club'});
-                        }
-                    }
-                });
+            map.setView([lat, lng], 10);
+            updateLabelSizes();
+            showMessage('Location found successfully', 'success');
+            setButtonLoading('geoBtn', false);
+        },
+        err => {
+            let errorMessage = "Error getting location: ";
+            switch(err.code) {
+                case err.PERMISSION_DENIED:
+                    errorMessage += "Permission denied";
+                    break;
+                case err.POSITION_UNAVAILABLE:
+                    errorMessage += "Position unavailable";
+                    break;
+                case err.TIMEOUT:
+                    errorMessage += "Request timeout";
+                    break;
+                default:
+                    errorMessage += "Unknown error";
+                    break;
             }
-            
-            // Search dungeons
-            if (currentFilter === 'all' || currentFilter === 'dungeons') {
-                Object.values(dungeonsByState).flat().forEach(dungeon => {
-                    if (dungeon.lat && dungeon.lng) {
-                        const distance = calculateDistance(lat, lng, dungeon.lat, dungeon.lng);
-                        if (distance <= radius) {
-                            nearbyVenues.push({...dungeon, distance, type: 'dungeon'});
-                        }
-                    }
-                });
-            }
-            
-            // Sort by distance and display results
-            nearbyVenues.sort((a, b) => a.distance - b.distance);
-            
-            // Add radius circle
-            const radiusCircle = L.circle([lat, lng], {
-                radius: radius * 1609.34, // Convert miles to meters
-                fillColor: '#27ae60',
-                fillOpacity: 0.1,
-                color: '#27ae60',
-                weight: 2
-            }).addTo(map);
-            searchMarkers.push(radiusCircle);
-            
-            // Group venues by location and add markers
-            if (nearbyVenues.length > 0) {
-                const locationGroups = {};
-                nearbyVenues.forEach(venue => {
-                    const key = `${venue.lat},${venue.lng}`;
-                    if (!locationGroups[key]) {
-                        locationGroups[key] = [];
-                    }
-                    locationGroups[key].push(venue);
-                });
-                
-                // Add markers for each location group
-                Object.values(locationGroups).forEach(venueGroup => {
-                    const firstVenue = venueGroup[0];
-                    let popupContent = '';
-                    
-                    if (venueGroup.length === 1) {
-                        const venue = venueGroup[0];
-                        const location = (venue.city && venue.state) ? `${venue.city}, ${venue.state}` :
+            showMessage(errorMessage, 'error');
+            setButtonLoading('geoBtn', false);
+        },
+        { timeout: 10000, enableHighAccuracy: true }
+    );
+});
+
+document.getElementById('resetBtn').addEventListener('click', resetSearch);
+
+// Input validation
+document.getElementById('zipInput').addEventListener('input', function(e) {
+    // Only allow numbers
+    this.value = this.value.replace(/\D/g, '');
+    // Limit to 5 digits
+    if (this.value.length > 5) {
+        this.value = this.value.slice(0, 5);
+    }
+});
+
+// Allow Enter key to trigger search
+document.getElementById('zipInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        document.getElementById('searchBtn').click();
+    }
+});
+
+updateLabelSizes();
+map.on('zoomend', updateLabelSizes);
+</script>
+</body>
+</html>
