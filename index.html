@@ -578,9 +578,12 @@ const defaultZoom = isMobile ? 3 : 4;
 const map = L.map('map', { minZoom: 3, maxZoom: 18, zoomControl: false, attributionControl: false }).setView(defaultCenter, defaultZoom);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', { subdomains: 'abcd', maxZoom: 19 }).addTo(map);
 
-// Create a custom pane for radius circle with highest z-index
+// Create custom panes for proper layering
 map.createPane('radiusPane');
 map.getPane('radiusPane').style.zIndex = 650; // Higher than overlay pane (400) and popup pane (600)
+
+map.createPane('searchMarkersPane');
+map.getPane('searchMarkersPane').style.zIndex = 700; // Highest z-index for search markers
 
 const ResetControl = L.Control.extend({
     options: { position: 'topleft' },
@@ -700,14 +703,15 @@ function displaySearchResults(venues, zipCoords, radius, zipCode) {
     searchMarkers.forEach(marker => map.removeLayer(marker));
     searchMarkers = [];
 
-    // Add ZIP code marker with better popup
+    // Add ZIP code marker with better popup and proper pane
     const zipMarker = L.marker([zipCoords.lat, zipCoords.lng], {
         icon: L.divIcon({
             className: 'zip-marker',
             html: '📍',
             iconSize: [24, 24],
             iconAnchor: [12, 24]
-        })
+        }),
+        pane: 'searchMarkersPane'
     }).bindPopup(`
         <strong>Search Center</strong><br>
         ${zipCode}<br>
@@ -716,7 +720,7 @@ function displaySearchResults(venues, zipCoords, radius, zipCode) {
     `).addTo(map);
     searchMarkers.push(zipMarker);
 
-    // Add radius circle with custom pane for highest z-index
+    // Add radius circle with custom pane for proper z-index
     radiusCircle = L.circle([zipCoords.lat, zipCoords.lng], {
         radius: radius * 1609.34, // Convert miles to meters
         fillColor: '#f8f9fa',
@@ -725,7 +729,6 @@ function displaySearchResults(venues, zipCoords, radius, zipCode) {
         weight: 2,
         pane: 'radiusPane'
     }).addTo(map);
-    searchMarkers.push(radiusCircle);
     searchMarkers.push(radiusCircle);
 
     // Group venues by location to handle multiple venues at same location
@@ -738,7 +741,7 @@ function displaySearchResults(venues, zipCoords, radius, zipCode) {
         locationGroups[key].push(venue);
     });
 
-    // Add markers for each location group
+    // Add markers for each location group with proper pane
     Object.values(locationGroups).forEach(venueGroup => {
         const firstVenue = venueGroup[0];
         let popupContent = '';
@@ -788,7 +791,9 @@ function displaySearchResults(venues, zipCoords, radius, zipCode) {
             `;
         }
 
-        const marker = L.marker([firstVenue.lat, firstVenue.lng])
+        const marker = L.marker([firstVenue.lat, firstVenue.lng], {
+            pane: 'searchMarkersPane'
+        })
             .bindPopup(popupContent, { maxWidth: 300 })
             .addTo(map);
         searchMarkers.push(marker);
@@ -1050,10 +1055,11 @@ document.getElementById('geoBtn').addEventListener('click', () => {
             userLocationMarker = L.marker([lat, lng], {
                 icon: L.divIcon({
                     className: 'user-location-marker',
-                    html: '📍',
+                    html: '🎯',
                     iconSize: [24, 24],
-                    iconAnchor: [12, 24]
-                })
+                    iconAnchor: [12, 12]
+                }),
+                pane: 'searchMarkersPane'
             }).bindPopup("You are here!").addTo(map);
             
             // Perform search from user location
