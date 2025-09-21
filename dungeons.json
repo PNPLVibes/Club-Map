@@ -66,13 +66,15 @@
   "District of Columbia": [
     {
       "name": "Black Rose",
-      "city": "D.C.",
+      "city": "Washington",
+      "state": "D.C.",
       "zip": "20002",
       "url": "https://br.org/"
     },
     {
       "name": "Crucible",
-      "city": "D.C.",
+      "city": "Washington",
+      "state": "D.C.",
       "zip": "20002",
       "url": "https://the-crucible.com/"
     }
