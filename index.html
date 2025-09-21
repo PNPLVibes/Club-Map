@@ -198,7 +198,7 @@ function generatePopup(stateName) {
 function addStateLabels() {
     geojsonLayer.eachLayer(layer => {
         const orig = layer.feature.properties.name;
-        const stateName = orig === 'District of Columbia' ? 'D.C.' : orig;
+        const stateName = orig;
         const c = layer.getBounds().getCenter();
         const label = L.marker([c.lat, c.lng], {
             icon: L.divIcon({ className: 'state-label hidden', html: stateName, iconSize: [0, 0], iconAnchor: [0, 0] }),
@@ -248,3 +248,4 @@ map.on('zoomend', updateLabelSizes);
 </script>
 </body>
 </html>
+
