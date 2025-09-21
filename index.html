@@ -699,6 +699,8 @@ function resetSearch() {
 
 // Improved search results display
 function displaySearchResults(venues, searchCoords, radius, searchLabel, isUserLocation = false) {
+    console.log('displaySearchResults called with:', { searchCoords, radius, searchLabel, isUserLocation });
+    
     // Clear previous search markers
     searchMarkers.forEach(marker => map.removeLayer(marker));
     searchMarkers = [];
@@ -708,6 +710,8 @@ function displaySearchResults(venues, searchCoords, radius, searchLabel, isUserL
         map.removeLayer(userLocationMarker);
         userLocationMarker = null;
     }
+
+    console.log('Creating search center marker at:', searchCoords.lat, searchCoords.lng);
 
     // Add search center marker (ZIP code or search center)
     const searchMarker = L.marker([searchCoords.lat, searchCoords.lng], {
@@ -722,11 +726,15 @@ function displaySearchResults(venues, searchCoords, radius, searchLabel, isUserL
         ${searchLabel}<br>
         ${searchCoords.city ? `${searchCoords.city}${searchCoords.state ? `, ${searchCoords.state}` : ''}` : ''}<br>
         Radius: ${radius} miles
-    `).addTo(map);
+    `);
+    
+    searchMarker.addTo(map);
     searchMarkers.push(searchMarker);
+    console.log('Search marker added to map');
 
     // If this is a user location search, create a separate user location marker
     if (isUserLocation) {
+        console.log('Creating user location marker');
         userLocationMarker = L.marker([searchCoords.lat, searchCoords.lng], {
             icon: L.divIcon({
                 className: 'user-location-marker',
@@ -734,8 +742,11 @@ function displaySearchResults(venues, searchCoords, radius, searchLabel, isUserL
                 iconSize: [28, 28], // Slightly larger
                 iconAnchor: [14, 28]
             })
-        }).bindPopup("📍 Your exact location").addTo(map);
+        }).bindPopup("📍 Your exact location");
+        
+        userLocationMarker.addTo(map);
         searchMarkers.push(userLocationMarker);
+        console.log('User location marker added to map');
     }
 
     // Add radius circle with custom pane for highest z-index
@@ -1040,7 +1051,12 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
         }
         
         nearbyVenues.sort((a, b) => a.distance - b.distance);
-        displaySearchResults(nearbyVenues, zipCoords, radius, zipCode);
+        
+        // Debug: Log coordinates to console
+        console.log('ZIP Search - Coordinates:', zipCoords);
+        
+        // Call with explicit false for isUserLocation
+        displaySearchResults(nearbyVenues, zipCoords, radius, zipCode, false);
         
     } catch (error) {
         showMessage(`Error: ${error.message}`, 'error');
