@@ -222,6 +222,11 @@ function resetSearch() {
         map.removeLayer(userLocationMarker);
         userLocationMarker = null;
     }
+    
+    // Reset form inputs
+    document.getElementById('zipInput').value = '';
+    document.getElementById('radiusInput').value = '50';
+    
     map.setView(defaultCenter, defaultZoom);
     updateLabelSizes();
     showMessage('Search reset', 'success');
@@ -557,9 +562,10 @@ document.getElementById('geoBtn').addEventListener('click', () => {
     setButtonLoading('geoBtn', true);
     
     navigator.geolocation.getCurrentPosition(
-        pos => {
+        async pos => {
             const lat = pos.coords.latitude;
             const lng = pos.coords.longitude;
+            const radius = parseFloat(document.getElementById('radiusInput').value) || 50;
             
             // Remove previous user location marker
             if (userLocationMarker) {
@@ -575,9 +581,39 @@ document.getElementById('geoBtn').addEventListener('click', () => {
                 })
             }).bindPopup("You are here!").addTo(map);
             
-            map.setView([lat, lng], 10);
-            updateLabelSizes();
-            showMessage('Location found successfully', 'success');
+            // Perform search from user location
+            const nearbyVenues = [];
+            
+            // Search clubs
+            if (currentFilter === 'all' || currentFilter === 'clubs') {
+                Object.values(clubsByState).flat().forEach(club => {
+                    if (club.lat && club.lng) {
+                        const distance = calculateDistance(lat, lng, club.lat, club.lng);
+                        if (distance <= radius) {
+                            nearbyVenues.push({...club, distance, type: 'club'});
+                        }
+                    }
+                });
+            }
+            
+            // Search dungeons
+            if (currentFilter === 'all' || currentFilter === 'dungeons') {
+                Object.values(dungeonsByState).flat().forEach(dungeon => {
+                    if (dungeon.lat && dungeon.lng) {
+                        const distance = calculateDistance(lat, lng, dungeon.lat, dungeon.lng);
+                        if (distance <= radius) {
+                            nearbyVenues.push({...dungeon, distance, type: 'dungeon'});
+                        }
+                    }
+                });
+            }
+            
+            nearbyVenues.sort((a, b) => a.distance - b.distance);
+            
+            // Create coordinates object for display function
+            const coords = { lat, lng, city: 'Your Location', state: '' };
+            
+            displaySearchResults(nearbyVenues, coords, radius, 'Your Location');
             setButtonLoading('geoBtn', false);
         },
         err => {
