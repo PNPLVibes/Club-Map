@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>US Lifestyle Clubs & Dungeons Map</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 * {
@@ -252,7 +252,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: all 0.4s ease;
+    transition: font-size 0.4s ease, color 0.3s ease;
     font-family: 'Inter', sans-serif;
     letter-spacing: 0.5px;
 }
@@ -265,7 +265,6 @@ body {
     color: #e74c3c; 
     font-weight: 800;
     text-shadow: 2px 2px 8px rgba(231, 76, 60, 0.3);
-    transform: scale(1.1);
 }
 
 .leaflet-popup-content-wrapper { 
@@ -559,8 +558,14 @@ body {
 </div>
 <div id="map"></div>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
+// Check if Leaflet loaded properly
+if (typeof L === 'undefined') {
+    document.getElementById('statusMessage').innerHTML = '<div class="error-message">Map library failed to load. Please refresh the page or check your internet connection.</div>';
+    throw new Error('Leaflet library not loaded');
+}
+
 const isMobile = window.matchMedia("(max-width: 768px)").matches;
 const defaultCenter = [39.8283, -98.5795];
 const defaultZoom = isMobile ? 3 : 4;
@@ -899,7 +904,13 @@ function addStateLabels() {
     if (!geojsonLayer) return;
     geojsonLayer.eachLayer(layer => {
         const stateName = layer.feature.properties.name;
-        const c = layer.getBounds().getCenter();
+        let c = layer.getBounds().getCenter();
+        
+        // Adjust Idaho's position for better centering
+        if (stateName === 'Idaho') {
+            c = L.latLng(c.lat - 0.5, c.lng - 0.8);
+        }
+        
         const label = L.marker([c.lat, c.lng], {
             icon: L.divIcon({ 
                 className: 'state-label hidden', 
