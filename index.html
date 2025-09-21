@@ -276,24 +276,47 @@ function displaySearchResults(venues, zipCoords, radius, zipCode) {
         
         if (venueGroup.length === 1) {
             const venue = venueGroup[0];
+            const location = (venue.city && venue.state) ? `${venue.city}, ${venue.state}` : (venue.state || '');
             popupContent = `
-                <strong>${venue.name}</strong><br>
-                <span class="club-type ${venue.type}">${venue.type}</span><br>
-                ${venue.city}, ${venue.state}<br>
-                Distance: ${venue.distance.toFixed(1)} miles<br>
-                ${venue.url ? `<a href="${venue.url}" target="_blank" rel="noopener">Visit Website</a>` : 'No website available'}
+                <div class="state-popup-title">Search Result</div>
+                <div class="club-list-container">
+                    <ul class="club-list">
+                        <li class="club-item">
+                            <div class="club-name">
+                                <a class="club-link" href="${venue.url||'#'}" target="_blank" rel="noopener">${venue.name}</a>
+                                <span class="club-type ${venue.type}">${venue.type}</span>
+                            </div>
+                            ${location ? `<div class="club-location">${location}</div>` : ''}
+                            <div class="club-location">Distance: ${venue.distance.toFixed(1)} miles</div>
+                        </li>
+                    </ul>
+                </div>
             `;
         } else {
-            popupContent = `<strong>${venueGroup.length} venues at this location:</strong><br>`;
+            popupContent = `
+                <div class="state-popup-title">Search Results (${venueGroup.length} venues)</div>
+                <div class="club-list-container">
+                    <ul class="club-list">
+            `;
             venueGroup.forEach(venue => {
+                const location = (venue.city && venue.state) ? `${venue.city}, ${venue.state}` : (venue.state || '');
                 popupContent += `
-                    <div style="margin: 8px 0; padding: 8px; border-left: 3px solid #3498db;">
-                        <strong>${venue.name}</strong> <span class="club-type ${venue.type}">${venue.type}</span><br>
-                        ${venue.url ? `<a href="${venue.url}" target="_blank" rel="noopener">Visit Website</a>` : 'No website available'}
-                    </div>
+                    <li class="club-item">
+                        <div class="club-name">
+                            <a class="club-link" href="${venue.url||'#'}" target="_blank" rel="noopener">${venue.name}</a>
+                            <span class="club-type ${venue.type}">${venue.type}</span>
+                        </div>
+                        ${location ? `<div class="club-location">${location}</div>` : ''}
+                    </li>
                 `;
             });
-            popupContent += `<br>Distance: ${firstVenue.distance.toFixed(1)} miles`;
+            popupContent += `
+                    </ul>
+                    <div style="text-align: center; margin-top: 10px; font-style: italic; color: #7f8c8d;">
+                        Distance: ${firstVenue.distance.toFixed(1)} miles
+                    </div>
+                </div>
+            `;
         }
 
         const marker = L.marker([firstVenue.lat, firstVenue.lng])
