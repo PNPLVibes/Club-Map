@@ -63,7 +63,7 @@ body {
 }
 
 .radio-group {
-    gap: 4px;
+    gap: 12px;
 }
 
 #searchForm input { 
@@ -497,10 +497,9 @@ body {
     }
 }
 
-/* Enhanced focus states for accessibility */
+/* Enhanced focus states for accessibility - removed focus styles for radio buttons */
 #searchForm input:focus,
-#searchForm button:focus,
-#searchForm label:focus-within {
+#searchForm button:focus {
     outline: 2px solid #3498db;
     outline-offset: 2px;
 }
@@ -543,8 +542,8 @@ body {
     </div>
     <div class="input-group radio-group">
         <label><input type="radio" name="filterType" value="all" checked> Clubs & Dungeons</label>
-        <label><input type="radio" name="filterType" value="clubs"> Just Clubs</label>
-        <label><input type="radio" name="filterType" value="dungeons"> Just Dungeons</label>
+        <label><input type="radio" name="filterType" value="clubs"> Clubs</label>
+        <label><input type="radio" name="filterType" value="dungeons"> Dungeons</label>
     </div>
     <div id="statusMessage"></div>
 </div>
