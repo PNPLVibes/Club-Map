@@ -283,19 +283,20 @@ body {
 }
 
 .leaflet-popup-content { 
-    margin: 20px; 
+    margin: 16px; 
     font-size: 16px; 
-    line-height: 1.6; 
-    min-width: 280px; 
+    line-height: 1.4; 
+    min-width: 260px; 
+    max-width: 300px;
     font-family: 'Inter', sans-serif;
 }
 
 .state-popup-title { 
-    font-size: 24px; 
+    font-size: 22px; 
     font-weight: 700; 
     color: #2c3e50; 
-    margin-bottom: 16px; 
-    padding-bottom: 12px; 
+    margin-bottom: 12px; 
+    padding-bottom: 8px; 
     border-bottom: 3px solid #3498db; 
     text-align: center;
     background: linear-gradient(135deg, #3498db, #9b59b6);
@@ -306,12 +307,12 @@ body {
 }
 
 .club-list-container { 
-    max-height: 240px; 
+    max-height: 320px; 
     overflow-y: auto; 
     border: 2px solid rgba(52, 152, 219, 0.1); 
     border-radius: 12px; 
     background: rgba(255, 255, 255, 0.8); 
-    padding: 8px;
+    padding: 6px;
     backdrop-filter: blur(5px);
 }
 
@@ -340,7 +341,7 @@ body {
 }
 
 .club-item { 
-    padding: 14px 0; 
+    padding: 10px 0; 
     border-bottom: 1px solid rgba(52, 152, 219, 0.1);
     transition: all 0.3s ease;
 }
@@ -352,22 +353,22 @@ body {
 .club-item:hover {
     background: rgba(52, 152, 219, 0.05);
     border-radius: 8px;
-    padding-left: 8px;
-    padding-right: 8px;
+    padding-left: 6px;
+    padding-right: 6px;
 }
 
 .club-name { 
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
-    margin-bottom: 6px; 
+    margin-bottom: 4px; 
 }
 
 .club-link { 
     color: #2980b9; 
     text-decoration: none; 
     font-weight: 600; 
-    padding: 8px 12px; 
+    padding: 6px 10px; 
     border-radius: 8px; 
     transition: all 0.3s ease; 
     flex: 1;
@@ -381,20 +382,20 @@ body {
 }
 
 .club-location { 
-    font-size: 13px; 
+    font-size: 12px; 
     color: #7f8c8d; 
-    margin-left: 12px; 
+    margin-left: 10px; 
     font-style: italic;
     font-weight: 500;
 }
 
 .club-type { 
-    font-size: 11px; 
+    font-size: 10px; 
     background: linear-gradient(135deg, #f39c12, #e67e22); 
     color: white; 
-    padding: 4px 8px; 
-    border-radius: 6px; 
-    margin-left: 10px;
+    padding: 3px 6px; 
+    border-radius: 5px; 
+    margin-left: 8px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -769,7 +770,7 @@ function displaySearchResults(venues, coords, radius, searchValue, searchType = 
         const marker = L.marker([firstVenue.lat, firstVenue.lng], {
             pane: 'searchMarkersPane'
         })
-            .bindPopup(popupContent, { maxWidth: 300 })
+            .bindPopup(popupContent, { maxWidth: 320, maxHeight: 400 })
             .addTo(map);
         searchMarkers.push(marker);
     });
@@ -853,7 +854,7 @@ function onEachFeature(feature, layer) {
     layer.on({
         mouseover: highlightFeature,
         mouseout: resetHighlight,
-        click: () => layer.bindPopup(generatePopup(stateName), { maxWidth: 350 }).openPopup()
+        click: () =>         layer.bindPopup(generatePopup(stateName), { maxWidth: 320, maxHeight: 400 }).openPopup()
     });
 }
 
