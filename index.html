@@ -63,7 +63,8 @@ body {
 }
 
 .radio-group {
-    gap: 12px;
+    gap: 8px;
+    justify-content: center;
 }
 
 #searchForm input { 
@@ -71,7 +72,7 @@ body {
     border: 2px solid rgba(52, 152, 219, 0.3); 
     border-radius: 10px; 
     font-size: 15px; 
-    min-width: 160px;
+    min-width: 140px;
     background: rgba(255, 255, 255, 0.95);
     transition: all 0.3s ease;
     font-family: 'Inter', sans-serif;
@@ -81,13 +82,12 @@ body {
 #searchForm input:focus {
     outline: none;
     border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
     background: rgba(255, 255, 255, 1);
     transform: translateY(-1px);
 }
 
 #radiusInput { 
-    width: 100px; 
+    width: 80px; 
 }
 
 #searchForm button { 
@@ -125,7 +125,6 @@ body {
 #searchForm button:hover { 
     background: linear-gradient(135deg, #2980b9, #1f4e79);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
 }
 
 #searchForm button:active {
@@ -146,7 +145,6 @@ body {
 
 #searchForm button#geoBtn:hover { 
     background: linear-gradient(135deg, #229954, #1e7e34);
-    box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
 }
 
 #searchForm button#resetBtn { 
@@ -155,7 +153,6 @@ body {
 
 #searchForm button#resetBtn:hover { 
     background: linear-gradient(135deg, #c0392b, #a93226);
-    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
 }
 
 #searchForm label { 
@@ -449,7 +446,7 @@ body {
     }
     
     #radiusInput { 
-        width: 80px; 
+        width: 70px; 
         flex: none; 
     }
     
@@ -497,12 +494,7 @@ body {
     }
 }
 
-/* Enhanced focus states for accessibility - removed focus styles for radio buttons */
-#searchForm input:focus,
-#searchForm button:focus {
-    outline: 2px solid #3498db;
-    outline-offset: 2px;
-}
+/* Enhanced focus states for accessibility - removed all focus outlines */
 
 /* Loading animation enhancement */
 .loading {
