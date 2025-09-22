@@ -567,23 +567,23 @@ if (typeof L === 'undefined') {
 }
 
 const isMobile = window.matchMedia("(max-width: 768px)").matches;
-// Better centered coordinates for the continental US - improved centering
-const defaultCenter = [39.8283, -98.5795]; // Geographic center of the continental US
-const defaultZoom = isMobile ? 4 : 5; // Increased zoom levels for better usability
+// Better centered coordinates for the continental US
+const defaultCenter = isMobile ? [41.0, -98.0] : [39.8283, -98.5795]; // Higher center for mobile
+const defaultZoom = isMobile ? 3 : 4; // Reset zoom back by 1
 
-// Optimized map initialization with MUCH more relaxed bounds
+// Optimized map initialization with very relaxed bounds for smooth scrolling
 const map = L.map('map', { 
-    minZoom: 2, // Reduced minimum zoom for better flexibility
+    minZoom: 2, 
     maxZoom: 18, 
     zoomControl: false, 
     attributionControl: false,
     preferCanvas: true, // Use Canvas renderer for better performance
-    // Much more generous bounds - allows viewing neighboring countries
+    // Extremely generous bounds - essentially no restrictions for smooth scrolling
     maxBounds: [
-        [15, -170], // Southwest corner - very generous bounds
-        [72, -50]   // Northeast corner - allows full North America view
+        [-20, -200], // Southwest corner - very generous bounds
+        [85, 0]      // Northeast corner - allows unrestricted scrolling
     ],
-    maxBoundsViscosity: 0.1 // Much lower viscosity for smoother movement
+    maxBoundsViscosity: 0.05 // Even lower viscosity for smoothest movement
 }).setView(defaultCenter, defaultZoom);
 
 // Use a lighter, faster tile layer
