@@ -26,15 +26,16 @@ body {
 
 #searchForm {
     flex: 0 0 auto;
-    padding: 20px;
+    padding: 12px 16px;
     background: rgba(44, 62, 80, 0.95);
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 20px rgba(0,0,0,0.15);
     border-bottom: 2px solid rgba(52, 152, 219, 0.3);
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 10px;
     align-items: center;
+    justify-content: center;
     position: relative;
 }
 
@@ -57,16 +58,20 @@ body {
 
 .input-group { 
     display: flex; 
-    gap: 12px; 
+    gap: 8px; 
     align-items: center; 
 }
 
+.radio-group {
+    gap: 4px;
+}
+
 #searchForm input { 
-    padding: 14px 16px; 
+    padding: 10px 12px; 
     border: 2px solid rgba(52, 152, 219, 0.3); 
-    border-radius: 12px; 
-    font-size: 16px; 
-    min-width: 180px;
+    border-radius: 10px; 
+    font-size: 15px; 
+    min-width: 160px;
     background: rgba(255, 255, 255, 0.95);
     transition: all 0.3s ease;
     font-family: 'Inter', sans-serif;
@@ -86,14 +91,14 @@ body {
 }
 
 #searchForm button { 
-    padding: 14px 24px; 
+    padding: 10px 18px; 
     background: linear-gradient(135deg, #3498db, #2980b9); 
     color: white; 
     border: none; 
-    border-radius: 12px; 
+    border-radius: 10px; 
     cursor: pointer; 
     transition: all 0.3s ease; 
-    font-size: 16px; 
+    font-size: 14px; 
     font-weight: 600; 
     font-family: 'Inter', sans-serif;
     text-transform: uppercase;
@@ -155,11 +160,11 @@ body {
 
 #searchForm label { 
     color: white; 
-    font-size: 14px; 
+    font-size: 13px; 
     font-weight: 500;
     cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 8px;
+    padding: 6px 10px;
+    border-radius: 6px;
     transition: all 0.3s ease;
     user-select: none;
 }
@@ -435,8 +440,8 @@ body {
     #searchForm { 
         flex-direction: column; 
         align-items: stretch; 
-        padding: 16px; 
-        gap: 12px; 
+        padding: 10px 12px; 
+        gap: 8px; 
     }
     
     .input-group { 
@@ -549,7 +554,7 @@ body {
         <button id="geoBtn">Use My Location</button>
         <button id="resetBtn">Reset Search</button>
     </div>
-    <div class="input-group">
+    <div class="input-group radio-group">
         <label><input type="radio" name="filterType" value="all" checked> Clubs & Dungeons</label>
         <label><input type="radio" name="filterType" value="clubs"> Just Clubs</label>
         <label><input type="radio" name="filterType" value="dungeons"> Just Dungeons</label>
@@ -573,6 +578,10 @@ const defaultZoom = isMobile ? 3 : 4;
 const map = L.map('map', { minZoom: 3, maxZoom: 18, zoomControl: false, attributionControl: false }).setView(defaultCenter, defaultZoom);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', { subdomains: 'abcd', maxZoom: 19 }).addTo(map);
 
+// Create a custom pane for radius circle with highest z-index
+map.createPane('radiusPane');
+map.getPane('radiusPane').style.zIndex = 650; // Higher than overlay pane (400) and popup pane (600)
+
 const ResetControl = L.Control.extend({
     options: { position: 'topleft' },
     onAdd: function(map) {
@@ -592,6 +601,7 @@ let stateLabels = {};
 let currentFilter = 'all';
 let searchMarkers = [];
 let userLocationMarker = null;
+let radiusCircle = null;
 
 // Utility functions
 function showMessage(message, type = 'info') {
@@ -670,6 +680,10 @@ function resetSearch() {
         map.removeLayer(userLocationMarker);
         userLocationMarker = null;
     }
+    if (radiusCircle) {
+        map.removeLayer(radiusCircle);
+        radiusCircle = null;
+    }
     
     // Reset form inputs
     document.getElementById('zipInput').value = '';
@@ -691,8 +705,8 @@ function displaySearchResults(venues, zipCoords, radius, zipCode) {
         icon: L.divIcon({
             className: 'zip-marker',
             html: '📍',
-            iconSize: [20, 20],
-            iconAnchor: [10, 10]
+            iconSize: [24, 24],
+            iconAnchor: [12, 24]
         })
     }).bindPopup(`
         <strong>Search Center</strong><br>
@@ -702,14 +716,16 @@ function displaySearchResults(venues, zipCoords, radius, zipCode) {
     `).addTo(map);
     searchMarkers.push(zipMarker);
 
-    // Add radius circle
-    const radiusCircle = L.circle([zipCoords.lat, zipCoords.lng], {
+    // Add radius circle with custom pane for highest z-index
+    radiusCircle = L.circle([zipCoords.lat, zipCoords.lng], {
         radius: radius * 1609.34, // Convert miles to meters
-        fillColor: '#3498db',
-        fillOpacity: 0.1,
-        color: '#3498db',
-        weight: 2
+        fillColor: '#f8f9fa',
+        fillOpacity: 0.3,
+        color: '#dee2e6',
+        weight: 2,
+        pane: 'radiusPane'
     }).addTo(map);
+    searchMarkers.push(radiusCircle);
     searchMarkers.push(radiusCircle);
 
     // Group venues by location to handle multiple venues at same location
@@ -839,6 +855,11 @@ function highlightFeature(e) {
     layer.bringToFront();
     const stateName = layer.feature.properties.name;
     if (stateLabels[stateName]) stateLabels[stateName].getElement().classList.add('highlight');
+    
+    // Always keep radius circle on top after state highlight
+    if (radiusCircle) {
+        radiusCircle.bringToFront();
+    }
 }
 
 function resetHighlight(e) {
@@ -1030,8 +1051,8 @@ document.getElementById('geoBtn').addEventListener('click', () => {
                 icon: L.divIcon({
                     className: 'user-location-marker',
                     html: '📍',
-                    iconSize: [20, 20],
-                    iconAnchor: [10, 10]
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 24]
                 })
             }).bindPopup("You are here!").addTo(map);
             
@@ -1114,6 +1135,13 @@ document.getElementById('zipInput').addEventListener('keypress', function(e) {
 
 updateLabelSizes();
 map.on('zoomend', updateLabelSizes);
+
+// Keep radius circle on top when map is moved
+map.on('moveend zoomend', function() {
+    if (radiusCircle) {
+        radiusCircle.bringToFront();
+    }
+});
 </script>
 </body>
 </html>
