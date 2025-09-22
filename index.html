@@ -568,7 +568,7 @@ if (typeof L === 'undefined') {
 
 const isMobile = window.matchMedia("(max-width: 768px)").matches;
 // Better centered coordinates for the continental US
-const defaultCenter = isMobile ? [41.5, -98.35] : [39.5, -98.35];
+const defaultCenter = isMobile ? [39.0, -96.0] : [39.5, -98.35];
 const defaultZoom = isMobile ? 3 : 4;
 
 // Optimized map initialization with performance settings
@@ -579,10 +579,10 @@ const map = L.map('map', {
     attributionControl: false,
     preferCanvas: true, // Use Canvas renderer for better performance
     maxBounds: [
-        [15, -170], // Southwest corner (roughly southern tip of Hawaii)
-        [72, -50]   // Northeast corner (northern Alaska)
+        [10, -180], // Southwest corner - more generous bounds
+        [75, -40]   // Northeast corner - more generous bounds
     ],
-    maxBoundsViscosity: 0.8 // Smooth boundary enforcement
+    maxBoundsViscosity: 0.3 // Reduced viscosity for smoother movement
 }).setView(defaultCenter, defaultZoom);
 
 // Use a lighter, faster tile layer
