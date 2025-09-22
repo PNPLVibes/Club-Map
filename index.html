@@ -418,22 +418,9 @@ body {
 }
 
 /* Custom marker styles */
-.zip-marker, .user-location-marker {
+.search-center-marker {
     font-size: 20px;
     filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
-    animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
-    }
-    40% {
-        transform: translateY(-10px);
-    }
-    60% {
-        transform: translateY(-5px);
-    }
 }
 
 @media (max-width: 768px) {
@@ -603,7 +590,6 @@ let geojsonLayer;
 let stateLabels = {};
 let currentFilter = 'all';
 let searchMarkers = [];
-let userLocationMarker = null;
 let radiusCircle = null;
 
 // Utility functions
@@ -679,10 +665,6 @@ async function getZipCoordinates(zipCode) {
 function resetSearch() {
     searchMarkers.forEach(marker => map.removeLayer(marker));
     searchMarkers = [];
-    if (userLocationMarker) {
-        map.removeLayer(userLocationMarker);
-        userLocationMarker = null;
-    }
     if (radiusCircle) {
         map.removeLayer(radiusCircle);
         radiusCircle = null;
@@ -698,30 +680,30 @@ function resetSearch() {
 }
 
 // Improved search results display
-function displaySearchResults(venues, zipCoords, radius, zipCode) {
+function displaySearchResults(venues, coords, radius, searchValue, searchType = 'zip') {
     // Clear previous search markers
     searchMarkers.forEach(marker => map.removeLayer(marker));
     searchMarkers = [];
 
-    // Add ZIP code marker with better popup and proper pane
-    const zipMarker = L.marker([zipCoords.lat, zipCoords.lng], {
+    // Add search center marker with better popup and proper pane
+    const centerPopup = `
+        <strong>${searchType === 'geo' ? 'Your Location' : 'Search Center'}</strong><br>
+        ${searchType === 'geo' ? '' : `ZIP: ${searchValue}<br>${coords.city}, ${coords.state}<br>`}
+        Radius: ${radius} miles
+    `;
+    const searchCenterMarker = L.marker([coords.lat, coords.lng], {
         icon: L.divIcon({
-            className: 'zip-marker',
+            className: 'search-center-marker',
             html: '📍',
             iconSize: [24, 24],
             iconAnchor: [12, 24]
         }),
         pane: 'searchMarkersPane'
-    }).bindPopup(`
-        <strong>Search Center</strong><br>
-        ${zipCode}<br>
-        ${zipCoords.city}, ${zipCoords.state}<br>
-        Radius: ${radius} miles
-    `).addTo(map);
-    searchMarkers.push(zipMarker);
+    }).bindPopup(centerPopup).addTo(map);
+    searchMarkers.push(searchCenterMarker);
 
     // Add radius circle with custom pane for proper z-index
-    radiusCircle = L.circle([zipCoords.lat, zipCoords.lng], {
+    radiusCircle = L.circle([coords.lat, coords.lng], {
         radius: radius * 1609.34, // Convert miles to meters
         fillColor: '#f8f9fa',
         fillOpacity: 0.3,
@@ -805,8 +787,8 @@ function displaySearchResults(venues, zipCoords, radius, zipCode) {
         map.fitBounds(group.getBounds().pad(0.1));
         showMessage(`Found ${venues.length} venue${venues.length !== 1 ? 's' : ''} within ${radius} miles`, 'success');
     } else {
-        map.setView([zipCoords.lat, zipCoords.lng], 10);
-        showMessage(`No venues found within ${radius} miles of ${zipCode}`, 'error');
+        map.setView([coords.lat, coords.lng], 10);
+        showMessage(`No venues found within ${radius} miles of ${searchType === 'geo' ? 'your location' : searchValue}`, 'error');
     }
 }
 
@@ -1024,7 +1006,7 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
         }
         
         nearbyVenues.sort((a, b) => a.distance - b.distance);
-        displaySearchResults(nearbyVenues, zipCoords, radius, zipCode);
+        displaySearchResults(nearbyVenues, zipCoords, radius, zipCode, 'zip');
         
     } catch (error) {
         showMessage(`Error: ${error.message}`, 'error');
@@ -1046,21 +1028,6 @@ document.getElementById('geoBtn').addEventListener('click', () => {
             const lat = pos.coords.latitude;
             const lng = pos.coords.longitude;
             const radius = parseFloat(document.getElementById('radiusInput').value) || 50;
-            
-            // Remove previous user location marker
-            if (userLocationMarker) {
-                map.removeLayer(userLocationMarker);
-            }
-            
-            userLocationMarker = L.marker([lat, lng], {
-                icon: L.divIcon({
-                    className: 'user-location-marker',
-                    html: '🎯',
-                    iconSize: [24, 24],
-                    iconAnchor: [12, 12]
-                }),
-                pane: 'searchMarkersPane'
-            }).bindPopup("You are here!").addTo(map);
             
             // Perform search from user location
             const nearbyVenues = [];
@@ -1092,9 +1059,9 @@ document.getElementById('geoBtn').addEventListener('click', () => {
             nearbyVenues.sort((a, b) => a.distance - b.distance);
             
             // Create coordinates object for display function
-            const coords = { lat, lng, city: 'Your Location', state: '' };
+            const coords = { lat, lng, city: '', state: '' };
             
-            displaySearchResults(nearbyVenues, coords, radius, 'Your Location');
+            displaySearchResults(nearbyVenues, coords, radius, 'your location', 'geo');
             setButtonLoading('geoBtn', false);
         },
         err => {
