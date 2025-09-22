@@ -567,29 +567,30 @@ if (typeof L === 'undefined') {
 }
 
 const isMobile = window.matchMedia("(max-width: 768px)").matches;
-// Better centered coordinates for the continental US
-const defaultCenter = isMobile ? [39.0, -96.0] : [39.5, -98.35];
-const defaultZoom = isMobile ? 3 : 4;
+// Better centered coordinates for the continental US - improved centering
+const defaultCenter = [39.8283, -98.5795]; // Geographic center of the continental US
+const defaultZoom = isMobile ? 4 : 5; // Increased zoom levels for better usability
 
-// Optimized map initialization with performance settings
+// Optimized map initialization with MUCH more relaxed bounds
 const map = L.map('map', { 
-    minZoom: 3, 
+    minZoom: 2, // Reduced minimum zoom for better flexibility
     maxZoom: 18, 
     zoomControl: false, 
     attributionControl: false,
     preferCanvas: true, // Use Canvas renderer for better performance
+    // Much more generous bounds - allows viewing neighboring countries
     maxBounds: [
-        [10, -180], // Southwest corner - more generous bounds
-        [75, -40]   // Northeast corner - more generous bounds
+        [15, -170], // Southwest corner - very generous bounds
+        [72, -50]   // Northeast corner - allows full North America view
     ],
-    maxBoundsViscosity: 0.3 // Reduced viscosity for smoother movement
+    maxBoundsViscosity: 0.1 // Much lower viscosity for smoother movement
 }).setView(defaultCenter, defaultZoom);
 
 // Use a lighter, faster tile layer
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', { 
     subdomains: 'abcd', 
     maxZoom: 18,
-    minZoom: 3,
+    minZoom: 2, // Match map minZoom
     updateWhenIdle: true, // Only update tiles when map stops moving
     keepBuffer: 2 // Reduce tile buffer for less memory usage
 }).addTo(map);
@@ -810,13 +811,22 @@ function displaySearchResults(venues, coords, radius, searchValue, searchType = 
         searchMarkers.push(marker);
     });
 
-    // Fit map to show all results with padding
+    // Fit map to show all results with padding - improved bounds calculation
     if (venues.length > 0) {
         const group = new L.featureGroup(searchMarkers);
-        map.fitBounds(group.getBounds().pad(0.1));
+        const bounds = group.getBounds();
+        
+        // Ensure minimum zoom level for usability
+        const zoomOptions = {
+            padding: [20, 20], // Better padding
+            maxZoom: 12 // Prevent over-zooming on single results
+        };
+        
+        map.fitBounds(bounds, zoomOptions);
         showMessage(`Found ${venues.length} venue${venues.length !== 1 ? 's' : ''} within ${radius} miles`, 'success');
     } else {
-        map.setView([coords.lat, coords.lng], 10);
+        // Better zoom level for no results
+        map.setView([coords.lat, coords.lng], 8);
         showMessage(`No venues found within ${radius} miles of ${searchType === 'geo' ? 'your location' : searchValue}`, 'error');
     }
 }
@@ -1004,11 +1014,12 @@ function updateLabelSizes() {
         Object.entries(stateLabels).forEach(([stateName, label]) => {
             const el = label.getElement();
             if (!el) return;
-            if (zoom <= (isMobile ? 3 : 4)) {
+            // Improved visibility thresholds
+            if (zoom <= 3) {
                 el.classList.add('hidden');
             } else {
                 el.classList.remove('hidden');
-                el.style.fontSize = `${Math.max(8, Math.min(24, zoom * 2))}px`;
+                el.style.fontSize = `${Math.max(8, Math.min(24, zoom * 2.5))}px`;
             }
         });
     }, 100);
@@ -1238,13 +1249,6 @@ preloadLinks.forEach(href => {
     link.href = href;
     if (href.includes('font')) link.crossOrigin = 'anonymous';
     document.head.appendChild(link);
-});
-
-// Keep radius circle on top when map is moved
-map.on('moveend zoomend', function() {
-    if (radiusCircle) {
-        radiusCircle.bringToFront();
-    }
 });
 </script>
 </body>
