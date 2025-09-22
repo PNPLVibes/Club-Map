@@ -63,13 +63,7 @@ body {
 }
 
 .radio-group {
-    display: flex;
-    gap: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 8px;
-    border-radius: 12px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    gap: 4px;
 }
 
 #searchForm input { 
@@ -169,91 +163,20 @@ body {
     font-size: 13px; 
     font-weight: 500;
     cursor: pointer;
-    padding: 8px 14px;
-    border-radius: 8px;
+    padding: 6px 10px;
+    border-radius: 6px;
     transition: all 0.3s ease;
     user-select: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid transparent;
-    white-space: nowrap;
-    position: relative;
-    overflow: hidden;
 }
 
 #searchForm label:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-#searchForm label:has(input[type="radio"]:checked) {
-    background: linear-gradient(135deg, #3498db, #2980b9);
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
-    color: #ffffff;
-    font-weight: 600;
-}
-
-#searchForm label::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-    transition: left 0.6s;
-}
-
-#searchForm label:hover::before {
-    left: 100%;
+    background: rgba(255, 255, 255, 0.1);
 }
 
 #searchForm input[type="radio"] { 
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    border-radius: 50%;
-    background: transparent;
-    cursor: pointer;
-    position: relative;
-    transition: all 0.3s ease;
-    margin: 0;
-    flex-shrink: 0;
-}
-
-#searchForm input[type="radio"]:checked {
-    border-color: #ffffff;
-    background: rgba(255, 255, 255, 0.2);
-}
-
-#searchForm input[type="radio"]:checked::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 8px;
-    height: 8px;
-    background: #ffffff;
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    animation: radioCheck 0.3s ease;
-}
-
-@keyframes radioCheck {
-    0% {
-        transform: translate(-50%, -50%) scale(0);
-        opacity: 0;
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 1;
-    }
+    margin-right: 8px; 
+    accent-color: #3498db;
+    transform: scale(1.2);
 }
 
 #map { 
@@ -543,24 +466,6 @@ body {
         letter-spacing: 0.3px;
     }
     
-    .radio-group { 
-        background: rgba(255, 255, 255, 0.08);
-        padding: 6px;
-        border-radius: 10px;
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-top: 4px;
-    }
-    
-    #searchForm label {
-        padding: 6px 10px;
-        font-size: 12px;
-        min-width: auto;
-        flex: 1;
-        justify-content: center;
-        text-align: center;
-    }
-    
     .state-label { 
         font-size: 10px; 
     }
@@ -638,8 +543,8 @@ body {
     </div>
     <div class="input-group radio-group">
         <label><input type="radio" name="filterType" value="all" checked> Clubs & Dungeons</label>
-        <label><input type="radio" name="filterType" value="clubs"> Clubs</label>
-        <label><input type="radio" name="filterType" value="dungeons"> Dungeons</label>
+        <label><input type="radio" name="filterType" value="clubs"> Just Clubs</label>
+        <label><input type="radio" name="filterType" value="dungeons"> Just Dungeons</label>
     </div>
     <div id="statusMessage"></div>
 </div>
