@@ -568,8 +568,8 @@ if (typeof L === 'undefined') {
 
 const isMobile = window.matchMedia("(max-width: 768px)").matches;
 // Better centered coordinates for the continental US
-const defaultCenter = [39.5, -98.35];
-const defaultZoom = isMobile ? 4 : 5;
+const defaultCenter = isMobile ? [41.5, -98.35] : [39.5, -98.35];
+const defaultZoom = isMobile ? 3 : 4;
 
 // Optimized map initialization with performance settings
 const map = L.map('map', { 
