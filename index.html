@@ -786,38 +786,70 @@ function displaySearchResults(venues, coords, radius, searchValue, searchType = 
     }
 }
 
-// Load data with better error handling
-Promise.all([
-    fetch('clubs_geocoded.json').then(res => {
-        if (!res.ok) throw new Error('Failed to load clubs data');
-        return res.json();
-    }).catch(() => {
-        showMessage('Warning: Could not load clubs data', 'error');
-        return {};
-    }),
-    fetch('dungeons_geocoded.json').then(res => {
-        if (!res.ok) throw new Error('Failed to load dungeons data');
-        return res.json();
-    }).catch(() => {
-        showMessage('Warning: Could not load dungeons data', 'error');
-        return {};
-    })
-]).then(([clubsData, dungeonsData]) => {
-    clubsByState = clubsData;
-    dungeonsByState = dungeonsData;
-    return fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json");
-}).then(res => {
-    if (!res.ok) throw new Error('Failed to load map data');
-    return res.json();
-}).then(statesData => {
-    geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
-    addStateLabels();
-    updateLabelSizes();
-    showMessage('Map loaded successfully', 'success');
-}).catch(err => {
-    console.error("Error loading data:", err);
-    showMessage('Error loading map data. Please refresh the page.', 'error');
-});
+// Optimized data loading with prioritization and caching
+async function loadMapData() {
+    try {
+        // Show loading indicator
+        showMessage('Loading map data...', 'info');
+        
+        // Load critical map data first for immediate visual feedback
+        const statesResponse = await fetch("https://rawcdn.githack.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json");
+        if (!statesResponse.ok) throw new Error('Failed to load map data');
+        const statesData = await statesResponse.json();
+        
+        // Initialize map immediately
+        geojsonLayer = L.geoJson(statesData, { style, onEachFeature }).addTo(map);
+        addStateLabels();
+        updateLabelSizes();
+        showMessage('Map loaded - loading venue data...', 'info');
+        
+        // Load venue data in background with timeout
+        const dataPromises = [
+            fetchWithTimeout('clubs_geocoded.json', 8000).catch(() => {
+                console.warn('Clubs data failed to load');
+                return {};
+            }),
+            fetchWithTimeout('dungeons_geocoded.json', 8000).catch(() => {
+                console.warn('Dungeons data failed to load');
+                return {};
+            })
+        ];
+        
+        const [clubsData, dungeonsData] = await Promise.all(dataPromises);
+        
+        clubsByState = clubsData;
+        dungeonsByState = dungeonsData;
+        
+        // Update map styling now that data is loaded
+        if (geojsonLayer) {
+            geojsonLayer.eachLayer(layer => layer.setStyle(style(layer.feature)));
+        }
+        
+        const clubCount = Object.values(clubsByState).flat().length;
+        const dungeonCount = Object.values(dungeonsByState).flat().length;
+        showMessage(`Ready! ${clubCount + dungeonCount} venues loaded`, 'success');
+        
+    } catch (err) {
+        console.error("Error loading data:", err);
+        showMessage('Error loading map data. Please refresh the page.', 'error');
+    }
+}
+
+// Helper function for fetch with timeout
+function fetchWithTimeout(url, timeout = 8000) {
+    return Promise.race([
+        fetch(url).then(res => {
+            if (!res.ok) throw new Error(`Failed to load ${url}`);
+            return res.json();
+        }),
+        new Promise((_, reject) => 
+            setTimeout(() => reject(new Error(`Timeout loading ${url}`)), timeout)
+        )
+    ]);
+}
+
+// Start loading
+loadMapData();
 
 function style(feature) {
     const stateName = feature.properties.name;
@@ -926,18 +958,25 @@ function addStateLabels() {
     });
 }
 
+// Optimized label updates with throttling
+let labelUpdateTimeout;
+
 function updateLabelSizes() {
-    const zoom = map.getZoom();
-    Object.entries(stateLabels).forEach(([stateName, label]) => {
-        const el = label.getElement();
-        if (!el) return;
-        if (zoom <= (isMobile ? 3 : 4)) {
-            el.classList.add('hidden');
-        } else {
-            el.classList.remove('hidden');
-            el.style.fontSize = `${Math.max(8, Math.min(24, zoom * 2))}px`;
-        }
-    });
+    // Throttle label updates to improve performance during zoom/pan
+    clearTimeout(labelUpdateTimeout);
+    labelUpdateTimeout = setTimeout(() => {
+        const zoom = map.getZoom();
+        Object.entries(stateLabels).forEach(([stateName, label]) => {
+            const el = label.getElement();
+            if (!el) return;
+            if (zoom <= (isMobile ? 3 : 4)) {
+                el.classList.add('hidden');
+            } else {
+                el.classList.remove('hidden');
+                el.style.fontSize = `${Math.max(8, Math.min(24, zoom * 2))}px`;
+            }
+        });
+    }, 100);
 }
 
 // Event listeners with improved validation
@@ -949,6 +988,30 @@ document.querySelectorAll('input[name="filterType"]').forEach(radio => {
         }
     });
 });
+
+// Optimized search with caching and debouncing
+let searchCache = new Map();
+let searchTimeout;
+
+// Debounced search function
+function performSearch(searchFunction, delay = 300) {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(searchFunction, delay);
+}
+
+// Cache search results for better performance
+function getCachedSearch(key) {
+    return searchCache.get(key);
+}
+
+function setCachedSearch(key, results) {
+    // Limit cache size to prevent memory issues
+    if (searchCache.size > 20) {
+        const firstKey = searchCache.keys().next().value;
+        searchCache.delete(firstKey);
+    }
+    searchCache.set(key, results);
+}
 
 document.getElementById('searchBtn').addEventListener('click', async () => {
     const zipCode = document.getElementById('zipInput').value.trim();
@@ -966,6 +1029,14 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
     
     if (radius < 1 || radius > 500) {
         showMessage('Please enter a radius between 1 and 500 miles.', 'error');
+        return;
+    }
+    
+    // Check cache first
+    const cacheKey = `${zipCode}-${radius}-${currentFilter}`;
+    const cached = getCachedSearch(cacheKey);
+    if (cached) {
+        displaySearchResults(cached.venues, cached.coords, radius, zipCode, 'zip');
         return;
     }
     
@@ -1000,6 +1071,10 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
         }
         
         nearbyVenues.sort((a, b) => a.distance - b.distance);
+        
+        // Cache results
+        setCachedSearch(cacheKey, { venues: nearbyVenues, coords: zipCoords });
+        
         displaySearchResults(nearbyVenues, zipCoords, radius, zipCode, 'zip');
         
     } catch (error) {
@@ -1100,8 +1175,35 @@ document.getElementById('zipInput').addEventListener('keypress', function(e) {
     }
 });
 
+// Initialize map and event listeners
 updateLabelSizes();
 map.on('zoomend', updateLabelSizes);
+
+// Keep radius circle on top when map is moved (throttled for performance)
+let moveTimeout;
+map.on('moveend zoomend', function() {
+    clearTimeout(moveTimeout);
+    moveTimeout = setTimeout(() => {
+        if (radiusCircle) {
+            radiusCircle.bringToFront();
+        }
+    }, 50);
+});
+
+// Preload critical resources
+const preloadLinks = [
+    'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css',
+    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
+];
+
+preloadLinks.forEach(href => {
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = href.includes('.css') ? 'style' : 'font';
+    link.href = href;
+    if (href.includes('font')) link.crossOrigin = 'anonymous';
+    document.head.appendChild(link);
+});
 
 // Keep radius circle on top when map is moved
 map.on('moveend zoomend', function() {
