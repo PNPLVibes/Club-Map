@@ -1009,9 +1009,62 @@ function addStateLabels() {
         const stateName = layer.feature.properties.name;
         let c = layer.getBounds().getCenter();
         
-        // Adjust Idaho's position for better centering
-        if (stateName === 'Idaho') {
-            c = L.latLng(c.lat - 0.5, c.lng - 0.8);
+        // State-specific position adjustments
+        switch(stateName) {
+            case 'Idaho':
+                c = L.latLng(c.lat - 0.8, c.lng - 0.8); // down a little more
+                break;
+            case 'Nevada':
+                c = L.latLng(c.lat + 0.5, c.lng); // up a bit
+                break;
+            case 'Arizona':
+                c = L.latLng(c.lat, c.lng + 0.3); // to the right just a little bit
+                break;
+            case 'Oklahoma':
+                c = L.latLng(c.lat, c.lng + 0.4); // to the right a bit
+                break;
+            case 'Texas':
+                c = L.latLng(c.lat, c.lng + 0.4); // to the right a bit
+                break;
+            case 'Minnesota':
+                c = L.latLng(c.lat + 0.5, c.lng - 0.5); // up and to the left
+                break;
+            case 'Louisiana':
+                c = L.latLng(c.lat - 0.4, c.lng); // down a bit
+                break;
+            case 'Michigan':
+                c = L.latLng(c.lat - 0.5, c.lng + 0.5); // down and to the right
+                break;
+            case 'Indiana':
+                c = L.latLng(c.lat + 0.3, c.lng + 0.3); // up and to the right a bit
+                break;
+            case 'Kentucky':
+                c = L.latLng(c.lat - 0.4, c.lng + 0.4); // down and to the right a bit
+                break;
+            case 'Virginia':
+                c = L.latLng(c.lat - 0.4, c.lng + 0.4); // down and to the right
+                break;
+            case 'Florida':
+                c = L.latLng(c.lat, c.lng + 0.8); // to the right a good bit
+                break;
+            case 'South Carolina':
+                c = L.latLng(c.lat + 0.3, c.lng + 0.3); // up and to the right a little bit
+                break;
+            case 'North Carolina':
+                c = L.latLng(c.lat + 0.4, c.lng + 0.4); // up and to the right
+                break;
+            case 'Maryland':
+                c = L.latLng(c.lat + 0.6, c.lng + 0.3); // up a good bit and to the right a bit
+                break;
+            case 'Massachusetts':
+                c = L.latLng(c.lat + 0.4, c.lng - 0.4); // up and to the left
+                break;
+            case 'Vermont':
+                c = L.latLng(c.lat + 0.4, c.lng - 0.4); // up and to the left
+                break;
+            case 'New Hampshire':
+                c = L.latLng(c.lat - 0.6, c.lng); // down a good bit
+                break;
         }
         
         const label = L.marker([c.lat, c.lng], {
