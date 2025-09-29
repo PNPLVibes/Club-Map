@@ -1014,6 +1014,12 @@ function addStateLabels() {
             case 'Idaho':
                 c = L.latLng(c.lat - 0.8, c.lng - 0.8); // down a little more
                 break;
+            case 'Washington':
+                c = L.latLng(c.lat - 0.3, c.lng + 0.3); // down and to the right a little bit
+                break;
+            case 'California':
+                c = L.latLng(c.lat, c.lng + 0.3); // to the right a little bit
+                break;
             case 'Nevada':
                 c = L.latLng(c.lat + 0.5, c.lng); // up a bit
                 break;
@@ -1021,19 +1027,25 @@ function addStateLabels() {
                 c = L.latLng(c.lat, c.lng + 0.3); // to the right just a little bit
                 break;
             case 'Oklahoma':
-                c = L.latLng(c.lat, c.lng + 0.4); // to the right a bit
+                c = L.latLng(c.lat, c.lng + 0.5); // to the right
                 break;
             case 'Texas':
-                c = L.latLng(c.lat, c.lng + 0.4); // to the right a bit
+                c = L.latLng(c.lat, c.lng + 0.3); // to the right a little bit
+                break;
+            case 'Arkansas':
+                c = L.latLng(c.lat + 0.3, c.lng); // up a little bit
+                break;
+            case 'Louisiana':
+                c = L.latLng(c.lat - 0.6, c.lng); // down a little bit
+                break;
+            case 'Illinois':
+                c = L.latLng(c.lat + 0.3, c.lng + 0.3); // up and to the right a little bit
                 break;
             case 'Minnesota':
                 c = L.latLng(c.lat + 0.5, c.lng - 0.5); // up and to the left
                 break;
-            case 'Louisiana':
-                c = L.latLng(c.lat - 0.4, c.lng); // down a bit
-                break;
             case 'Michigan':
-                c = L.latLng(c.lat - 0.5, c.lng + 0.5); // down and to the right
+                c = L.latLng(c.lat - 1.0, c.lng + 0.3); // down a lot and a little to the right
                 break;
             case 'Indiana':
                 c = L.latLng(c.lat + 0.3, c.lng + 0.3); // up and to the right a bit
@@ -1041,11 +1053,14 @@ function addStateLabels() {
             case 'Kentucky':
                 c = L.latLng(c.lat - 0.4, c.lng + 0.4); // down and to the right a bit
                 break;
+            case 'West Virginia':
+                c = L.latLng(c.lat, c.lng - 0.3); // to the left a little bit
+                break;
             case 'Virginia':
                 c = L.latLng(c.lat - 0.4, c.lng + 0.4); // down and to the right
                 break;
             case 'Florida':
-                c = L.latLng(c.lat, c.lng + 0.8); // to the right a good bit
+                c = L.latLng(c.lat, c.lng + 1.2); // to the right a good bit
                 break;
             case 'South Carolina':
                 c = L.latLng(c.lat + 0.3, c.lng + 0.3); // up and to the right a little bit
