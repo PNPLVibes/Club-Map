@@ -595,12 +595,13 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png
     keepBuffer: 2 // Reduce tile buffer for less memory usage
 }).addTo(map);
 
-// Create custom panes for proper layering
+// FIXED: Create custom panes with proper z-index values that don't interfere with state clicks
 map.createPane('radiusPane');
-map.getPane('radiusPane').style.zIndex = 650; // Higher than overlay pane (400) and popup pane (600)
+map.getPane('radiusPane').style.zIndex = 450; // Between overlayPane (400) and shadowPane (500)
+map.getPane('radiusPane').style.pointerEvents = 'none'; // KEY FIX: Don't block mouse events
 
 map.createPane('searchMarkersPane');
-map.getPane('searchMarkersPane').style.zIndex = 700; // Highest z-index for search markers
+map.getPane('searchMarkersPane').style.zIndex = 650; // Higher than popup pane (600)
 
 const ResetControl = L.Control.extend({
     options: { position: 'topleft' },
@@ -691,29 +692,56 @@ async function getZipCoordinates(zipCode) {
     }
 }
 
-// Reset search function
+// FIXED: Improved reset search function that properly clears all search elements
 function resetSearch() {
-    searchMarkers.forEach(marker => map.removeLayer(marker));
+    // Clear all search markers
+    searchMarkers.forEach(marker => {
+        if (map.hasLayer(marker)) {
+            map.removeLayer(marker);
+        }
+    });
     searchMarkers = [];
-    if (radiusCircle) {
+    
+    // Clear radius circle
+    if (radiusCircle && map.hasLayer(radiusCircle)) {
         map.removeLayer(radiusCircle);
-        radiusCircle = null;
     }
+    radiusCircle = null;
     
     // Reset form inputs
     document.getElementById('zipInput').value = '';
     document.getElementById('radiusInput').value = '50';
     
+    // Reset map view
     map.setView(defaultCenter, defaultZoom);
     updateLabelSizes();
+    
+    // FIXED: Force refresh of state layer interactivity
+    if (geojsonLayer) {
+        geojsonLayer.eachLayer(layer => {
+            // Re-enable interactions
+            layer.options.interactive = true;
+            layer._path && (layer._path.style.pointerEvents = 'auto');
+        });
+    }
+    
     showMessage('Search reset', 'success');
 }
 
 // Improved search results display
 function displaySearchResults(venues, coords, radius, searchValue, searchType = 'zip') {
-    // Clear previous search markers
-    searchMarkers.forEach(marker => map.removeLayer(marker));
+    // FIXED: Better cleanup of previous search markers
+    searchMarkers.forEach(marker => {
+        if (map.hasLayer(marker)) {
+            map.removeLayer(marker);
+        }
+    });
     searchMarkers = [];
+    
+    // Clear previous radius circle
+    if (radiusCircle && map.hasLayer(radiusCircle)) {
+        map.removeLayer(radiusCircle);
+    }
 
     // Add search center marker with better popup and proper pane
     const centerPopup = `
@@ -732,14 +760,15 @@ function displaySearchResults(venues, coords, radius, searchValue, searchType = 
     }).bindPopup(centerPopup).addTo(map);
     searchMarkers.push(searchCenterMarker);
 
-    // Add radius circle with custom pane for proper z-index
+    // FIXED: Add radius circle with non-interactive pane
     radiusCircle = L.circle([coords.lat, coords.lng], {
         radius: radius * 1609.34, // Convert miles to meters
         fillColor: '#f8f9fa',
         fillOpacity: 0.3,
         color: '#dee2e6',
         weight: 2,
-        pane: 'radiusPane'
+        pane: 'radiusPane', // This pane has pointerEvents: 'none'
+        interactive: false // Explicitly set non-interactive
     }).addTo(map);
     searchMarkers.push(radiusCircle);
 
@@ -913,11 +942,6 @@ function highlightFeature(e) {
     layer.bringToFront();
     const stateName = layer.feature.properties.name;
     if (stateLabels[stateName]) stateLabels[stateName].getElement().classList.add('highlight');
-    
-    // Always keep radius circle on top after state highlight
-    if (radiusCircle) {
-        radiusCircle.bringToFront();
-    }
 }
 
 function resetHighlight(e) {
@@ -1224,17 +1248,6 @@ document.getElementById('zipInput').addEventListener('keypress', function(e) {
 // Initialize map and event listeners
 updateLabelSizes();
 map.on('zoomend', updateLabelSizes);
-
-// Keep radius circle on top when map is moved (throttled for performance)
-let moveTimeout;
-map.on('moveend zoomend', function() {
-    clearTimeout(moveTimeout);
-    moveTimeout = setTimeout(() => {
-        if (radiusCircle) {
-            radiusCircle.bringToFront();
-        }
-    }, 50);
-});
 
 // Preload critical resources
 const preloadLinks = [
