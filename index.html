@@ -588,9 +588,11 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png
     keepBuffer: 2
 }).addTo(map);
 
+// Create custom pane for radius circle that BLOCKS clicks
 map.createPane('radiusPane');
 map.getPane('radiusPane').style.zIndex = 450;
-map.getPane('radiusPane').style.pointerEvents = 'none';
+// KEY CHANGE: Enable pointer events to BLOCK state clicks inside radius
+map.getPane('radiusPane').style.pointerEvents = 'auto';
 
 map.createPane('searchMarkersPane');
 map.getPane('searchMarkersPane').style.zIndex = 650;
@@ -733,10 +735,13 @@ function displaySearchResults(venues, coords, radius, searchValue, searchType = 
             iconSize: [24, 24],
             iconAnchor: [12, 24]
         }),
-        pane: 'searchMarkersPane'
+        pane: 'searchMarkersPane',
+        interactive: true,
+        zIndexOffset: 1000
     }).bindPopup(centerPopup).addTo(map);
     searchMarkers.push(searchCenterMarker);
 
+    // KEY CHANGE: Radius circle now BLOCKS clicks with interactive: true
     radiusCircle = L.circle([coords.lat, coords.lng], {
         radius: radius * 1609.34,
         fillColor: '#f8f9fa',
@@ -744,7 +749,7 @@ function displaySearchResults(venues, coords, radius, searchValue, searchType = 
         color: '#dee2e6',
         weight: 2,
         pane: 'radiusPane',
-        interactive: false
+        interactive: true  // Changed to true to block state clicks
     }).addTo(map);
     searchMarkers.push(radiusCircle);
 
